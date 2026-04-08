@@ -43,7 +43,12 @@ app.get('/', (req, res) => {
     res.send('Tech Karma Classes API is running');
 });
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// Start Server (only if not running on Vercel)
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+// Export the app for Vercel Serverless Functions
+export default app;

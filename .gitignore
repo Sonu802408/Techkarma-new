@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.env.*
+scrapers/
+backend/node_modules/
+tests/
+.DS_Store
