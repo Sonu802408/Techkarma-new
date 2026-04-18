@@ -287,7 +287,7 @@ const Navbar = ({ theme, setTheme }) => {
             {/* Mobile Menu Overlay */}
             <div
                 style={{
-                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh',
+                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100dvh',
                     background: 'var(--bg-primary)', zIndex: 1000,
                     display: isOpen ? 'flex' : 'none', flexDirection: 'column',
                     padding: '6rem 2rem 2rem', paddingTop: '80px', overflowY: 'auto'

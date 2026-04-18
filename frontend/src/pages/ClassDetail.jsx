@@ -20,7 +20,7 @@ const ClassDetail = () => {
 
     // States
     const [selectedStream, setSelectedStream] = useState('science');
-    const [selectedMedium, setSelectedMedium] = useState('english');
+    const [selectedMedium, setSelectedMedium] = useState('English');
     const [selectedSubject, setSelectedSubject] = useState('');
     const [activeTab, setActiveTab] = useState('notes');
 
@@ -92,7 +92,7 @@ const ClassDetail = () => {
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Medium</label>
                         <select value={selectedMedium} onChange={(e) => setSelectedMedium(e.target.value)}>
                             {Object.keys(classesData[classNum]?.mediums || {}).map(med => (
-                                <option key={med} value={med}>{classesData[classNum].mediums[med].label}</option>
+                                <option key={med} value={med}>{classesData[classNum].mediums[med].label || med}</option>
                             ))}
                         </select>
                     </div>
@@ -127,7 +127,7 @@ const ClassDetail = () => {
                 <div style={{ background: 'var(--bg-primary)', padding: '2rem', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                         <h3 style={{ fontSize: '1.5rem', textTransform: 'capitalize' }}>
-                            {selectedSubject || 'Subject'} - {classesData.tabs.find(t => t.id === activeTab)?.label}
+                            {classesData.getSubjectName ? classesData.getSubjectName(originalSubjectName, selectedMedium) : (selectedSubject || 'Subject')} - {classesData.tabs.find(t => t.id === activeTab)?.label}
                         </h3>
                         <span style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary-color)', padding: '0.4rem 1rem', borderRadius: '20px', fontWeight: 600, fontSize: '0.9rem' }}>
                             CBSE Syllabus 2025-26
@@ -142,21 +142,23 @@ const ClassDetail = () => {
                                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--text-secondary)', flexShrink: 0 }}>
                                             {index + 1}
                                         </div>
-                                        <h4 style={{ fontSize: '1.1rem', margin: 0 }}>{chapterName}</h4>
+                                        <h4 style={{ fontSize: '1.1rem', margin: 0 }}>
+                                            {classesData.getChapterName ? classesData.getChapterName(classNum, originalSubjectName, chapterName, index, selectedMedium) : chapterName}
+                                        </h4>
                                     </div>
                                     <span style={{ color: 'var(--success-color)', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}><CheckSquare size={18} /> View</span>
                                 </div>
-                                {activeTab === 'notes' && (
+                                {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
                                     <div style={{ marginTop: '0.5rem' }}>
                                         <a
-                                            href={`/pdfs/class${classNum}-${selectedMedium.toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : selectedSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-ch${index + 1}.pdf`}
+                                            href={`/pdfs/class${classNum}-${selectedMedium.toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : selectedSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="btn btn-primary"
                                             onClick={(e) => e.stopPropagation()} // Prevent triggering parent onClick if one is added later
                                             style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.9rem', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}
                                         >
-                                            View PDF <FileText size={16} />
+                                            View {classesData.tabs.find(t => t.id === activeTab)?.label || 'PDF'} <FileText size={16} />
                                         </a>
                                     </div>
                                 )}

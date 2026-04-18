@@ -2,6 +2,7 @@
   background-color: var(--bg-deep);
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
 }
 
@@ -9,6 +10,7 @@
   position: relative;
   overflow: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
@@ -340,5 +342,31 @@
 
   .pricing-popular:hover {
     transform: translateY(-10px) scale(1.02);
+  }
+} 
+
+/* MOBILE RESPONSIVENESS FIXES */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 100px 0 40px;
+  }
+  .class-section, .dynamic-selection-section, .stats-section, .why-choose-section, .pricing-section, .summer-section {
+    padding: 4rem 0 !important;
+  }
+  .section-grid, .cs-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem;
+  }
+  .dynamic-selection-section .btn {
+    flex: 1 1 100% !important;
+    padding: 1rem !important;
+    font-size: 1rem !important;
+  }
+  .blob {
+    display: none; /* Hide heavy blobs on mobile to prevent overflow */
+  }
+  .hero-grid > div:last-child img {
+    max-width: 100%;
+    height: auto;
   }
 }
