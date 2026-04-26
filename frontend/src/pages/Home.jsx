@@ -66,12 +66,44 @@ const getClassIconData = (cls) => {
     }
 };
 
-const Home = () => {
+const TypingHero = ({ fullText }) => {
     const [typedText, setTypedText] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
     const [typingSpeed, setTypingSpeed] = useState(100);
-    const fullText = "CBSE 2026 Classes + Programming + Computer Science";
 
+    useEffect(() => {
+        let timer;
+        const handleTyping = () => {
+            const nextText = isDeleting
+                ? fullText.substring(0, typedText.length - 1)
+                : fullText.substring(0, typedText.length + 1);
+
+            setTypedText(nextText);
+
+            if (!isDeleting && nextText === fullText) {
+                setTypingSpeed(2500);
+                setIsDeleting(true);
+            } else if (isDeleting && nextText === '') {
+                setIsDeleting(false);
+                setTypingSpeed(500);
+            } else {
+                setTypingSpeed(isDeleting ? 40 : 80);
+            }
+        };
+
+        timer = setTimeout(handleTyping, typingSpeed);
+        return () => clearTimeout(timer);
+    }, [typedText, isDeleting, typingSpeed, fullText]);
+
+    return (
+        <span className="hero-subtitle soft-blue-gradient" style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+            {typedText}
+            <span className="typing-cursor">|</span>
+        </span>
+    );
+};
+
+const Home = () => {
     // 5-Step Flow States
     const [activeClass, setActiveClass] = useState(null);
     const [activeMedium, setActiveMedium] = useState(null);
@@ -145,28 +177,6 @@ const Home = () => {
         return icons[iconName] || <FileText size={18} />;
     };
 
-    useEffect(() => {
-        const handleTyping = () => {
-            const nextText = isDeleting
-                ? fullText.substring(0, typedText.length - 1)
-                : fullText.substring(0, typedText.length + 1);
-
-            setTypedText(nextText);
-
-            if (!isDeleting && nextText === fullText) {
-                setTypingSpeed(2500);
-                setIsDeleting(true);
-            } else if (isDeleting && nextText === '') {
-                setIsDeleting(false);
-                setTypingSpeed(500);
-            } else {
-                setTypingSpeed(isDeleting ? 40 : 80);
-            }
-        };
-
-        const timer = setTimeout(handleTyping, typingSpeed);
-        return () => clearTimeout(timer);
-    }, [typedText, isDeleting, typingSpeed]);
 
     // Count-up animation for Stats section
     useEffect(() => {
@@ -289,10 +299,7 @@ const Home = () => {
                             </h1>
 
                             <p style={{ marginBottom: '3.5rem' }}>
-                                <span className="hero-subtitle soft-blue-gradient" style={{ fontSize: '1.5rem', fontWeight: 600 }}>
-                                    {typedText}
-                                    <span className="typing-cursor">|</span>
-                                </span>
+                                <TypingHero fullText="CBSE 2026 Classes + Programming + Computer Science" />
                             </p>
 
                             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'inherit' }}>
@@ -313,6 +320,9 @@ const Home = () => {
                             <img
                                 src={heroIllustration}
                                 alt="Modern Coding Illustration"
+                                loading="eager"
+                                decoding="async"
+                                fetchpriority="high"
                                 style={{
                                     width: '100%',
                                     maxWidth: '500px',
@@ -498,6 +508,8 @@ const Home = () => {
                                                                 : "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=800"
                                                 }
                                                 alt={`Class ${cls}`}
+                                                loading="lazy"
+                                                decoding="async"
                                                 style={{
                                                     width: '100%',
                                                     height: '100%',

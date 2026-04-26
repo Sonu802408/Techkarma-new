@@ -362,8 +362,8 @@
     padding: 1rem !important;
     font-size: 1rem !important;
   }
-  .blob {
-    display: none; /* Hide heavy blobs on mobile to prevent overflow */
+  .blob, .particles-container {
+    display: none; /* Hide heavy blobs and particles on mobile to prevent lag */
   }
   .hero-grid > div:last-child img {
     max-width: 100%;

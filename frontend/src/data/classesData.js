@@ -26,7 +26,7 @@ const cbseSyllabus = {
         "Sanskrit": ["सुभाषितानि", "बिलस्य वाणी न कदापि मे श्रुता", "डिजीभारतम्", "सदैव पुरतो निधेहि चरणम्", "कण्टकेनैव कण्टकम्", "गृहं शून्यं सुतां विना", "भारतजनताऽहम्", "संसारसागरस्य नायकाः", "सप्तभगिन्यः", "नीतिनवनीतम्"]
     },
     9: {
-        "Math": ["Number Systems", "Polynomials", "Coordinate Geometry", "Linear Equations in Two Variables", "Introduction to Euclid's Geometry", "Lines and Angles", "Triangles", "Quadrilaterals", "Circles", "Heron's Formula", "Surface Areas and Volumes", "Statistics"],
+        "Math": ["Number Systems", "Polynomials", "Coordinate Geometry", "Linear Equations in Two Variables", "Introduction to Euclid's Geometry", "Lines and Angles", "Triangles", "Quadrilaterals", "Areas of Parallelograms and Triangles", "Circles", "Constructions", "Heron's Formula", "Surface Areas and Volumes", "Statistics", "Probability"],
         "Science": ["Matter in Our Surroundings", "Is Matter Around Us Pure", "Atoms and Molecules", "Structure of the Atom", "The Fundamental Unit of Life", "Tissues", "Motion", "Force and Laws of Motion", "Gravitation", "Work and Energy", "Sound", "Improvement in Food Resources"],
         "Social Studies (SST)": ["The French Revolution", "Socialism in Europe and the Russian Revolution", "Nazism and the Rise of Hitler", "Forest Society and Colonialism", "Pastoralists in the Modern World", "India - Size and Location", "Physical Features of India", "Drainage", "Climate", "Natural Vegetation and Wildlife", "Population", "What is Democracy? Why Democracy?", "Constitutional Design", "Electoral Politics", "Working of Institutions", "Democratic Rights", "The Story of Village Palampur", "People as Resource", "Poverty as a Challenge", "Food Security in India"],
         "English": ["The Fun They Had", "The Sound of Music", "The Little Girl", "A Truly Beautiful Mind", "The Snake and the Mirror", "My Childhood", "Reach for the Top", "Kathmandu", "If I Were You"],
@@ -231,7 +231,7 @@ const hindiTranslations = {
     },
     9: {
         "Science": ["हमारे आस-पास के पदार्थ", "क्या हमारे आस-पास के पदार्थ शुद्ध हैं", "परमाणु एवं अणु", "परमाणु की संरचना", "जीवन की मौलिक इकाई", "ऊतक", "गति", "बल तथा गति के नियम", "गुरुत्वाकर्षण", "कार्य तथा ऊर्जा", "ध्वनि", "खाद्य संसाधनों में सुधार"],
-        "Math": ["संख्या पद्धति", "बहुपद", "निर्देशांक ज्यामिति", "दो चरों वाले रैखिक समीकरण", "यूक्लिड की ज्यामिति का परिचय", "रेखाएँ और कोण", "त्रिभुज", "चतुर्भुज", "वृत्त", "हीरोन का सूत्र", "पृष्ठीय क्षेत्रफल পুরা आयतन", "सांख्यिकी"],
+        "Math": ["संख्या पद्धति", "बहुपद", "निर्देशांक ज्यामिति", "दो चरों वाले रैखिक समीकरण", "यूक्लिड की ज्यामिति का परिचय", "रेखाएँ और कोण", "त्रिभुज", "चतुर्भुज", "समांतर चतुर्भुजों और त्रिभुजों के क्षेत्रफल", "वृत्त", "रचनाएँ", "हीरोन का सूत्र", "पृष्ठीय क्षेत्रफल और आयतन", "सांख्यिकी", "प्रायिकता"],
         "Social Studies (SST)": ["फ्रांसीसी क्रांति", "यूरोप में समाजवाद एवं रूसी क्रांति", "नात्सीवाद और हिटलर का उदय", "वन्य समाज एवं उपनिवेशवाद", "आधुनिक विश्व में चरवाहे", "भारत – आकार और स्थिति", "भारत का भौतिक स्वरूप", "अपवाह", "जलवायु", "प्राकृतिक वनस्पति तथा वन्य प्राणी", "जनसंख्या", "लोकतंत्र क्या? लोकतंत्र क्यों?", "संविधान निर्माण", "चुनावी राजनीति", "संस्थाओं का कामकाज", "लोकतांत्रिक अधिकार", "पालमपुर गाँव की कहानी", "संसाधन के रूप में लोग", "निर्धनता : एक चुनौती", "भारत में खाद्य सुरक्षा"]
     },
     10: {
