@@ -218,6 +218,7 @@ const Home = () => {
         setActiveStream(null);
         setActiveSubject(null);
         setActiveContent(null);
+        setTimeout(() => document.getElementById('dynamic-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     };
 
     const handleMediumClick = (medium) => {
@@ -227,6 +228,7 @@ const Home = () => {
         }
         setActiveSubject(null);
         setActiveContent(null);
+        setTimeout(() => document.getElementById('subject-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
     };
 
     const handleStreamClick = (streamId) => {
@@ -234,15 +236,18 @@ const Home = () => {
         setActiveMedium(null);
         setActiveSubject(null);
         setActiveContent(null);
+        setTimeout(() => document.getElementById('medium-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
     };
 
     const handleSubjectClick = (subject) => {
         setActiveSubject(subject);
         setActiveContent(null);
+        setTimeout(() => document.getElementById('content-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     };
 
     const handleContentClick = (contentId) => {
         setActiveContent(contentId);
+        setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     };
 
     const resetSelection = () => {
@@ -732,7 +737,7 @@ const Home = () => {
 
             {/* STEP 3 & 4: DYNAMIC FLOW */}
             {activeClass && (
-                <section className="dynamic-selection-section" style={{ paddingBottom: '10rem' }}>
+                <section id="dynamic-selection-section" className="dynamic-selection-section" style={{ paddingBottom: '10rem' }}>
                     <div className="container">
                         {/* 1. SELECT STREAM (Only for Class 11 and 12) */}
                         {activeClass >= 11 && (
@@ -761,7 +766,7 @@ const Home = () => {
 
                         {/* 2. SELECT MEDIUM  */}
                         {(activeClass < 11 || activeStream) && (
-                            <div className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem' }}>
+                            <div id="medium-selection-section" className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem' }}>
                                 <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--electric-blue)', paddingLeft: '1.5rem' }}>{activeClass >= 11 ? '2. Select Medium' : '1. Select Medium'}</h3>
                                 <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
                                     {(activeClass >= 11 && activeStream === 'science' ? ['English'] : ['English', 'Hindi']).map(medium => (
@@ -780,7 +785,7 @@ const Home = () => {
 
                         {/* 5. SELECT SUBJECT */}
                         {activeMedium && (activeClass < 11 || activeStream) && (
-                            <div className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem', borderTop: '1px solid var(--electric-blue)' }}>
+                            <div id="subject-selection-section" className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem', borderTop: '1px solid var(--electric-blue)' }}>
                                 <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--vivid-purple)', paddingLeft: '1.5rem' }}>{activeClass >= 11 ? '3. Select Subject' : '2. Select Subject'}</h3>
                                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                                     {Object.keys(activeClass >= 11 ? classesData[activeClass].mediums[activeMedium].streams[activeStream].subjects : classesData[activeClass].mediums[activeMedium].subjects).map(sub => {
@@ -808,7 +813,7 @@ const Home = () => {
 
                         {/* 5. SELECT CONTENT TYPE & CHAPTERS */}
                         {activeSubject && (
-                            <div className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem' }}>
+                            <div id="content-selection-section" className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem' }}>
                                 <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--electric-blue)', paddingLeft: '1.5rem' }}>{activeClass >= 11 ? '4. Select Content Type' : '3. Select Content Type'}</h3>
                                 <div className="tabs-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '4rem' }}>
                                     {classesData.tabs.map(tab => (
@@ -824,7 +829,7 @@ const Home = () => {
                                 </div>
 
                                 {activeContent && (
-                                    <div className="animate-fade-in" style={{
+                                    <div id="results-section" className="animate-fade-in" style={{
                                         background: 'rgba(255,255,255,0.02)',
                                         padding: '3rem',
                                         borderRadius: '20px',
@@ -899,7 +904,8 @@ const Home = () => {
             )}
 
             {/* COMPUTER SCIENCE & PROGRAMMING COURSES SECTION */}
-            <section className="cs-section" style={{ padding: '6rem 0', position: 'relative', zIndex: 10 }}>
+            {!activeClass && (
+                <section className="cs-section" style={{ padding: '6rem 0', position: 'relative', zIndex: 10 }}>
                 <div className="container" style={{ textAlign: 'center' }}>
                     <div className="section-title">
                         <SectionIcon icon={Code} colorHex="#38bdf8" align="center" />
@@ -947,6 +953,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+            )}
 
             <footer className="footer">
                 <div className="container">
