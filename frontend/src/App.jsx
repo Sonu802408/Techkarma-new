@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -19,9 +19,13 @@ function App() {
     const [theme, setTheme] = useState("dark");
     const location = useLocation();
 
-    // Scroll to top on route change
-    useEffect(() => {
-        window.scrollTo(0, 0);
+    // Scroll to top instantly without flickering on route change
+    useLayoutEffect(() => {
+        if ('scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual';
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, [location.pathname]);
 
     useEffect(() => {

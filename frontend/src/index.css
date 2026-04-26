@@ -46,15 +46,16 @@ img, video {
 /* Layout Utilities */
 .grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  justify-content: center;
 }
 
 .grid-3 {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
 .grid-2 {
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }
 
 body {
@@ -148,10 +149,13 @@ a {
   border: 1px solid var(--glass-border);
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow);
-  padding: 2.5rem;
+  padding: 1.75rem;
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .glass-card:hover {
