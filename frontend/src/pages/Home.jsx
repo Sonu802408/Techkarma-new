@@ -342,7 +342,7 @@ const Home = () => {
             </section>
 
             {/* STEP 2: SELECT CLASS */}
-            <section className="class-section" id="class-selection">
+            <section className={`class-section ${activeClass ? 'active-mode' : ''}`} id="class-selection">
                 <div className="container" style={{ textAlign: 'center' }}>
                     <div className="section-title">
                         <SectionIcon icon={GraduationCap} colorHex="#60a5fa" align="center" />
@@ -580,7 +580,7 @@ const Home = () => {
                             })}
                         </div>
                     ) : (
-                        <button onClick={resetSelection} className="btn btn-secondary" style={{ marginBottom: '3rem' }}>
+                        <button onClick={resetSelection} className="btn btn-secondary" style={{ marginBottom: '1rem' }}>
                             <ArrowLeft size={18} /> Back to Selection
                         </button>
                     )}
@@ -737,7 +737,7 @@ const Home = () => {
 
             {/* STEP 3 & 4: DYNAMIC FLOW */}
             {activeClass && (
-                <section id="dynamic-selection-section" className="dynamic-selection-section" style={{ paddingBottom: '10rem' }}>
+                <section id="dynamic-selection-section" className="dynamic-selection-section">
                     <div className="container">
                         {/* 1. SELECT STREAM (Only for Class 11 and 12) */}
                         {activeClass >= 11 && (

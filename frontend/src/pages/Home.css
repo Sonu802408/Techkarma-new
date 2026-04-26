@@ -37,10 +37,18 @@
   }
 }
 
-.class-section,
+.class-section {
+  position: relative;
+  padding: 8rem 0 5rem 0;
+}
+
+.class-section.active-mode {
+  padding-bottom: 0;
+}
+
 .dynamic-selection-section {
   position: relative;
-  padding: 10rem 0;
+  padding: 1.5rem 0 8rem 0;
 }
 
 .tabs-container {
