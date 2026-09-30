@@ -14,6 +14,8 @@ import Courses from './pages/Courses';
 import Admission from './pages/Admission';
 import Notes from './pages/Notes';
 import Contact from './pages/Contact';
+import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
     const [theme, setTheme] = useState("dark");
@@ -37,16 +39,34 @@ function App() {
 
     useEffect(() => {
         const root = document.documentElement;
-
-        root.classList.remove(
+        const body = document.body;
+        const allThemes = [
             "light-theme",
             "dark-theme",
             "midnight-theme",
             "charcoal-theme",
-            "sunset-theme"
-        );
+            "sunset-theme",
+            "cyberpunk-theme",
+            "forest-theme",
+            "amber-theme",
+            "purple-theme",
+            "solarized-theme",
+            "crimson-theme",
+            "aurora-theme",
+            "luxury-gold-theme",
+            "dracula-theme",
+            "holographic-theme"
+        ];
 
-        root.classList.add(theme + "-theme");
+        allThemes.forEach(t => {
+            root.classList.remove(t);
+            body.classList.remove(t);
+        });
+
+        const activeThemeClass = `${theme}-theme`;
+        root.classList.add(activeThemeClass);
+        body.classList.add(activeThemeClass);
+        root.setAttribute("data-theme", theme);
 
         localStorage.setItem("theme", theme);
     }, [theme]);
@@ -68,6 +88,8 @@ function App() {
                     <Route path="/admission" element={<Admission />} />
                     <Route path="/notes" element={<Notes />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="*" element={
                         <div className="container section" style={{ textAlign: 'center', marginTop: '10vh' }}>
                             <h2 className="gradient-text" style={{ fontSize: '3rem', marginBottom: '1rem' }}>404</h2>

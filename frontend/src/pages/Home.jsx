@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Code, Cpu, Trophy, Star, CheckCircle, Github, Twitter, Linkedin, ArrowLeft, FileText, CheckSquare, Book, File, Clock, PlayCircle, Terminal, Users, TrendingUp, Shield, Zap, Check, Target, Award, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, Laptop, Rocket, Sun, Monitor, Brain } from 'lucide-react';
+import { ArrowRight, BookOpen, ExternalLink, ShieldCheck, Code, Cpu, Trophy, Star, CheckCircle, Github, Twitter, Linkedin, ArrowLeft, FileText, CheckSquare, Book, File, Clock, PlayCircle, Terminal, Users, TrendingUp, Shield, Zap, Check, Target, Award, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, Laptop, Rocket, Sun, Monitor, Brain, Globe, Palette } from 'lucide-react';
 import { classesData, getSubjectName, getChapterName } from '../data/classesData';
 import pdfManifest from '../data/pdfManifest.json';
+import { getNcertChapters, getDirectNcertChapterPdf } from '../data/ncertBooksData';
+import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
+import ClassCard from '../components/ClassCard.jsx';
 
 const SectionIcon = ({ icon: Icon, colorHex = "#3b82f6", align = "center" }) => {
     const hexToRgba = (hex, alpha) => {
@@ -52,19 +55,6 @@ const SnakeIcon = ({ className }) => (
         <circle cx="9.5" cy="7.5" r="0.5" fill="currentColor" />
     </svg>
 );
-
-const getClassIconData = (cls) => {
-    switch (cls) {
-        case 6: return { icon: <Briefcase className="animated-icon-svg" />, color: '#60a5fa' };
-        case 7: return { icon: <Library className="animated-icon-svg" />, color: '#34d399' };
-        case 8: return { icon: <PenTool className="animated-icon-svg" />, color: '#fbbf24' };
-        case 9: return { icon: <Beaker className="animated-icon-svg" />, color: '#f472b6' };
-        case 10: return { icon: <Atom className="animated-icon-svg" />, color: '#a78bfa' };
-        case 11: return { icon: <FlaskConical className="animated-icon-svg" />, color: '#38bdf8' };
-        case 12: return { icon: <GraduationCap className="animated-icon-svg" />, color: '#fb7185' };
-        default: return { icon: <BookOpen className="animated-icon-svg" />, color: '#ffffff' };
-    }
-};
 
 const TypingHero = ({ fullText }) => {
     const [typedText, setTypedText] = useState('');
@@ -119,33 +109,36 @@ const Home = () => {
         { id: 'Web Development', name: 'Web Development', icon: <Code size={24} />, desc: 'Build modern responsive websites and full-stack applications.' }
     ];
 
-    // Data for the new Computer Science Section
+    // Data for the Computer Science & Programming Section
     const csCategories = [
         {
             title: "Core Programming",
             courses: [
-                { name: "Python Mastery", desc: "From basics to advanced applications.", icon: <Code size={24} /> },
-                { name: "Java Enterprise", desc: "Build scalable backend systems.", icon: <Terminal size={24} /> },
-                { name: "C++ Fundamentals", desc: "High-performance computing & DSA.", icon: <Cpu size={24} /> },
-                { name: "Full-Stack Web", desc: "MERN stack and modern frameworks.", icon: <BookOpen size={24} /> }
+                { name: "Python", desc: "High-level language for AI, data science, automation, and backend engineering.", icon: <Terminal size={24} />, tag: "AI & Data", color: "#38bdf8", colorRgb: "56, 189, 248" },
+                { name: "C Language", desc: "Foundational logic, pointers, memory architecture, and systems programming.", icon: <Laptop size={24} />, tag: "Systems & Logic", color: "#60a5fa", colorRgb: "96, 165, 250" },
+                { name: "C++", desc: "High-performance computing, OOP principles, STL, and competitive coding.", icon: <Rocket size={24} />, tag: "High Performance", color: "#818cf8", colorRgb: "129, 140, 248" },
+                { name: "Java", desc: "Enterprise systems, JVM internals, multithreading, and backend architecture.", icon: <BookOpen size={24} />, tag: "Enterprise", color: "#f97316", colorRgb: "249, 115, 22" },
+                { name: "HTML5", desc: "The universal web backbone: semantic structure, modern forms, media, and SEO.", icon: <Globe size={24} />, tag: "Web Structure", color: "#ef4444", colorRgb: "239, 68, 68" },
+                { name: "CSS3", desc: "Modern UI styling, Flexbox, CSS Grid, keyframe animations, and glassmorphism.", icon: <Palette size={24} />, tag: "Modern UI", color: "#06b6d4", colorRgb: "6, 182, 212" },
+                { name: "JavaScript", desc: "Modern ES6+, DOM manipulation, asynchronous programming, and dynamic web APIs.", icon: <Zap size={24} />, tag: "Dynamic Web", color: "#eab308", colorRgb: "234, 179, 8" }
             ]
         },
         {
             title: "Core Computer Science Subjects",
             courses: [
-                { name: "Data Structures", desc: "Master algorithms and problem solving.", icon: <File size={24} /> },
-                { name: "Operating Systems", desc: "Understand kernel and processes.", icon: <Cpu size={24} /> },
-                { name: "Database Systems", desc: "SQL, NoSQL, and system design.", icon: <FileText size={24} /> },
-                { name: "Computer Networks", desc: "Protocols, routing, and security.", icon: <CheckSquare size={24} /> }
+                { name: "Data Structures", desc: "Master algorithms, arrays, trees, graphs, and problem solving.", icon: <File size={24} />, tag: "DSA", color: "#10b981", colorRgb: "16, 185, 129" },
+                { name: "Operating Systems", desc: "Understand kernel, concurrency, processes, and memory management.", icon: <Cpu size={24} />, tag: "OS & Kernel", color: "#10b981", colorRgb: "16, 185, 129" },
+                { name: "Database Systems", desc: "SQL, normalization, indexing, NoSQL, and scalable schema design.", icon: <FileText size={24} />, tag: "Databases", color: "#10b981", colorRgb: "16, 185, 129" },
+                { name: "Computer Networks", desc: "TCP/IP protocols, routing, OSI model, socket programming, and security.", icon: <CheckSquare size={24} />, tag: "Networking", color: "#10b981", colorRgb: "16, 185, 129" }
             ]
         },
         {
             title: "Advanced Technologies",
             courses: [
-                { name: "Artificial Intelligence", desc: "Machine learning and neural networks.", icon: <Star size={24} /> },
-                { name: "Cloud Computing", desc: "AWS, Azure, and deployment strategies.", icon: <Book size={24} /> },
-                { name: "Cybersecurity", desc: "Ethical hacking and defense mechanisms.", icon: <CheckCircle size={24} /> },
-                { name: "Data Science", desc: "Analytics, visualization, and big data.", icon: <Trophy size={24} /> }
+                { name: "Artificial Intelligence", desc: "Machine learning, neural networks, deep learning, and generative AI.", icon: <Star size={24} />, tag: "AI & ML", color: "#f43f5e", colorRgb: "244, 63, 94" },
+                { name: "Cloud Computing", desc: "AWS, Azure, containerization (Docker/K8s), and microservices deployment.", icon: <Book size={24} />, tag: "Cloud & DevOps", color: "#f43f5e", colorRgb: "244, 63, 94" },
+                { name: "Cybersecurity", desc: "Ethical hacking, cryptography, threat modeling, and defense mechanisms.", icon: <CheckCircle size={24} />, tag: "Security", color: "#f43f5e", colorRgb: "244, 63, 94" },
+                { name: "Data Science", desc: "Data analytics, statistical modeling, visualization, and big data pipelines.", icon: <Trophy size={24} />, tag: "Analytics", color: "#f43f5e", colorRgb: "244, 63, 94" }
             ]
         }
     ];
@@ -166,6 +159,78 @@ const Home = () => {
         { name: "Coding for Kids", desc: "Fun, interactive programming fundamentals.", icon: <Code size={24} /> }
     ];
 
+    // Data for Statistics Counter Section
+    const statsData = [
+        {
+            target: 500,
+            suffix: "+",
+            value: "500+",
+            label: "Students Enrolled",
+            desc: "Empowering bright minds with conceptual clarity and high board scores.",
+            icon: <Users size={30} />,
+            color: "#3b82f6",
+            colorRgb: "59, 130, 246"
+        },
+        {
+            target: 2000,
+            suffix: "+",
+            value: "2000+",
+            label: "Notes Delivered",
+            desc: "Curated NCERT solutions, chapter revision notes, and exam blueprints.",
+            icon: <FileText size={30} />,
+            color: "#10b981",
+            colorRgb: "16, 185, 129"
+        },
+        {
+            target: 95,
+            suffix: "%",
+            value: "95%",
+            label: "Success Rate",
+            desc: "Consistent top rankers in CBSE board examinations and STEM olympiads.",
+            icon: <TrendingUp size={30} />,
+            color: "#f59e0b",
+            colorRgb: "245, 158, 11"
+        },
+        {
+            target: 5,
+            suffix: "+",
+            value: "5+",
+            label: "Years of Excellence",
+            desc: "Pioneering academic mentoring and modern tech education since 2021.",
+            icon: <Award size={30} />,
+            color: "#ec4899",
+            colorRgb: "236, 72, 153"
+        }
+    ];
+
+    // Data for Why Choose Tech Karma Classes Section
+    const whyChooseData = [
+        {
+            title: "Expert Mentorship",
+            desc: "Learn from top subject-matter mentors dedicated to building deep understanding and exam confidence.",
+            icon: <GraduationCap size={28} />,
+            color: "#3b82f6"
+        },
+        {
+            title: "Structured NCERT Materials",
+            desc: "Comprehensive chapter notes, question banks, formula cheat-sheets, and mock test papers.",
+            icon: <BookOpen size={28} />,
+            color: "#10b981"
+        },
+        {
+            title: "Integrated Tech Skills",
+            desc: "Seamlessly combining school academic curriculum with practical computer science, AI, and coding.",
+            icon: <Code size={28} />,
+            color: "#8b5cf6"
+        },
+        {
+            title: "1-on-1 Doubt Support",
+            desc: "Personalized doubt resolution and continuous performance feedback to ensure zero concept gaps.",
+            icon: <ShieldCheck size={28} />,
+            color: "#ec4899"
+        }
+    ];
+
     // Helper for icons mapping
     const getIcon = (iconName) => {
         const icons = {
@@ -176,7 +241,6 @@ const Home = () => {
         };
         return icons[iconName] || <FileText size={18} />;
     };
-
 
     // Count-up animation for Stats section
     useEffect(() => {
@@ -204,12 +268,12 @@ const Home = () => {
                 });
                 observer.disconnect();
             }
-        }, { threshold: 0.5 });
+        }, { threshold: 0.2 });
 
         observer.observe(statsSection);
 
         return () => observer.disconnect();
-    }, []);
+    }, [activeClass]);
 
     // Handler Functions
     const handleClassClick = (id) => {
@@ -218,7 +282,11 @@ const Home = () => {
         setActiveStream(null);
         setActiveSubject(null);
         setActiveContent(null);
-        setTimeout(() => document.getElementById('dynamic-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        if (id < 11) {
+            setTimeout(() => document.getElementById('medium-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        } else {
+            setTimeout(() => document.getElementById('dynamic-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        }
     };
 
     const handleMediumClick = (medium) => {
@@ -233,10 +301,17 @@ const Home = () => {
 
     const handleStreamClick = (streamId) => {
         setActiveStream(streamId);
-        setActiveMedium(null);
-        setActiveSubject(null);
-        setActiveContent(null);
-        setTimeout(() => document.getElementById('medium-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        if (streamId === 'science') {
+            setActiveMedium('English');
+            setActiveSubject(null);
+            setActiveContent(null);
+            setTimeout(() => document.getElementById('subject-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        } else {
+            setActiveMedium(null);
+            setActiveSubject(null);
+            setActiveContent(null);
+            setTimeout(() => document.getElementById('medium-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
     };
 
     const handleSubjectClick = (subject) => {
@@ -296,20 +371,36 @@ const Home = () => {
                     ))}
                 </div>
 
-                <div className="container" style={{ position: 'relative', zIndex: 10 }}>
-                    <div className="hero-grid">
-                        <div className="animate-fade-in">
-                            <h1 style={{ fontSize: 'clamp(3.5rem, 8vw, 5.5rem)', fontWeight: 800, marginBottom: '2rem', lineHeight: 1.1 }}>
-                                Welcome to <span className="gradient-text">Tech Karma Classes</span>
+                <div className="container" style={{ position: 'relative', zIndex: 10, width: '100%' }}>
+                    <div className="hero-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 0.8fr)', gap: '4rem', alignItems: 'center' }}>
+                        {/* Left Column: Text Content */}
+                        <div className="hero-content animate-fade-in" style={{ textAlign: 'left' }}>
+                            <div className="hero-badge animate-fade-in-up" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', borderRadius: '50px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', marginBottom: '1.5rem', backdropFilter: 'blur(10px)' }}>
+                                <Rocket size={18} className="hero-badge-icon" style={{ color: 'var(--electric-blue)' }} />
+                                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--electric-blue)', letterSpacing: '0.5px' }}>
+                                    Transforming K-12 to Advanced Tech Education
+                                </span>
+                            </div>
+
+                            <h1 className="hero-title" style={{ fontSize: '4.5rem', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-1.5px' }}>
+                                Code Your Future. <br />
+                                <span className="gradient-text">Master Your Classes.</span>
                             </h1>
 
-                            <p style={{ marginBottom: '3.5rem' }}>
-                                <TypingHero fullText="CBSE 2026 Classes + Programming + Computer Science" />
+                            <div style={{ minHeight: '3.5rem', marginBottom: '2rem' }}>
+                                <TypingHero fullText="From CBSE Board To Advanced Software Engineering" />
+                            </div>
+
+                            <p className="hero-desc" style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', maxWidth: '600px', lineHeight: 1.7, marginBottom: '3rem' }}>
+                                High-performance learning tailored for the modern student. Interactive CBSE curriculum from Class 6 to 12 paired with hands-on Computer Science training.
                             </p>
 
-                            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'inherit' }}>
-                                <Link to="/admission" className="btn btn-primary">
-                                    Start Learning <ArrowRight size={20} />
+                            <div className="hero-cta-group" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                                <Link to="#class-selection" className="btn btn-primary" onClick={(e) => {
+                                    e.preventDefault();
+                                    document.getElementById('class-selection').scrollIntoView({ behavior: 'smooth' });
+                                }}>
+                                    Start Learning <ArrowRight size={18} />
                                 </Link>
                                 <Link to="#explore-cs" className="btn btn-secondary" onClick={(e) => {
                                     e.preventDefault();
@@ -320,20 +411,29 @@ const Home = () => {
                             </div>
                         </div>
 
-                        {/* Modern Coding Illustration */}
-                        <div className="animate-fade-in" style={{ animationDelay: '0.3s', display: 'flex', justifyContent: 'center' }}>
+                        {/* Right Column: 3D Illustration Graphic */}
+                        <div className="hero-visual animate-fade-in" style={{ animationDelay: '0.2s', display: 'flex', justifyContent: 'center', position: 'relative' }}>
+                            <div className="illustration-glow-bg" style={{
+                                position: 'absolute',
+                                width: '100%',
+                                height: '100%',
+                                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.15) 50%, transparent 70%)',
+                                filter: 'blur(50px)',
+                                zIndex: 0
+                            }}></div>
                             <img
                                 src={heroIllustration}
-                                alt="Modern Coding Illustration"
-                                loading="eager"
-                                decoding="async"
-                                fetchpriority="high"
+                                alt="Tech Karma futuristic interactive education"
+                                className="hero-main-img"
                                 style={{
                                     width: '100%',
-                                    maxWidth: '500px',
+                                    maxWidth: '520px',
                                     height: 'auto',
-                                    filter: 'drop-shadow(0 20px 50px rgba(59, 130, 246, 0.3))',
-                                    animation: 'floating-animation 4s infinite ease-in-out'
+                                    objectFit: 'contain',
+                                    position: 'relative',
+                                    zIndex: 1,
+                                    filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.5))',
+                                    animation: 'floating-animation 6s ease-in-out infinite'
                                 }}
                             />
                         </div>
@@ -357,227 +457,15 @@ const Home = () => {
                     )}
 
                     {!activeClass ? (
-                        <div className="grid grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2.5rem' }}>
-                            {allClasses.map((cls, index) => {
-                                const isSenior = cls >= 11;
-                                return (
-                                    <div
-                                        key={cls}
-                                        onClick={() => handleClassClick(cls)}
-                                        className="animate-fade-in"
-                                        style={{
-                                            animationDelay: `${index * 0.1}s`,
-                                            cursor: 'pointer',
-                                            textAlign: 'center',
-                                            position: 'relative',
-                                            overflow: 'hidden',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            padding: '2rem 1.5rem',
-                                            aspectRatio: '1/1',
-                                            borderRadius: '20px',
-                                            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%)',
-                                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                                            boxShadow: '0 15px 35px -5px rgba(0, 0, 0, 0.6), inset 0 2px 5px rgba(255, 255, 255, 0.05)',
-                                            transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                                            backdropFilter: 'blur(20px)',
-                                            WebkitBackdropFilter: 'blur(20px)',
-                                            transformStyle: 'preserve-3d',
-                                            perspective: '1000px'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.transform = 'perspective(1000px) rotateX(4deg) rotateY(-4deg) translateY(-15px) scale(1.03)';
-                                            e.currentTarget.style.boxShadow = '20px 30px 60px -10px rgba(59, 130, 246, 0.3), -20px 30px 60px -10px rgba(139, 92, 246, 0.3), inset 0 2px 15px rgba(255, 255, 255, 0.1)';
-                                            e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.5)';
-                                            e.currentTarget.style.background = 'linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)';
-
-                                            const reflection = e.currentTarget.querySelector('.card-reflection');
-                                            if (reflection) {
-                                                reflection.style.opacity = '1';
-                                                reflection.style.transform = 'translateX(100%) rotate(45deg)';
-                                            }
-
-                                            const img = e.currentTarget.querySelector('.card-img');
-                                            if (img) {
-                                                img.style.transform = 'scale(1.1)';
-                                            }
-
-                                            const icon = e.currentTarget.querySelector('.animated-icon-container');
-                                            if (icon) {
-                                                icon.style.filter = 'drop-shadow(0 0 15px currentColor)';
-                                            }
-
-                                            const title = e.currentTarget.querySelector('h3');
-                                            if (title) {
-                                                title.style.transform = 'translateZ(20px)';
-                                                title.style.background = 'linear-gradient(135deg, #a5f3fc 0%, #3b82f6 100%)';
-                                                title.style.webkitBackgroundClip = 'text';
-                                                title.style.color = 'transparent';
-                                            }
-
-                                            const text = e.currentTarget.querySelector('p');
-                                            if (text) {
-                                                text.style.transform = 'translateZ(10px)';
-                                                text.style.color = '#e2e8f0';
-                                            }
-
-                                            const btn = e.currentTarget.querySelector('.internal-btn');
-                                            if (btn) {
-                                                btn.style.transform = 'translateZ(40px) translateY(-3px)';
-                                                btn.style.background = 'linear-gradient(90deg, #8b5cf6, #3b82f6)';
-                                                btn.style.borderColor = 'transparent';
-                                                btn.style.color = 'white';
-                                                btn.style.boxShadow = '0 15px 30px rgba(59, 130, 246, 0.5), inset 0 2px 0 rgba(255,255,255,0.2)';
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
-                                            e.currentTarget.style.boxShadow = '0 15px 35px -5px rgba(0, 0, 0, 0.6), inset 0 2px 5px rgba(255, 255, 255, 0.05)';
-                                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                                            e.currentTarget.style.background = 'linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%)';
-
-                                            const reflection = e.currentTarget.querySelector('.card-reflection');
-                                            if (reflection) {
-                                                reflection.style.opacity = '0';
-                                                reflection.style.transform = 'translateX(-100%) rotate(45deg)';
-                                            }
-
-                                            const img = e.currentTarget.querySelector('.card-img');
-                                            if (img) {
-                                                img.style.transform = 'scale(1)';
-                                            }
-
-                                            const icon = e.currentTarget.querySelector('.animated-icon-container');
-                                            if (icon) {
-                                                icon.style.filter = 'drop-shadow(0 0 15px currentColor)';
-                                            }
-
-                                            const title = e.currentTarget.querySelector('h3');
-                                            if (title) {
-                                                title.style.transform = 'translateZ(0)';
-                                                title.style.background = 'none';
-                                                title.style.webkitBackgroundClip = 'border-box';
-                                                title.style.color = 'white';
-                                            }
-
-                                            const text = e.currentTarget.querySelector('p');
-                                            if (text) {
-                                                text.style.transform = 'translateZ(0)';
-                                                text.style.color = '#cbd5e1';
-                                            }
-
-                                            const btn = e.currentTarget.querySelector('.internal-btn');
-                                            if (btn) {
-                                                btn.style.transform = 'translateZ(0) translateY(0)';
-                                                btn.style.background = 'rgba(255, 255, 255, 0.03)';
-                                                btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                                                btn.style.color = 'white';
-                                                btn.style.boxShadow = 'none';
-                                            }
-                                        }}
-                                    >
-                                        {/* Glossy reflection effect overlay */}
-                                        <div
-                                            className="card-reflection"
-                                            style={{
-                                                position: 'absolute',
-                                                top: '-50%',
-                                                left: '-50%',
-                                                width: '200%',
-                                                height: '200%',
-                                                background: 'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%)',
-                                                transform: 'translateX(-100%) rotate(45deg)',
-                                                transition: 'all 0.8s ease',
-                                                opacity: 0,
-                                                pointerEvents: 'none',
-                                                zIndex: 0
-                                            }}
-                                        />
-
-                                        {/* Background Image Overlay */}
-                                        <div style={{
-                                            position: 'absolute',
-                                            inset: '0',
-                                            zIndex: 0,
-                                            overflow: 'hidden',
-                                            borderRadius: '20px',
-                                        }}>
-                                            <img
-                                                className="card-img"
-                                                src={
-                                                    cls >= 11 ? "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=800"
-                                                        : typeof cls === 'string' ? "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
-                                                            : cls >= 9 ? "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800"
-                                                                : "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=800"
-                                                }
-                                                alt={`Class ${cls}`}
-                                                loading="lazy"
-                                                decoding="async"
-                                                style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    objectFit: 'cover',
-                                                    opacity: 0.2,
-                                                    transition: 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                                                }}
-                                            />
-                                            <div style={{
-                                                position: 'absolute',
-                                                inset: '0',
-                                                background: 'linear-gradient(to top, rgba(15, 23, 42, 0.95) 10%, rgba(15, 23, 42, 0.6) 80%, rgba(15, 23, 42, 0.3) 100%)',
-                                                pointerEvents: 'none'
-                                            }} />
-                                        </div>
-
-                                        {(() => {
-                                            const { icon, color } = getClassIconData(cls);
-                                            return (
-                                                <div
-                                                    className="animated-icon-container"
-                                                    style={{ color: color, borderColor: `rgba(255,255,255,0.1)` }}
-                                                >
-                                                    {icon}
-                                                </div>
-                                            );
-                                        })()}
-
-                                        <h3 style={{
-                                            fontSize: '1.8rem', marginBottom: '0.75rem', fontWeight: 800,
-                                            letterSpacing: '-0.5px', color: 'white',
-                                            transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                                            position: 'relative', zIndex: 1
-                                        }}>
-                                            Class {cls}
-                                        </h3>
-
-                                        <p style={{
-                                            color: '#cbd5e1', marginBottom: '1.5rem',
-                                            fontSize: '0.95rem', lineHeight: 1.5,
-                                            transition: 'all 0.4s ease', position: 'relative', zIndex: 1
-                                        }}>
-                                            {isSenior
-                                                ? 'Professional-grade board preparation with deeper insights.'
-                                                : 'Robust conceptual foundations in core subjects with early logic.'}
-                                        </p>
-
-                                        <div
-                                            className="internal-btn"
-                                            style={{
-                                                width: '100%', justifyContent: 'center', fontWeight: 700,
-                                                transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                                                background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.15)',
-                                                color: 'white', position: 'relative', padding: '0.75rem 1.5rem',
-                                                borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                                                zIndex: 1, backdropFilter: 'blur(5px)', fontSize: '0.9rem'
-                                            }}
-                                        >
-                                            Select <ArrowRight size={16} />
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                        <div className="class-cards-grid">
+                            {allClasses.map((cls, index) => (
+                                <ClassCard
+                                    key={cls}
+                                    cls={cls}
+                                    index={index}
+                                    onClick={() => handleClassClick(cls)}
+                                />
+                            ))}
                         </div>
                     ) : (
                         <button onClick={resetSelection} className="btn btn-secondary" style={{ marginBottom: '1rem' }}>
@@ -586,6 +474,147 @@ const Home = () => {
                     )}
                 </div>
             </section>
+
+            {/* STATISTICS COUNTER SECTION */}
+            {!activeClass && (
+                <section id="stats-section" className="stats-section" style={{ padding: '6rem 0 3rem 0', position: 'relative', zIndex: 10 }}>
+                    <div className="container" style={{ textAlign: 'center' }}>
+                        <div className="section-title">
+                            <SectionIcon icon={TrendingUp} colorHex="#10b981" align="center" />
+                            <h2 style={{ fontSize: '3.5rem' }}>Our Proven Track Record</h2>
+                        </div>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '700px', margin: '-1rem auto 4rem', lineHeight: 1.7 }} className="animate-fade-in">
+                            Delivering measurable academic excellence and empowering learners across India.
+                        </p>
+
+                        <div className="section-grid">
+                            {statsData.map((stat, idx) => (
+                                <div
+                                    key={idx}
+                                    className="section-card animate-fade-in-up"
+                                    style={{
+                                        animationDelay: `${idx * 0.1}s`,
+                                        textAlign: 'center',
+                                        alignItems: 'center',
+                                        background: 'var(--card-bg, rgba(15, 23, 42, 0.7))',
+                                        border: '1px solid var(--card-border, rgba(255, 255, 255, 0.08))',
+                                        boxShadow: 'var(--card-3d-shadow)',
+                                        borderRadius: '20px',
+                                        padding: '2.5rem 1.8rem',
+                                        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(-10px) scale(1.02)';
+                                        e.currentTarget.style.borderColor = stat.color;
+                                        e.currentTarget.style.boxShadow = `0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px ${stat.color}33`;
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                        e.currentTarget.style.borderColor = 'var(--card-border, rgba(255, 255, 255, 0.08))';
+                                        e.currentTarget.style.boxShadow = 'var(--card-3d-shadow)';
+                                    }}
+                                >
+                                    <div
+                                        className="animated-icon-container"
+                                        style={{
+                                            color: stat.color,
+                                            background: `${stat.color}15`,
+                                            borderColor: `${stat.color}30`,
+                                            margin: '0 auto 1.5rem auto'
+                                        }}
+                                    >
+                                        {stat.icon}
+                                    </div>
+                                    <h3
+                                        className="stat-counter"
+                                        data-target={stat.target}
+                                        data-suffix={stat.suffix}
+                                        style={{
+                                            fontSize: '3.2rem',
+                                            fontWeight: 900,
+                                            letterSpacing: '-1px',
+                                            color: 'var(--text-primary)',
+                                            margin: '0 0 0.5rem 0',
+                                            fontFamily: "'Outfit', 'Inter', sans-serif"
+                                        }}
+                                    >
+                                        {stat.value}
+                                    </h3>
+                                    <h4 style={{ fontSize: '1.25rem', fontWeight: 700, color: stat.color, margin: '0 0 0.75rem 0' }}>
+                                        {stat.label}
+                                    </h4>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, margin: 0 }}>
+                                        {stat.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* WHY CHOOSE TECH KARMA CLASSES SECTION */}
+            {!activeClass && (
+                <section id="why-choose-section" className="why-choose-section" style={{ padding: '3rem 0 6rem 0', position: 'relative', zIndex: 10 }}>
+                    <div className="container" style={{ textAlign: 'center' }}>
+                        <div className="section-title">
+                            <SectionIcon icon={Zap} colorHex="#8b5cf6" align="center" />
+                            <h2 style={{ fontSize: '3.5rem' }}>Why Choose Tech Karma Classes?</h2>
+                        </div>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '700px', margin: '-1rem auto 4rem', lineHeight: 1.7 }} className="animate-fade-in">
+                            A next-generation learning platform designed to blend standard board curriculum with modern technical edge.
+                        </p>
+
+                        <div className="section-grid">
+                            {whyChooseData.map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="section-card animate-fade-in-up"
+                                    style={{
+                                        animationDelay: `${idx * 0.1}s`,
+                                        textAlign: 'center',
+                                        alignItems: 'center',
+                                        background: 'var(--card-bg, rgba(15, 23, 42, 0.7))',
+                                        border: '1px solid var(--card-border, rgba(255, 255, 255, 0.08))',
+                                        boxShadow: 'var(--card-3d-shadow)',
+                                        borderRadius: '20px',
+                                        padding: '2.5rem 1.8rem',
+                                        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(-10px) scale(1.02)';
+                                        e.currentTarget.style.borderColor = item.color;
+                                        e.currentTarget.style.boxShadow = `0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px ${item.color}33`;
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                        e.currentTarget.style.borderColor = 'var(--card-border, rgba(255, 255, 255, 0.08))';
+                                        e.currentTarget.style.boxShadow = 'var(--card-3d-shadow)';
+                                    }}
+                                >
+                                    <div
+                                        className="animated-icon-container"
+                                        style={{
+                                            color: item.color,
+                                            background: `${item.color}15`,
+                                            borderColor: `${item.color}30`,
+                                            margin: '0 auto 1.5rem auto'
+                                        }}
+                                    >
+                                        {item.icon}
+                                    </div>
+                                    <h4 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.85rem' }}>
+                                        {item.title}
+                                    </h4>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* SUMMER SPECIAL COURSES SECTION */}
             {!activeClass && (
@@ -623,118 +652,6 @@ const Home = () => {
                 </section>
             )}
 
-            {/* SECTION 1: STATS SECTION */}
-            {!activeClass && (
-                <section id="stats-section" className="stats-section" style={{ padding: '4rem 0', position: 'relative', zIndex: 10 }}>
-                    <div className="container" style={{ textAlign: 'center' }}>
-                        <div className="section-grid">
-                            {[
-                                { count: 500, suffix: '+', label: 'Students Enrolled', icon: <Users size={32} /> },
-                                { count: 2000, suffix: '+', label: 'Notes Delivered', icon: <FileText size={32} /> },
-                                { count: 95, suffix: '%', label: 'Success Rate', icon: <TrendingUp size={32} /> },
-                                { count: 5, suffix: '+', label: 'Years of Excellence', icon: <Award size={32} /> }
-                            ].map((stat, idx) => (
-                                <div key={idx} className="section-card animate-fade-in-up" style={{ animationDelay: `${idx * 0.1}s`, alignItems: 'center' }}>
-                                    <div style={{ background: 'var(--bg-secondary)', color: 'var(--electric-blue)', padding: '1rem', borderRadius: '50%', marginBottom: '1.5rem', display: 'inline-flex' }}>
-                                        {stat.icon}
-                                    </div>
-                                    <h3 style={{ fontSize: '3rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem', background: 'linear-gradient(135deg, #a5f3fc 0%, #3b82f6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                                        <span className="stat-counter" data-target={stat.count} data-suffix={stat.suffix}>0</span>
-                                    </h3>
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', fontWeight: 600 }}>{stat.label}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {/* SECTION 2: WHY CHOOSE TECH KARMA CLASSES */}
-            {!activeClass && (
-                <section className="why-choose-section" style={{ padding: '6rem 0', position: 'relative', zIndex: 10 }}>
-                    <div className="container" style={{ textAlign: 'center' }}>
-                        <div className="section-title">
-                            <h2 style={{ fontSize: '3.5rem', position: 'relative', display: 'inline-block' }}>
-                                Why Choose Tech Karma Classes?
-                            </h2>
-                        </div>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '700px', margin: '1rem auto 4rem', lineHeight: 1.7 }} className="animate-fade-in">
-                            Designed for excellence, built for your success
-                        </p>
-
-                        <div className="section-grid">
-                            {[
-                                { title: 'Chapter-wise Structured Notes', desc: 'Comprehensive, easy-to-understand study materials covering every topic in detail.', icon: <BookOpen size={28} /> },
-                                { title: 'Weekly Test Series', desc: 'Regular assessments to track your progress and prepare you for real exams.', icon: <FileText size={28} /> },
-                                { title: 'Concept Clarity Sessions', desc: 'Interactive doubt-solving focused entirely on making complex concepts crystal clear.', icon: <Cpu size={28} /> },
-                                { title: 'Performance Tracking', desc: 'Detailed analytics and feedback to identify strengths and areas for improvement.', icon: <Clock size={28} /> }
-                            ].map((feature, idx) => (
-                                <div key={idx} className="section-card glow-border animate-fade-in-up" style={{ animationDelay: `${idx * 0.1}s` }}>
-                                    <div style={{ background: 'var(--bg-secondary)', color: 'var(--vivid-purple)', padding: '1rem', borderRadius: '16px', display: 'inline-flex', marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
-                                        {feature.icon}
-                                    </div>
-                                    <h4 style={{ fontSize: '1.5rem', color: 'white', marginBottom: '1rem', textAlign: 'left', fontWeight: '700' }}>{feature.title}</h4>
-                                    <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, textAlign: 'left', flex: 1 }}>{feature.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {/* SECTION 3: COURSE PRICING */}
-            {!activeClass && (
-                <section className="pricing-section" style={{ padding: '6rem 0', position: 'relative', zIndex: 10 }}>
-                    <div className="container" style={{ textAlign: 'center' }}>
-                        <div className="section-title">
-                            <h2 style={{ fontSize: '3.5rem', position: 'relative', display: 'inline-block' }}>
-                                Course Pricing
-                            </h2>
-                        </div>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '700px', margin: '1rem auto 4rem', lineHeight: 1.7 }} className="animate-fade-in">
-                            Professional training at affordable prices. Invest in your future today.
-                        </p>
-
-                        <div className="section-grid">
-                            {[
-                                { title: 'C Foundation', price: '₹2,999', duration: '3 Months', features: ['50+ Live Classes', 'Problem Solving Focus', 'Certificate'], icon: <Laptop className="animated-icon-svg" /> },
-                                { title: 'Python Mastery', price: '₹4,999', duration: '6 Months', features: ['100+ Live Classes', 'Real-world Projects', 'Certificate of Completion'], icon: <SnakeIcon className="animated-icon-svg" />, popular: true },
-                                { title: 'C++ Programming', price: '₹3,499', duration: '4 Months', features: ['DSA Included', 'Competitive Programming', 'Certificate'], icon: <Rocket className="animated-icon-svg" /> },
-                                { title: 'AI Specialist', price: '₹7,999', duration: '8 Months', features: ['Machine Learning Basics', 'Neural Networks', 'Industry Projects'], icon: <Star className="animated-icon-svg" /> }
-                            ].map((plan, idx) => (
-                                <div key={idx} className={`section-card animate-fade-in-up ${plan.popular ? 'pricing-popular' : ''}`} style={{ animationDelay: `${idx * 0.1}s`, borderTop: plan.popular ? '3px solid var(--electric-blue)' : '1px solid var(--glass-border)' }}>
-                                    {plan.popular && (
-                                        <div style={{ position: 'absolute', top: 0, right: 0, background: 'linear-gradient(90deg, var(--vivid-purple), var(--electric-blue))', color: 'white', fontSize: '0.8rem', fontWeight: 'bold', padding: '0.4rem 1rem', borderBottomLeftRadius: '16px' }}>
-                                            Most Popular
-                                        </div>
-                                    )}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center', marginBottom: '1rem' }}>
-                                        <div className="animated-icon-container" style={{ width: '48px', height: '48px', color: plan.popular ? 'var(--electric-blue)' : 'var(--vivid-purple)' }}>{plan.icon}</div>
-                                        <h4 style={{ fontSize: '1.4rem', color: 'white', fontWeight: 700 }}>{plan.title}</h4>
-                                    </div>
-                                    <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', margin: '1.5rem 0' }}>
-                                        {plan.price}
-                                    </div>
-                                    <div style={{ color: 'var(--electric-blue)', fontWeight: 600, marginBottom: '2rem' }}>
-                                        Duration: {plan.duration}
-                                    </div>
-                                    <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2.5rem', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
-                                        {plan.features.map((feature, fIdx) => (
-                                            <li key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-secondary)' }}>
-                                                <Check size={18} color="var(--electric-blue)" style={{ flexShrink: 0 }} /> {feature}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <button className="btn btn-secondary" style={{ width: '100%', marginTop: 'auto', background: plan.popular ? 'linear-gradient(90deg, var(--vivid-purple), var(--electric-blue))' : 'rgba(255,255,255,0.05)', border: plan.popular ? 'none' : '1px solid rgba(255,255,255,0.1)', color: 'white' }}>
-                                        Enroll Now <ArrowRight size={16} />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            )}
-
             {/* STEP 3 & 4: DYNAMIC FLOW */}
             {activeClass && (
                 <section id="dynamic-selection-section" className="dynamic-selection-section">
@@ -743,15 +660,19 @@ const Home = () => {
                         {activeClass >= 11 && (
                             <div className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem', borderTop: '1px solid var(--electric-blue)' }}>
                                 <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--vivid-purple)', paddingLeft: '1.5rem' }}>1. Select Stream</h3>
-                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                <div className="stream-selection-grid">
                                     {classesData.senior.streams.map(stream => (
                                         <button
                                             key={stream.id}
                                             onClick={() => handleStreamClick(stream.id)}
                                             className={`btn ${activeStream === stream.id ? 'btn-primary' : 'btn-secondary'}`}
                                             style={{
-                                                flex: '1 1 auto',
-                                                padding: '1rem 2rem',
+                                                width: '100%',
+                                                padding: '1.25rem 2rem',
+                                                fontSize: '1.15rem',
+                                                fontWeight: 700,
+                                                textAlign: 'center',
+                                                justifyContent: 'center',
                                                 background: activeStream === stream.id ? 'var(--vivid-purple)' : 'rgba(255,255,255,0.05)',
                                                 border: activeStream === stream.id ? 'none' : '1px solid var(--glass-border)',
                                                 color: 'white'
@@ -764,17 +685,19 @@ const Home = () => {
                             </div>
                         )}
 
-                        {/* 2. SELECT MEDIUM  */}
-                        {(activeClass < 11 || activeStream) && (
+                        {/* 2. SELECT MEDIUM (Bypassed for Class 11/12 Science) */}
+                        {(activeClass < 11 || (activeStream && activeStream !== 'science')) && (
                             <div id="medium-selection-section" className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem' }}>
-                                <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--electric-blue)', paddingLeft: '1.5rem' }}>{activeClass >= 11 ? '2. Select Medium' : '1. Select Medium'}</h3>
-                                <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                                    {(activeClass >= 11 && activeStream === 'science' ? ['English'] : ['English', 'Hindi']).map(medium => (
+                                <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--electric-blue)', paddingLeft: '1.5rem' }}>
+                                    {activeClass >= 11 ? '2. Select Medium' : '1. Select Medium'}
+                                </h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
+                                    {['English', 'Hindi'].map(medium => (
                                         <button
                                             key={medium}
                                             onClick={() => handleMediumClick(medium)}
                                             className={`btn ${activeMedium === medium ? 'btn-primary' : 'btn-secondary'}`}
-                                            style={{ flex: '1 1 250px', fontSize: '1.25rem', padding: '1.25rem' }}
+                                            style={{ width: '100%', fontSize: '1.2rem', padding: '1.25rem', justifyContent: 'center' }}
                                         >
                                             {medium} Medium
                                         </button>
@@ -783,11 +706,13 @@ const Home = () => {
                             </div>
                         )}
 
-                        {/* 5. SELECT SUBJECT */}
+                        {/* 3. SELECT SUBJECT (Arranged in 3 Columns Per Row) */}
                         {activeMedium && (activeClass < 11 || activeStream) && (
                             <div id="subject-selection-section" className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem', borderTop: '1px solid var(--electric-blue)' }}>
-                                <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--vivid-purple)', paddingLeft: '1.5rem' }}>{activeClass >= 11 ? '3. Select Subject' : '2. Select Subject'}</h3>
-                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--vivid-purple)', paddingLeft: '1.5rem' }}>
+                                    {activeClass >= 11 ? (activeStream === 'science' ? '2. Select Subject' : '3. Select Subject') : '2. Select Subject'}
+                                </h3>
+                                <div className="subject-selection-grid">
                                     {Object.keys(activeClass >= 11 ? classesData[activeClass].mediums[activeMedium].streams[activeStream].subjects : classesData[activeClass].mediums[activeMedium].subjects).map(sub => {
                                         const subjectName = getSubjectName(sub, activeMedium);
                                         return (
@@ -796,8 +721,12 @@ const Home = () => {
                                                 onClick={() => handleSubjectClick(sub)}
                                                 className={`btn ${activeSubject === sub ? 'btn-primary' : 'btn-secondary'}`}
                                                 style={{
-                                                    flex: '1 1 auto',
-                                                    padding: '1rem 2rem',
+                                                    width: '100%',
+                                                    padding: '1.15rem 1.75rem',
+                                                    fontSize: '1.1rem',
+                                                    fontWeight: 600,
+                                                    textAlign: 'center',
+                                                    justifyContent: 'center',
                                                     background: activeSubject === sub ? 'var(--vivid-purple)' : 'rgba(255,255,255,0.05)',
                                                     border: activeSubject === sub ? 'none' : '1px solid var(--glass-border)',
                                                     color: 'white'
@@ -811,91 +740,288 @@ const Home = () => {
                             </div>
                         )}
 
-                        {/* 5. SELECT CONTENT TYPE & CHAPTERS */}
+                        {/* 4. SELECT CONTENT TYPE (Arranged in 4 Columns Per Row) */}
                         {activeSubject && (
                             <div id="content-selection-section" className="glass-card animate-fade-in-up" style={{ marginBottom: '3rem', padding: '3rem' }}>
-                                <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--electric-blue)', paddingLeft: '1.5rem' }}>{activeClass >= 11 ? '4. Select Content Type' : '3. Select Content Type'}</h3>
-                                <div className="tabs-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '4rem' }}>
+                                <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white', borderLeft: '4px solid var(--electric-blue)', paddingLeft: '1.5rem' }}>
+                                    {activeClass >= 11 ? (activeStream === 'science' ? '3. Select Content Type' : '4. Select Content Type') : '3. Select Content Type'}
+                                </h3>
+                                <div className="content-types-grid">
                                     {classesData.tabs.map(tab => (
                                         <button
                                             key={tab.id}
                                             className={`tab-btn ${activeContent === tab.id ? 'active' : ''}`}
                                             onClick={() => handleContentClick(tab.id)}
-                                            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 2rem' }}
+                                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', padding: '1rem 1.5rem', width: '100%' }}
                                         >
                                             {getIcon(tab.icon)} {tab.label}
                                         </button>
                                     ))}
                                 </div>
+                            </div>
+                        )}
 
-                                {activeContent && (
-                                    <div id="results-section" className="animate-fade-in" style={{
-                                        background: 'rgba(255,255,255,0.02)',
-                                        padding: '3rem',
-                                        borderRadius: '20px',
-                                        border: '1px solid var(--glass-border)'
+                        {/* 5. FINAL CONTENT VIEW (FLAT, UN-NESTED CONTAINER ON MAIN SECTION) */}
+                        {activeSubject && activeContent && (
+                            <div id="results-section" className="animate-fade-in-up" style={{ marginTop: '2.5rem', width: '100%' }}>
+                                {/* Main Content Section Header */}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginBottom: '2.5rem',
+                                    flexWrap: 'wrap',
+                                    gap: '1rem',
+                                    paddingBottom: '1.25rem',
+                                    borderBottom: '1px solid var(--glass-border)'
+                                }}>
+                                    <div>
+                                        <div style={{ color: 'var(--primary-color)', fontWeight: 700, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '0.35rem' }}>
+                                            Class {activeClass} • {activeMedium} Medium {activeClass >= 11 ? `• ${classesData.senior.streams.find(s => s.id === activeStream)?.label || ''}` : ''}
+                                        </div>
+                                        <h3 style={{ fontSize: '2.4rem', margin: 0, fontWeight: 800, color: 'white' }}>
+                                            {getSubjectName(activeSubject, activeMedium)} — {classesData.tabs.find(t => t.id === activeContent)?.label}
+                                        </h3>
+                                    </div>
+                                    <span style={{
+                                        background: activeContent === 'ncert-books' ? 'rgba(59, 130, 246, 0.12)' : 'rgba(99, 102, 241, 0.12)',
+                                        color: activeContent === 'ncert-books' ? 'var(--electric-blue)' : 'var(--primary-color)',
+                                        padding: '0.6rem 1.4rem',
+                                        borderRadius: '50px',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 700,
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        border: '1px solid rgba(255, 255, 255, 0.12)',
+                                        backdropFilter: 'blur(10px)'
                                     }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-                                            <h4 style={{ fontSize: '1.75rem', color: 'var(--electric-blue)' }}>
-                                                {activeClass >= 11 ? `${classesData.senior.streams.find(s => s.id === activeStream)?.label || ''} | ` : ''}
-                                            </h4>
-                                            <span style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--electric-blue)', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.9rem', fontWeight: 600 }}>
-                                                CBSE 2026 Updated
-                                            </span>
+                                        {activeContent === 'ncert-books' ? <ShieldCheck size={18} /> : <CheckSquare size={18} />}
+                                        {activeContent === 'ncert-books' ? 'Official NCERT Source' : 'CBSE 2026 Updated'}
+                                    </span>
+                                </div>
+
+                                {activeContent === 'ncert-books' ? (
+                                    <div>
+                                        {/* NCERT Header Banner */}
+                                        <div style={{
+                                            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.08))',
+                                            border: '1px solid rgba(99, 102, 241, 0.25)',
+                                            borderRadius: '16px',
+                                            padding: '1.5rem',
+                                            marginBottom: '2rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            flexWrap: 'wrap',
+                                            gap: '1rem'
+                                        }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                <div style={{
+                                                    width: '46px',
+                                                    height: '46px',
+                                                    borderRadius: '12px',
+                                                    background: 'linear-gradient(135deg, #1e3a8a, #3b82f6)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: '#ffffff',
+                                                    fontWeight: 800,
+                                                    fontSize: '0.95rem'
+                                                }}>
+                                                    NCERT
+                                                </div>
+                                                <div>
+                                                    <h4 style={{ margin: 0, fontSize: '1.15rem', color: '#ffffff', fontWeight: 700 }}>
+                                                        Official NCERT Digital Textbooks
+                                                    </h4>
+                                                    <p style={{ margin: '0.2rem 0 0', color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
+                                                        Class {activeClass} • {activeMedium} Medium • {getSubjectName(activeSubject, activeMedium)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <a
+                                                href="https://ncert.nic.in/textbook.php"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.4rem',
+                                                    color: 'var(--electric-blue)',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: 600,
+                                                    textDecoration: 'none'
+                                                }}
+                                            >
+                                                Official NCERT Portal <ExternalLink size={15} />
+                                            </a>
                                         </div>
 
-                                        <div className="grid grid-3" style={{ gap: '1.5rem' }}>
-                                            {(activeClass >= 11 ? classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects?.[activeSubject]?.[activeContent] : classesData[activeClass]?.mediums?.[activeMedium]?.subjects?.[activeSubject]?.[activeContent] || []).map((chapter, idx) => {
-                                                const translatedChapter = getChapterName(activeClass, activeSubject, chapter, idx, activeMedium);
-
-                                                const pdfFilename = activeContent === 'notes' ? `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-ch${idx + 1}.pdf` : `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-${activeContent}-ch${idx + 1}.pdf`;
-                                                const pdfExists = pdfManifest.includes(pdfFilename);
-
+                                        {/* Chapter Cards Grid (Responsive 3 per row) */}
+                                        {(() => {
+                                            const ncertChapters = getNcertChapters({ classNum: activeClass, subject: activeSubject, medium: activeMedium, stream: activeStream });
+                                            if (ncertChapters.length === 0) {
                                                 return (
-                                                    <div
-                                                        key={idx}
-                                                        className="glass-card"
-                                                        style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', transition: '0.3s' }}
-                                                    >
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                                            <div style={{ padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: '12px', color: 'var(--electric-blue)' }}>
-                                                                {getIcon(classesData.tabs.find(t => t.id === activeContent)?.icon)}
-                                                            </div>
-                                                            <span style={{ fontWeight: 600, color: 'white' }}>{activeMedium === 'Hindi' ? 'अध्याय' : 'Chapter'} {idx + 1}</span>
-                                                        </div>
-                                                        <h5 style={{ fontSize: '1.2rem', color: 'var(--text-secondary)' }}>{translatedChapter}</h5>
-                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: 'auto' }}>
-                                                            <button className="btn btn-secondary" style={{ width: '100%', fontSize: '0.9rem' }}>
-                                                                Open Resource <ArrowRight size={16} />
-                                                            </button>
-
-                                                            {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
-                                                                pdfExists ? (
-                                                                    <a
-                                                                        href={`/pdfs/${pdfFilename}`}
-                                                                        target="_blank"
-                                                                        rel="noreferrer"
-                                                                        className="btn btn-primary"
-                                                                        style={{ width: '100%', fontSize: '0.9rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
-                                                                    >
-                                                                        View PDF <ArrowRight size={16} />
-                                                                    </a>
-                                                                ) : (
-                                                                    <button
-                                                                        disabled
-                                                                        className="btn btn-secondary"
-                                                                        style={{ width: '100%', fontSize: '0.9rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', opacity: 0.5, cursor: 'not-allowed' }}
-                                                                    >
-                                                                        Unavailable
-                                                                    </button>
-                                                                )
-                                                            )}
-                                                        </div>
+                                                    <div style={{ padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px dashed var(--glass-border)' }}>
+                                                        <BookOpen size={48} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
+                                                        <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#ffffff' }}>NCERT book currently unavailable. Please check again later.</h4>
+                                                        <p style={{ fontSize: '0.95rem' }}>Official NCERT digital editions for this subject are being updated according to latest CBSE guidelines.</p>
                                                     </div>
                                                 );
-                                            })}
-                                        </div>
+                                            }
+
+                                            return (
+                                                <div className="resource-cards-grid">
+                                                    {ncertChapters.map((ch, idx) => {
+                                                        const isAvailable = ch.status === 'active';
+                                                        return (
+                                                            <div
+                                                                key={idx}
+                                                                className="resource-card animate-fade-in-up"
+                                                            >
+                                                                <div>
+                                                                    <div className="resource-card-header">
+                                                                        <div className="resource-card-icon">
+                                                                            <BookOpen size={20} />
+                                                                        </div>
+                                                                        <span style={{
+                                                                            fontSize: '0.75rem',
+                                                                            fontWeight: 700,
+                                                                            color: 'var(--electric-blue)',
+                                                                            textTransform: 'uppercase',
+                                                                            background: 'rgba(59, 130, 246, 0.1)',
+                                                                            padding: '0.2rem 0.6rem',
+                                                                            borderRadius: '12px'
+                                                                        }}>
+                                                                            {ch.partTitle ? (ch.partTitle + ' • ') : ''}{activeMedium === 'Hindi' ? 'अध्याय' : 'Chapter'} {ch.chapterInPart || ch.chapterNumber}
+                                                                        </span>
+                                                                    </div>
+                                                                    <h4 className="resource-card-title">
+                                                                        {ch.title}
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div className="resource-card-actions">
+                                                                    {isAvailable ? (
+                                                                        <a
+                                                                            href={ch.pdfUrl}
+                                                                            target="_blank"
+                                                                            rel="noreferrer"
+                                                                            className="btn btn-primary"
+                                                                        >
+                                                                            <FileText size={16} /> Read PDF
+                                                                        </a>
+                                                                    ) : (
+                                                                        <button
+                                                                            disabled
+                                                                            className="btn btn-secondary"
+                                                                            style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                                                                        >
+                                                                            NCERT book currently unavailable.
+                                                                        </button>
+                                                                    )}
+
+                                                                    {isAvailable && ch.portalUrl && (
+                                                                        <a
+                                                                            href={ch.portalUrl}
+                                                                            target="_blank"
+                                                                            rel="noreferrer"
+                                                                            className="btn btn-secondary"
+                                                                            style={{ fontSize: '0.82rem', padding: '0.5rem 0.8rem' }}
+                                                                        >
+                                                                            Official Portal Chapter <ExternalLink size={12} />
+                                                                        </a>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
+                                ) : ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeContent) ? (
+                                    <EducationalContentContainer
+                                        activeClass={activeClass}
+                                        activeMedium={activeMedium}
+                                        activeSubject={activeSubject}
+                                        activeStream={activeStream}
+                                        activeContent={activeContent}
+                                        chapters={(activeClass >= 11 ? classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects?.[activeSubject]?.[activeContent] : classesData[activeClass]?.mediums?.[activeMedium]?.subjects?.[activeSubject]?.[activeContent] || []).map((ch, idx) => getChapterName(activeClass, activeSubject, ch, idx, activeMedium))}
+                                    />
+                                ) : (
+                                    <div className="resource-cards-grid">
+                                    {(activeClass >= 11 ? classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects?.[activeSubject]?.[activeContent] : classesData[activeClass]?.mediums?.[activeMedium]?.subjects?.[activeSubject]?.[activeContent] || []).map((chapter, idx) => {
+                                        const translatedChapter = getChapterName(activeClass, activeSubject, chapter, idx, activeMedium);
+
+                                        const pdfFilename = activeContent === 'notes' ? `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-ch${idx + 1}.pdf` : `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-${activeContent}-ch${idx + 1}.pdf`;
+                                        const pdfExists = pdfManifest.includes(pdfFilename);
+
+                                        return (
+                                            <div
+                                                key={idx}
+                                                className="resource-card animate-fade-in-up"
+                                            >
+                                                <div>
+                                                    <div className="resource-card-header">
+                                                        <div className="resource-card-icon">
+                                                            {getIcon(classesData.tabs.find(t => t.id === activeContent)?.icon)}
+                                                        </div>
+                                                        <span style={{
+                                                            fontSize: '0.75rem',
+                                                            fontWeight: 700,
+                                                            color: 'var(--electric-blue)',
+                                                            textTransform: 'uppercase',
+                                                            background: 'rgba(59, 130, 246, 0.1)',
+                                                            padding: '0.2rem 0.6rem',
+                                                            borderRadius: '12px'
+                                                        }}>
+                                                            {activeMedium === 'Hindi' ? 'अध्याय' : 'Chapter'} {idx + 1}
+                                                        </span>
+                                                    </div>
+                                                    <h4 className="resource-card-title">{translatedChapter}</h4>
+                                                </div>
+
+                                                <div className="resource-card-actions">
+                                                    <button className="btn btn-secondary">
+                                                        Open Resource <ArrowRight size={15} />
+                                                    </button>
+
+                                                    {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
+                                                        pdfExists ? (
+                                                            <a
+                                                                href={`/pdfs/${pdfFilename}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="btn btn-primary"
+                                                            >
+                                                                <FileText size={16} /> View PDF <ArrowRight size={15} />
+                                                            </a>
+                                                        ) : (activeContent === 'books' && getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)) ? (
+                                                            <a
+                                                                href={getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="btn btn-primary"
+                                                            >
+                                                                <FileText size={16} /> View PDF <ArrowRight size={15} />
+                                                            </a>
+                                                        ) : (
+                                                            <button
+                                                                disabled
+                                                                className="btn btn-secondary"
+                                                                style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                                                            >
+                                                                Unavailable
+                                                            </button>
+                                                        )
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                                 )}
                             </div>
                         )}
@@ -930,20 +1056,122 @@ const Home = () => {
                             return (
                                 <section key={idx} className="cs-category-block">
                                     <SectionIcon icon={CatIcon} colorHex={catColor} align="left" />
-                                    <h3 style={{ fontSize: '2rem', color: 'white', marginBottom: '2rem', textAlign: 'left', borderLeft: '4px solid var(--electric-blue)', paddingLeft: '1rem' }}>
+                                    <h3 style={{ fontSize: '2rem', color: 'white', marginBottom: '2rem', textAlign: 'left', borderLeft: `4px solid ${catColor}`, paddingLeft: '1rem' }}>
                                         {category.title}
                                     </h3>
                                     <div className="cs-grid">
                                         {category.courses.map((course, cIdx) => (
-                                            <div key={cIdx} className="cs-card animate-fade-in-up" style={{ animationDelay: `${(idx * 0.1) + (cIdx * 0.1)}s` }}>
-                                                <div className="animated-icon-container" style={{ margin: '0 auto 1.5rem auto', color: 'var(--primary-color)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                                                    {course.icon}
+                                            <div
+                                                key={cIdx}
+                                                className="cs-card animate-fade-in-up"
+                                                style={{
+                                                    animationDelay: `${(idx * 0.08) + (cIdx * 0.06)}s`,
+                                                    position: 'relative',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'space-between',
+                                                    background: 'var(--card-bg, rgba(15, 23, 42, 0.75))',
+                                                    backdropFilter: 'blur(16px)',
+                                                    WebkitBackdropFilter: 'blur(16px)',
+                                                    border: '1px solid var(--card-border, rgba(255, 255, 255, 0.08))',
+                                                    borderRadius: '20px',
+                                                    padding: '2rem 1.6rem',
+                                                    boxShadow: 'var(--card-3d-shadow)',
+                                                    transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                                                    textAlign: 'left'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+                                                    e.currentTarget.style.borderColor = course.color || catColor;
+                                                    e.currentTarget.style.boxShadow = `0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px ${(course.color || catColor)}33`;
+
+                                                    const btn = e.currentTarget.querySelector('.cs-explore-btn');
+                                                    if (btn) {
+                                                        btn.style.background = course.color || catColor;
+                                                        btn.style.color = '#ffffff';
+                                                        btn.style.boxShadow = `0 6px 18px ${(course.color || catColor)}45`;
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                                    e.currentTarget.style.borderColor = 'var(--card-border, rgba(255, 255, 255, 0.08))';
+                                                    e.currentTarget.style.boxShadow = 'var(--card-3d-shadow)';
+
+                                                    const btn = e.currentTarget.querySelector('.cs-explore-btn');
+                                                    if (btn) {
+                                                        btn.style.background = 'rgba(255, 255, 255, 0.05)';
+                                                        btn.style.color = 'var(--text-primary)';
+                                                        btn.style.boxShadow = 'none';
+                                                    }
+                                                }}
+                                            >
+                                                {/* Card Top Row: Icon & Tag Pill */}
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                                                    <div
+                                                        className="animated-icon-container"
+                                                        style={{
+                                                            width: '46px',
+                                                            height: '46px',
+                                                            borderRadius: '12px',
+                                                            background: `${course.color || catColor}18`,
+                                                            borderColor: `${course.color || catColor}35`,
+                                                            color: course.color || catColor,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            margin: 0
+                                                        }}
+                                                    >
+                                                        {course.icon}
+                                                    </div>
+                                                    {course.tag && (
+                                                        <span style={{
+                                                            fontSize: '0.72rem',
+                                                            fontWeight: 700,
+                                                            textTransform: 'uppercase',
+                                                            letterSpacing: '0.06em',
+                                                            color: course.color || catColor,
+                                                            background: `${course.color || catColor}12`,
+                                                            border: `1px solid ${course.color || catColor}28`,
+                                                            padding: '4px 10px',
+                                                            borderRadius: '999px'
+                                                        }}>
+                                                            {course.tag}
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <h4 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>{course.name}</h4>
-                                                <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.6, flex: 1 }}>{course.desc}</p>
-                                                <button className="btn btn-secondary" style={{ width: '100%', marginTop: 'auto', background: 'linear-gradient(90deg, var(--primary-color), var(--vivid-purple))', border: 'none', color: 'white' }}>
-                                                    Explore Course <ArrowRight size={16} />
-                                                </button>
+
+                                                <h4 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem', letterSpacing: '-0.3px' }}>
+                                                    {course.name}
+                                                </h4>
+                                                <p style={{ color: 'var(--text-secondary)', marginBottom: '1.8rem', lineHeight: 1.6, flex: 1, fontSize: '0.92rem' }}>
+                                                    {course.desc}
+                                                </p>
+
+                                                <Link
+                                                    to={category.title.includes("Core Programming") ? "/programming" : "/courses"}
+                                                    className="cs-explore-btn"
+                                                    style={{
+                                                        width: '100%',
+                                                        marginTop: 'auto',
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        gap: '0.5rem',
+                                                        padding: '0.8rem 1.25rem',
+                                                        borderRadius: '12px',
+                                                        background: 'rgba(255, 255, 255, 0.05)',
+                                                        border: `1px solid ${course.color || catColor}40`,
+                                                        color: 'var(--text-primary)',
+                                                        fontWeight: 700,
+                                                        fontSize: '0.92rem',
+                                                        textDecoration: 'none',
+                                                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                                                    }}
+                                                >
+                                                    <span>Explore Course</span>
+                                                    <ArrowRight size={15} />
+                                                </Link>
                                             </div>
                                         ))}
                                     </div>
@@ -955,44 +1183,6 @@ const Home = () => {
             </section>
             )}
 
-            <footer className="footer">
-                <div className="container">
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '5rem', marginBottom: '5rem' }}>
-                        <div>
-                            <h3 className="gradient-text" style={{ fontSize: '2.5rem', marginBottom: '2rem', fontWeight: 800 }}>Tech Karma</h3>
-                            <p style={{ color: 'var(--text-secondary)', marginBottom: '3rem', fontSize: '1.15rem', lineHeight: 1.8 }}>
-                                Revolutionizing tech education for the next generation. Join the ranks of future-proof engineers and leaders.
-                            </p>
-                            <div style={{ display: 'flex', gap: '1.5rem' }}>
-                                <Github size={22} style={{ cursor: 'pointer' }} />
-                                <Twitter size={22} style={{ cursor: 'pointer' }} />
-                                <Linkedin size={22} style={{ cursor: 'pointer' }} />
-                            </div>
-                        </div>
-                        <div>
-                            <h4 style={{ marginBottom: '2rem', color: 'white', fontSize: '1.4rem' }}>Resources</h4>
-                            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.25rem', color: 'var(--text-secondary)' }}>
-                                <li style={{ cursor: 'pointer' }}>Academy Tracks</li>
-                                <li style={{ cursor: 'pointer' }}>Admission Portal</li>
-                                <li style={{ cursor: 'pointer' }}>Scholarship Test</li>
-                                <li style={{ cursor: 'pointer' }}>Student Portal</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 style={{ marginBottom: '2rem', color: 'white', fontSize: '1.4rem' }}>Connect</h4>
-                            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1.25rem', color: 'var(--text-secondary)' }}>
-                                <li>Janakpuri District Center, New Delhi</li>
-                                <li>+91 97100 00000</li>
-                                <li>hello@techkarma.io</li>
-                                <li>Office Hours: 10AM - 7PM</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div style={{ textAlign: 'center', paddingTop: '4rem', borderTop: '1px solid var(--glass-border)', color: 'var(--text-secondary)', fontSize: '0.95rem', letterSpacing: '1px' }}>
-                        &copy; 2026 TECH KARMA CLASSES. PRESERVING ACADEMIC EXCELLENCE THROUGH INNOVATION.
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 };

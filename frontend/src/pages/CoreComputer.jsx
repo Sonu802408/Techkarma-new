@@ -1,5 +1,6 @@
-import React from 'react';
-import { Database, Server, GitBranch, Shield, Globe, Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { Database, Server, GitBranch, Shield, Globe, Layers, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CoreComputer = () => {
     const subjects = [
@@ -10,6 +11,25 @@ const CoreComputer = () => {
         { name: 'Computer Networks', icon: Globe, color: '#8b5cf6', desc: 'OSI Model, TCP/IP, Routing algorithms, and network security fundamentals.' },
         { name: 'Software Engineering', icon: Shield, color: '#6366f1', desc: 'SDLC, Agile methodologies, software testing, and project management.' }
     ];
+
+    const [expandedSubject, setExpandedSubject] = useState(null);
+
+    const computerNetworkChapters = [
+        { title: 'Ch 1: Introduction & Network Fundamentals', file: 'csegyan-computer-networks-ch1.pdf' },
+        { title: 'Ch 2: OSI Model and TCP/IP', file: 'csegyan-computer-networks-ch2.pdf' },
+        { title: 'Ch 3: Data Link Layer', file: 'csegyan-computer-networks-ch3.pdf' },
+        { title: 'Ch 4: Network Layer & Routing', file: 'csegyan-computer-networks-ch4.pdf' },
+        { title: 'Ch 5: Transport Layer', file: 'csegyan-computer-networks-ch5.pdf' },
+        { title: 'Ch 6: Application Layer & Security', file: 'csegyan-computer-networks-ch6.pdf' }
+    ];
+
+    const toggleSubject = (name) => {
+        if (expandedSubject === name) {
+            setExpandedSubject(null);
+        } else {
+            setExpandedSubject(name);
+        }
+    };
 
     return (
         <div className="section container animate-fade-in-up">
@@ -32,8 +52,32 @@ const CoreComputer = () => {
 
                         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
                             <button className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1 }}>Syllabus</button>
-                            <button className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1 }}>Notes</button>
+                            {sub.name === 'Computer Networks' ? (
+                                <button 
+                                    onClick={() => toggleSubject(sub.name)} 
+                                    className="btn btn-primary" 
+                                    style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                                >
+                                    Notes {expandedSubject === sub.name ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                </button>
+                            ) : (
+                                <Link to="/notes" className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1, textAlign: 'center' }}>Notes</Link>
+                            )}
                         </div>
+
+                        {sub.name === 'Computer Networks' && expandedSubject === sub.name && (
+                            <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <h4 style={{ marginBottom: '0.5rem', color: 'var(--text-primary)', fontSize: '0.9rem' }}>CSE Gyan Notes</h4>
+                                {computerNetworkChapters.map((chapter, i) => (
+                                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', background: 'var(--bg-primary)', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
+                                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{chapter.title}</span>
+                                        <a href={`/pdfs/${chapter.file}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary-color)', display: 'flex', alignItems: 'center' }}>
+                                            <Download size={16} />
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>

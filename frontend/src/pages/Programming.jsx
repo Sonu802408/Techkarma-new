@@ -1,87 +1,294 @@
 import React from 'react';
-import { Book, ArrowRight, Laptop, Rocket } from 'lucide-react';
+import { Terminal, Laptop, Rocket, BookOpen, Globe, Palette, Zap, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const SnakeIcon = ({ className, size, color }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size || 24} height={size || 24} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="M10 21V19C10 17.8954 10.8954 17 12 17H14C15.6569 17 17 14.3137 17 11V9C17 7.34315 15.6569 6 14 6H10C8.34315 6 7 7.34315 7 9V11C7 12.6569 8.34315 14 10 14H14" />
-        <path d="M8 9a2 2 0 1 0 0-4h4" />
-        <circle cx="9.5" cy="7.5" r="0.5" fill="currentColor" />
-    </svg>
-);
 
 const Programming = () => {
     const languages = [
         {
             name: 'Python',
-            icon: SnakeIcon,
-            color: '#3b82f6',
-            desc: 'The most popular language for beginners, data science, and web development.',
-            topics: ['Basics & Syntax', 'OOP Concepts', 'Data Structures', 'Web Scraping', 'Django & Flask']
-        },
-        {
-            name: 'Java',
-            icon: Book,
-            color: '#ef4444',
-            desc: 'Enterprise-grade language for backend systems and Android development.',
-            topics: ['Core Java', 'Collections Framework', 'Multithreading', 'Spring Boot', 'JDBC']
-        },
-        {
-            name: 'C++',
-            icon: Rocket,
-            color: '#8b5cf6',
-            desc: 'High-performance language widely used in game dev and competitive programming.',
-            topics: ['Pointers', 'STL (Standard Template Library)', 'OOPs in C++', 'Memory Management']
+            tag: 'AI, Data & Backend',
+            icon: Terminal,
+            color: '#38bdf8',
+            colorRgb: '56, 189, 248',
+            desc: 'High-level, versatile language powering artificial intelligence, data science, automation, and full-stack web applications.',
+            topics: ['Variables, Lists & Dictionaries', 'Functions & Functional Programming', 'Object-Oriented Programming (OOP)', 'NumPy, Pandas & Automation', 'Django & FastAPI Basics']
         },
         {
             name: 'C Language',
+            tag: 'Foundational Systems',
             icon: Laptop,
-            color: '#10b981',
-            desc: 'The mother of all languages. Build strong logic and fundamentals.',
-            topics: ['Arrays & Strings', 'Functions & Pointers', 'Structures & Unions', 'File Handling']
+            color: '#60a5fa',
+            colorRgb: '96, 165, 250',
+            desc: 'The mother of modern programming. Master pointers, raw memory allocation, structured programming, and hardware-level algorithms.',
+            topics: ['Data Types & Control Flow', 'Arrays, Strings & Matrices', 'Pointers & Memory Architecture', 'Dynamic Memory (malloc/free)', 'Structures, Unions & File I/O']
+        },
+        {
+            name: 'C++',
+            tag: 'High Performance & DSA',
+            icon: Rocket,
+            color: '#818cf8',
+            colorRgb: '129, 140, 248',
+            desc: 'Ultra-fast compiled language designed for system software, game development, high-frequency engines, and competitive coding.',
+            topics: ['Classes, Objects & Constructors', 'Standard Template Library (STL)', 'Pointers, References & Templates', 'Operator Overloading & Virtual Funcs', 'DSA Problem-Solving Patterns']
+        },
+        {
+            name: 'Java',
+            tag: 'Enterprise & Cloud',
+            icon: BookOpen,
+            color: '#f97316',
+            colorRgb: '249, 115, 22',
+            desc: 'Platform-independent enterprise powerhouse language powering scalable backend servers, Android development, and microservices.',
+            topics: ['Core Java & OOP Principles', 'Java Collections Framework', 'Multithreading & Concurrency', 'Exception Handling & I/O Streams', 'Spring Boot & JDBC Intro']
+        },
+        {
+            name: 'HTML5',
+            tag: 'Web Structure',
+            icon: Globe,
+            color: '#ef4444',
+            colorRgb: '239, 68, 68',
+            desc: 'The universal backbone of the web. Learn semantic tags, modern forms, media streaming, web accessibility, and SEO foundations.',
+            topics: ['Semantic HTML5 Elements', 'Modern Forms & Input Types', 'Audio, Video & Canvas Media', 'Web Accessibility (a11y)', 'SEO Optimization & Meta Standards']
+        },
+        {
+            name: 'CSS3',
+            tag: 'Modern UI & Styling',
+            icon: Palette,
+            color: '#06b6d4',
+            colorRgb: '6, 182, 212',
+            desc: 'Transform web documents into gorgeous user interfaces with Flexbox, CSS Grid, keyframe animations, glassmorphism, and responsive layouts.',
+            topics: ['Flexbox & CSS Grid Mastery', 'Transitions & Keyframe Animations', 'Responsive Design & Media Queries', 'CSS Custom Properties (Variables)', 'Glassmorphism & 3D Transforms']
+        },
+        {
+            name: 'JavaScript',
+            tag: 'Interactive & Dynamic Web',
+            icon: Zap,
+            color: '#eab308',
+            colorRgb: '234, 179, 8',
+            desc: 'The heartbeat of modern interactive web development. Master ES6+ syntax, asynchronous programming, DOM APIs, and state management.',
+            topics: ['ES6+ Syntax & Scope (let/const)', 'DOM Manipulation & Event Handling', 'Promises, Async/Await & Fetch API', 'Closures, Prototypes & Callbacks', 'State, Modules & Web APIs']
         }
     ];
 
     return (
-        <div className="section container animate-fade-in-up">
+        <div className="section container animate-fade-in-up" style={{ paddingBottom: '8rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                <h1 className="gradient-text" style={{ fontSize: '3rem', marginBottom: '1rem' }}>Programming Languages</h1>
-                <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>Master the most demanded languages in the IT industry. Logic building from scratch to advanced level.</p>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', padding: '0.4rem 1rem', borderRadius: '30px', color: 'var(--primary-color)', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1.25rem' }}>
+                    <Terminal size={16} /> Core Programming Curriculum
+                </div>
+                <h1 className="gradient-text" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>Programming Languages</h1>
+                <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
+                    Master the most in-demand languages and web technologies in the global IT industry. Build logic from ground zero to production-level engineering.
+                </p>
             </div>
 
-            <div className="grid grid-2">
-                {languages.map((lang, index) => (
-                    <div key={index} className="glass-card" style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', overflow: 'hidden' }}>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                gap: '2rem',
+                width: '100%',
+                boxSizing: 'border-box'
+            }}>
+                {languages.map((lang, index) => {
+                    const IconComponent = lang.icon;
+                    return (
+                        <div
+                            key={index}
+                            className="animate-fade-in-up"
+                            style={{
+                                animationDelay: `${index * 0.08}s`,
+                                position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                background: 'var(--card-bg, rgba(15, 23, 42, 0.75))',
+                                backdropFilter: 'blur(16px)',
+                                WebkitBackdropFilter: 'blur(16px)',
+                                border: '1px solid var(--card-border, rgba(255, 255, 255, 0.08))',
+                                borderRadius: '22px',
+                                padding: '2rem 1.75rem',
+                                boxShadow: 'var(--card-3d-shadow)',
+                                transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                                overflow: 'hidden'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-8px) scale(1.015)';
+                                e.currentTarget.style.borderColor = `rgba(${lang.colorRgb}, 0.55)`;
+                                e.currentTarget.style.boxShadow = `0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(${lang.colorRgb}, 0.25)`;
 
-                        {/* Decorative background element */}
-                        <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '150px', height: '150px', background: lang.color, opacity: 0.05, borderRadius: '50%', zIndex: 0 }}></div>
+                                const topBar = e.currentTarget.querySelector('.card-accent-bar');
+                                if (topBar) topBar.style.height = '4px';
 
-                        <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-                            <div className="animated-icon-container" style={{ margin: '0 auto', color: lang.color, borderColor: `rgba(255,255,255,0.1)` }}>
-                                <lang.icon className="animated-icon-svg" />
+                                const btn = e.currentTarget.querySelector('.explore-lang-btn');
+                                if (btn) {
+                                    btn.style.background = lang.color;
+                                    btn.style.color = '#ffffff';
+                                    btn.style.boxShadow = `0 6px 20px rgba(${lang.colorRgb}, 0.45)`;
+                                }
+
+                                const icon = e.currentTarget.querySelector('.animated-icon-container');
+                                if (icon) {
+                                    icon.style.transform = 'scale(1.08) rotate(4deg)';
+                                    icon.style.background = `rgba(${lang.colorRgb}, 0.22)`;
+                                    icon.style.borderColor = `rgba(${lang.colorRgb}, 0.6)`;
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                e.currentTarget.style.borderColor = 'var(--card-border, rgba(255, 255, 255, 0.08))';
+                                e.currentTarget.style.boxShadow = 'var(--card-3d-shadow)';
+
+                                const topBar = e.currentTarget.querySelector('.card-accent-bar');
+                                if (topBar) topBar.style.height = '3px';
+
+                                const btn = e.currentTarget.querySelector('.explore-lang-btn');
+                                if (btn) {
+                                    btn.style.background = 'rgba(255, 255, 255, 0.04)';
+                                    btn.style.color = 'var(--text-primary)';
+                                    btn.style.boxShadow = 'none';
+                                }
+
+                                const icon = e.currentTarget.querySelector('.animated-icon-container');
+                                if (icon) {
+                                    icon.style.transform = 'scale(1) rotate(0deg)';
+                                    icon.style.background = `rgba(${lang.colorRgb}, 0.12)`;
+                                    icon.style.borderColor = `rgba(${lang.colorRgb}, 0.25)`;
+                                }
+                            }}
+                        >
+                            {/* Colored Top Accent Bar */}
+                            <div
+                                className="card-accent-bar"
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: '3px',
+                                    background: lang.color,
+                                    transition: 'height 0.25s ease'
+                                }}
+                            />
+
+                            {/* Header Row: Icon Badge & Stage Tag */}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                                <div
+                                    className="animated-icon-container"
+                                    style={{
+                                        width: '48px',
+                                        height: '48px',
+                                        borderRadius: '14px',
+                                        background: `rgba(${lang.colorRgb}, 0.12)`,
+                                        border: `1px solid rgba(${lang.colorRgb}, 0.25)`,
+                                        color: lang.color,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                                        margin: 0
+                                    }}
+                                >
+                                    <IconComponent size={24} />
+                                </div>
+                                <span style={{
+                                    fontSize: '0.74rem',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.06em',
+                                    color: lang.color,
+                                    background: `rgba(${lang.colorRgb}, 0.1)`,
+                                    border: `1px solid rgba(${lang.colorRgb}, 0.22)`,
+                                    padding: '4px 11px',
+                                    borderRadius: '999px'
+                                }}>
+                                    {lang.tag}
+                                </span>
                             </div>
-                            <h2 style={{ fontSize: '2rem', margin: 0 }}>{lang.name}</h2>
+
+                            {/* Title & Description */}
+                            <h2 style={{
+                                fontSize: '1.85rem',
+                                fontWeight: 800,
+                                color: 'var(--text-primary)',
+                                marginBottom: '0.65rem',
+                                letterSpacing: '-0.5px'
+                            }}>
+                                {lang.name}
+                            </h2>
+
+                            <p style={{
+                                color: 'var(--text-secondary)',
+                                fontSize: '0.94rem',
+                                lineHeight: 1.6,
+                                marginBottom: '1.5rem',
+                                minHeight: '58px'
+                            }}>
+                                {lang.desc}
+                            </p>
+
+                            {/* Key Modules Box */}
+                            <div style={{
+                                background: 'rgba(255, 255, 255, 0.03)',
+                                border: '1px solid rgba(255, 255, 255, 0.06)',
+                                borderRadius: '14px',
+                                padding: '1.25rem 1.15rem',
+                                marginBottom: '1.75rem',
+                                flex: 1
+                            }}>
+                                <div style={{
+                                    fontSize: '0.8rem',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.06em',
+                                    color: 'var(--text-primary)',
+                                    marginBottom: '0.75rem'
+                                }}>
+                                    Key Modules Covered:
+                                </div>
+                                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                                    {lang.topics.map((topic, i) => (
+                                        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
+                                            <span style={{
+                                                display: 'inline-block',
+                                                width: '6px',
+                                                height: '6px',
+                                                borderRadius: '50%',
+                                                background: lang.color,
+                                                flexShrink: 0
+                                            }} />
+                                            <span>{topic}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* Action CTA Button */}
+                            <Link
+                                to="/courses"
+                                className="explore-lang-btn"
+                                style={{
+                                    width: '100%',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '0.5rem',
+                                    padding: '0.85rem 1.25rem',
+                                    borderRadius: '12px',
+                                    background: 'rgba(255, 255, 255, 0.04)',
+                                    border: `1px solid rgba(${lang.colorRgb}, 0.35)`,
+                                    color: 'var(--text-primary)',
+                                    fontWeight: 700,
+                                    fontSize: '0.94rem',
+                                    textAlign: 'center',
+                                    textDecoration: 'none',
+                                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                                }}
+                            >
+                                <span>Explore Course</span>
+                                <ArrowRight size={16} />
+                            </Link>
                         </div>
-
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '2rem', zIndex: 1 }}>{lang.desc}</p>
-
-                        <div style={{ background: 'var(--bg-secondary)', padding: '1.5rem', borderRadius: 'var(--border-radius-sm)', marginBottom: '2rem', zIndex: 1, flex: 1 }}>
-                            <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Key Modules Covered:</h4>
-                            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                                {lang.topics.map((topic, i) => (
-                                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
-                                        <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: lang.color }}></span>
-                                        {topic}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <Link to={`/courses`} className="btn" style={{ width: '100%', background: 'var(--bg-secondary)', border: `1px solid ${lang.color}`, color: lang.color, zIndex: 1, textAlign: 'center' }}>
-                            View Syllabus & Enroll <ArrowRight size={18} />
-                        </Link>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

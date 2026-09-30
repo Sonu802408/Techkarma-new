@@ -56,7 +56,7 @@ const Footer = () => {
                             </div>
                             <div style={{ display: 'flex', gap: '1rem', color: 'var(--text-secondary)' }}>
                                 <MapPin size={24} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
-                                <span>123 Education Hub, Tech Park Phase 2, New Delhi, India 110001</span>
+                                <span>Near by MCED school chilla village mayur vihar ph-1 new Delhi 110091</span>
                             </div>
                         </div>
                     </div>

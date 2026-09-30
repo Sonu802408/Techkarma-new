@@ -14,10 +14,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    phone: {
+        type: String,
+        required: true
+    },
     role: {
         type: String,
         enum: ['admin', 'student'],
         default: 'student'
+    },
+    lastActive: {
+        type: Date,
+        default: Date.now
+    },
+    showInOnlineList: {
+        type: Boolean,
+        default: true
     },
     enrolledCourses: [{
         type: mongoose.Schema.Types.ObjectId,

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Menu, X, GraduationCap, ChevronDown } from 'lucide-react';
-
+import { Sun, Moon, Menu, X, GraduationCap, ChevronDown, User as UserIcon, LogOut, Shield } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
 const Navbar = ({ theme, setTheme }) => {
+    const { user, isLoggedIn, isAdmin, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
     const [isProgrammingDropdownOpen, setIsProgrammingDropdownOpen] = useState(false);
@@ -65,7 +66,6 @@ const Navbar = ({ theme, setTheme }) => {
 
     const topItems = [
         { name: 'Admission', path: '/admission' },
-        { name: 'Notes', path: '/notes' },
         { name: 'Core Computer', path: '/core-computer' }
     ];
 
@@ -80,7 +80,10 @@ const Navbar = ({ theme, setTheme }) => {
         { name: 'Python', path: '/programming' },
         { name: 'C', path: '/programming' },
         { name: 'C++', path: '/programming' },
-        { name: 'Java', path: '/programming' }
+        { name: 'Java', path: '/programming' },
+        { name: 'HTML', path: '/programming' },
+        { name: 'CSS', path: '/programming' },
+        { name: 'JavaScript', path: '/programming' }
     ];
 
     // Helper functions to handle mutually exclusive dropdowns
@@ -268,20 +271,87 @@ const Navbar = ({ theme, setTheme }) => {
                 </div>
 
                 {/* Actions (Desktop) */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', zIndex: 1001 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', zIndex: 1001, flexShrink: 0, paddingRight: '20px' }}>
                     <select
                         className="dropdown-toggle"
                         value={theme}
                         onChange={(e) => setTheme(e.target.value)}
+                        style={{
+                            flexShrink: 0,
+                            whiteSpace: 'nowrap',
+                            maxWidth: '125px',
+                            padding: '0.42rem 0.7rem',
+                            fontSize: '0.82rem',
+                            fontWeight: 600,
+                            borderRadius: '20px',
+                            cursor: 'pointer'
+                        }}
                     >
                         <option value="light" className="dropdown-menu">Light Mode</option>
-                        <option value="dark" className="dropdown-menu">Dark Mode</option>
+                        <option value="dark" className="dropdown-menu">Dark Cyber</option>
                         <option value="midnight" className="dropdown-menu">Midnight Blue</option>
                         <option value="charcoal" className="dropdown-menu">Charcoal Black</option>
                         <option value="sunset" className="dropdown-menu">Soft Sunset</option>
+                        <option value="cyberpunk" className="dropdown-menu">Cyberpunk Neon 3D</option>
+                        <option value="forest" className="dropdown-menu">Emerald Forest 3D</option>
+                        <option value="amber" className="dropdown-menu">Retro Amber 3D</option>
+                        <option value="purple" className="dropdown-menu">Royal Purple 3D</option>
+                        <option value="solarized" className="dropdown-menu">Solarized Light 3D</option>
+                        <option value="crimson" className="dropdown-menu">Crimson Matrix 3D</option>
+                        <option value="aurora" className="dropdown-menu">Arctic Aurora 3D</option>
+                        <option value="luxury-gold" className="dropdown-menu">Luxury Gold 3D</option>
+                        <option value="dracula" className="dropdown-menu">Dracula Vampire 3D</option>
+                        <option value="holographic" className="dropdown-menu">Holographic Frost 3D</option>
                     </select>
 
-                    <button className="mobile-menu-btn" onClick={toggleMenu} style={{ background: 'transparent', color: 'var(--text-primary)', display: 'block' }}>
+                    {isLoggedIn ? (
+                        <div style={{ display: 'none', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }} className="desktop-nav-menu">
+                            {isAdmin && (
+                                <Link
+                                    to="/admin"
+                                    className="btn-secondary"
+                                    style={{ padding: '0.45rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem', borderRadius: '20px', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
+                                >
+                                    <Shield size={14} /> Admin
+                                </Link>
+                            )}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.8rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '20px', border: '1px solid rgba(99, 102, 241, 0.2)', flexShrink: 0 }}>
+                                <UserIcon size={15} color="var(--primary-color)" />
+                                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {user?.name?.split(' ')[0] || 'User'}
+                                </span>
+                            </div>
+                            <button
+                                onClick={logout}
+                                title="Sign Out"
+                                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.4rem', display: 'flex', alignItems: 'center', flexShrink: 0 }}
+                            >
+                                <LogOut size={18} />
+                            </button>
+                        </div>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="btn-secondary desktop-nav-menu"
+                            style={{
+                                padding: '0.45rem 1.15rem',
+                                fontSize: '0.88rem',
+                                fontWeight: 600,
+                                borderRadius: '20px',
+                                textDecoration: 'none',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
+                                display: 'none',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                lineHeight: 1.2
+                            }}
+                        >
+                            Sign In
+                        </Link>
+                    )}
+
+                    <button className="mobile-menu-btn" onClick={toggleMenu} style={{ background: 'transparent', color: 'var(--text-primary)', display: 'block', flexShrink: 0 }}>
                         {isOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
@@ -380,14 +450,49 @@ const Navbar = ({ theme, setTheme }) => {
                             onChange={(e) => { setTheme(e.target.value); closeMenu(); }}
                         >
                             <option value="light" className="dropdown-menu">Light Mode</option>
-                            <option value="dark" className="dropdown-menu">Dark Mode</option>
+                            <option value="dark" className="dropdown-menu">Dark Cyber</option>
                             <option value="midnight" className="dropdown-menu">Midnight Blue</option>
                             <option value="charcoal" className="dropdown-menu">Charcoal Black</option>
                             <option value="sunset" className="dropdown-menu">Soft Sunset</option>
+                            <option value="cyberpunk" className="dropdown-menu">Cyberpunk Neon 3D</option>
+                            <option value="forest" className="dropdown-menu">Emerald Forest 3D</option>
+                            <option value="amber" className="dropdown-menu">Retro Amber 3D</option>
+                            <option value="purple" className="dropdown-menu">Royal Purple 3D</option>
+                            <option value="solarized" className="dropdown-menu">Solarized Light 3D</option>
+                            <option value="crimson" className="dropdown-menu">Crimson Matrix 3D</option>
+                            <option value="aurora" className="dropdown-menu">Arctic Aurora 3D</option>
+                            <option value="luxury-gold" className="dropdown-menu">Luxury Gold 3D</option>
+                            <option value="dracula" className="dropdown-menu">Dracula Vampire 3D</option>
+                            <option value="holographic" className="dropdown-menu">Holographic Frost 3D</option>
                         </select>
                     </div>
 
-                    <Link to="/contact" className="btn btn-primary" onClick={closeMenu} style={{ marginTop: '1.5rem', width: '100%', padding: '1rem' }}>
+                    {/* Mobile Auth Section */}
+                    {isLoggedIn ? (
+                        <div style={{ width: '100%', padding: '1rem', background: 'rgba(99, 102, 241, 0.08)', borderRadius: 'var(--border-radius)', display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '0.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <UserIcon size={20} color="var(--primary-color)" />
+                                <div>
+                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{user?.name}</div>
+                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{user?.role === 'admin' ? 'Administrator' : 'Student Account'}</div>
+                                </div>
+                            </div>
+                            {isAdmin && (
+                                <Link to="/admin" onClick={closeMenu} className="btn btn-secondary" style={{ width: '100%', padding: '0.6rem', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
+                                    <Shield size={16} /> Open Admin Dashboard
+                                </Link>
+                            )}
+                            <button onClick={() => { logout(); closeMenu(); }} className="btn btn-secondary" style={{ width: '100%', padding: '0.6rem', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
+                                <LogOut size={16} /> Sign Out
+                            </button>
+                        </div>
+                    ) : (
+                        <Link to="/login" onClick={closeMenu} className="btn btn-secondary" style={{ width: '100%', padding: '0.8rem', textAlign: 'center', marginTop: '0.5rem' }}>
+                            Student Sign In / Register
+                        </Link>
+                    )}
+
+                    <Link to="/contact" className="btn btn-primary" onClick={closeMenu} style={{ marginTop: '1rem', width: '100%', padding: '1rem' }}>
                         Enroll Now
                     </Link>
                 </div>

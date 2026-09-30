@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Search, Download, FileText, Lock } from 'lucide-react';
+import { Search, Download, FileText, Lock, ArrowRight } from 'lucide-react';
 
 const Notes = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('all');
 
-    const categories = ['All', 'Class 10', 'Class 12 Board', 'Programming', 'Competitive'];
+    const categories = ['All', 'Class 10', 'Class 12 Board', 'Programming', 'Competitive', 'Core CS'];
 
     const notesList = [
         { id: 1, title: 'Calculus Complete Formulas', category: 'Class 12 Board', type: 'PDF', pages: 12, size: '2.4 MB', isPremium: false },
@@ -14,6 +14,12 @@ const Notes = () => {
         { id: 4, title: 'Data Structures Cheat Sheet', category: 'Programming', type: 'PDF', pages: 5, size: '1.1 MB', isPremium: false },
         { id: 5, title: 'JEE Main Physics Mechanics', category: 'Competitive', type: 'PDF', pages: 68, size: '10.5 MB', isPremium: true },
         { id: 6, title: 'English Grammar Rules', category: 'All', type: 'PDF', pages: 30, size: '4.2 MB', isPremium: false },
+        { id: 7, title: 'Ch 1: Introduction & Network Fundamentals (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '420 KB', isPremium: false, file: 'csegyan-computer-networks-ch1.pdf' },
+        { id: 8, title: 'Ch 2: OSI Model and TCP/IP (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '415 KB', isPremium: false, file: 'csegyan-computer-networks-ch2.pdf' },
+        { id: 9, title: 'Ch 3: Data Link Layer (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '450 KB', isPremium: false, file: 'csegyan-computer-networks-ch3.pdf' },
+        { id: 10, title: 'Ch 4: Network Layer & Routing (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '430 KB', isPremium: false, file: 'csegyan-computer-networks-ch4.pdf' },
+        { id: 11, title: 'Ch 5: Transport Layer (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '390 KB', isPremium: false, file: 'csegyan-computer-networks-ch5.pdf' },
+        { id: 12, title: 'Ch 6: Application Layer & Security (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '410 KB', isPremium: false, file: 'csegyan-computer-networks-ch6.pdf' },
     ];
 
     const filteredNotes = notesList.filter(note =>
@@ -28,7 +34,7 @@ const Notes = () => {
                 <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)' }}>Download free and premium handwritten notes, cheat sheets, and formulas.</p>
             </div>
 
-            <div className="glass-card" style={{ marginBottom: '3rem', padding: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="glass-card" style={{ marginBottom: '2.5rem', padding: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', maxWidth: '100%' }}>
                 <div style={{ position: 'relative', flex: '1 1 300px' }}>
                     <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
                     <input
@@ -36,6 +42,7 @@ const Notes = () => {
                         placeholder="Search notes, topics, or subjects..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        autoComplete="off"
                         style={{ paddingLeft: '3rem', borderRadius: '50px' }}
                     />
                 </div>
@@ -62,45 +69,68 @@ const Notes = () => {
                 </div>
             </div>
 
-            <div className="grid grid-3">
+            {/* Standalone Horizontal Responsive Card Grid (3 per row Desktop, 2 Tablet, 1 Mobile) */}
+            <div className="resource-cards-grid">
                 {filteredNotes.length > 0 ? filteredNotes.map(note => (
-                    <div key={note.id} className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <div style={{ background: 'var(--bg-secondary)', padding: '0.5rem', borderRadius: 'var(--border-radius-sm)', color: 'var(--accent-color)' }}>
-                                <FileText size={24} />
+                    <div key={note.id} className="resource-card animate-fade-in-up">
+                        <div>
+                            <div className="resource-card-header">
+                                <div className="resource-card-icon">
+                                    <FileText size={22} />
+                                </div>
+                                {note.isPremium ? (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning-color)', padding: '0.25rem 0.65rem', borderRadius: '12px', fontSize: '0.78rem', fontWeight: 600 }}>
+                                        <Lock size={13} /> Premium
+                                    </span>
+                                ) : (
+                                    <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', padding: '0.25rem 0.65rem', borderRadius: '12px', fontSize: '0.78rem', fontWeight: 600 }}>
+                                        Free
+                                    </span>
+                                )}
                             </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                                <span style={{
+                                    background: 'var(--bg-primary)',
+                                    color: 'var(--primary-color)',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 700,
+                                    padding: '0.15rem 0.55rem',
+                                    borderRadius: '8px',
+                                    border: '1px solid var(--border-color)'
+                                }}>
+                                    {note.category}
+                                </span>
+                                <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                                    {note.pages} Pages • {note.size}
+                                </span>
+                            </div>
+
+                            <h3 className="resource-card-title">
+                                {note.title}
+                            </h3>
+                        </div>
+
+                        <div className="resource-card-actions">
                             {note.isPremium ? (
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning-color)', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-                                    <Lock size={14} /> Premium
-                                </span>
+                                <button className="btn btn-secondary">
+                                    Unlock Note <ArrowRight size={15} />
+                                </button>
+                            ) : note.file ? (
+                                <a href={`/pdfs/${note.file}`} target="_blank" rel="noreferrer" className="btn btn-primary">
+                                    <Download size={16} /> Download PDF
+                                </a>
                             ) : (
-                                <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
-                                    Free
-                                </span>
+                                <button className="btn btn-primary">
+                                    <Download size={16} /> Download PDF
+                                </button>
                             )}
                         </div>
-
-                        <div>
-                            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', lineHeight: 1.3 }}>{note.title}</h3>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{note.category}</p>
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '1rem', color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
-                            <span>{note.pages} Pages</span>
-                            <span>•</span>
-                            <span>{note.size}</span>
-                            <span>•</span>
-                            <span>{note.type}</span>
-                        </div>
-
-                        <button className={note.isPremium ? "btn btn-secondary" : "btn btn-primary"} style={{ width: '100%', marginTop: '0.5rem' }}>
-                            {note.isPremium ? 'Unlock Note' : <><Download size={18} /> Download</>}
-                        </button>
                     </div>
                 )) : (
-                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', background: 'var(--bg-secondary)', borderRadius: 'var(--border-radius)' }}>
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', background: 'var(--bg-secondary)', borderRadius: 'var(--border-radius)', border: '1px dashed var(--border-color)' }}>
                         <h3 style={{ marginBottom: '0.5rem' }}>No notes found</h3>
-                        <p style={{ color: 'var(--text-secondary)' }}>Try adjusting your search or category filter.</p>
+                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Try adjusting your search or category filter.</p>
                     </div>
                 )}
             </div>
