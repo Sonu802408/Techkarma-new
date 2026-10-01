@@ -33,7 +33,7 @@ const EducationalContentContainer = ({
     });
 
     const subjectSlug = (activeSubject === 'Social Studies (SST)' ? 'socialstudies' : (activeSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, ''));
-    const pdfUrl = `/pdfs/class${activeClass}-${(activeMedium || 'English').toLowerCase()}-${subjectSlug}-${activeContent}-ch${selectedChapterIdx + 1}.pdf`;
+    const pdfUrl = `https://res.cloudinary.com/dtcuvept/image/upload/pdfs/class${activeClass}-${(activeMedium || 'English').toLowerCase()}-${subjectSlug}-${activeContent}-ch${selectedChapterIdx + 1}.pdf`;
     const officialSamplePdf = `/pdfs/sample-papers/cbse-class-${activeClass}-${subjectSlug}-2026.pdf`;
 
     return (
@@ -139,4 +139,5 @@ const EducationalContentContainer = ({
 };
 
 export default EducationalContentContainer;
+
 

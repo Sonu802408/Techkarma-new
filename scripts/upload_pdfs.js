@@ -16,7 +16,7 @@ async function uploadFile(filePath, fileName) {
         const publicId = `pdfs/${fileName.replace('.pdf', '')}`;
         // Upload the PDF
         const result = await cloudinary.uploader.upload(filePath, {
-            resource_type: 'image',
+            resource_type: 'raw',
             public_id: publicId,
             overwrite: true
         });
@@ -44,3 +44,4 @@ async function runTest() {
 }
 
 runTest();
+

@@ -991,7 +991,7 @@ const Home = () => {
                                                     {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
                                                         pdfExists ? (
                                                             <a
-                                                                href={`/pdfs/${pdfFilename}`}
+                                                                href={pdfFilename.startsWith("class") ? `https://res.cloudinary.com/dtcuvept/image/upload/pdfs/${pdfFilename}` : `/pdfs/${pdfFilename}`}
                                                                 target="_blank"
                                                                 rel="noreferrer"
                                                                 className="btn btn-primary"
@@ -1217,4 +1217,5 @@ const Home = () => {
 };
 
 export default Home;
+
 
