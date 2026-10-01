@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 
 const CoreComputer = () => {
     const subjects = [
-        { name: 'Data Structures & Algorithms', icon: GitBranch, color: '#ec4899', desc: 'The backbone of computer science. Learn arrays, trees, graphs, dynamic programming, and algorithm optimization.' },
-        { name: 'Database Management (DBMS)', icon: Database, color: '#f59e0b', desc: 'Master SQL, normalization, ER diagrams, transaction management, and NoSQL databases.' },
-        { name: 'Operating Systems (OS)', icon: Server, color: '#10b981', desc: 'Process management, memory management, deadlocks, and internal workings of Linux/Windows.' },
-        { name: 'Object Oriented Programming', icon: Layers, color: '#3b82f6', desc: 'Classes, Objects, Inheritance, Polymorphism, Abstraction, and Encapsulation.' },
-        { name: 'Computer Networks', icon: Globe, color: '#8b5cf6', desc: 'OSI Model, TCP/IP, Routing algorithms, and network security fundamentals.' },
+        { name: 'Data Structures & Algorithms', icon: GitBranch, color: '#ec4899', desc: 'The backbone of computer science. Learn arrays, trees, graphs, dynamic programming, and algorithm optimization.', pdfUrl: '/pdfs/Data-Structure-DSA-pre-notes-cse-gyan.pdf' },
+        { name: 'Database Management (DBMS)', icon: Database, color: '#f59e0b', desc: 'Master SQL, normalization, ER diagrams, transaction management, and NoSQL databases.', pdfUrl: '/pdfs/DBMS-pre-notes-cse-gyan.pdf' },
+        { name: 'Operating Systems (OS)', icon: Server, color: '#10b981', desc: 'Process management, memory management, deadlocks, and internal workings of Linux/Windows.', pdfUrl: '/pdfs/OS-pre-notes-cse-gyan.pdf' },
+        { name: 'Object Oriented Programming', icon: Layers, color: '#3b82f6', desc: 'Classes, Objects, Inheritance, Polymorphism, Abstraction, and Encapsulation.', pdfUrl: '/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf' },
+        { name: 'Computer Networks', icon: Globe, color: '#8b5cf6', desc: 'OSI Model, TCP/IP, Routing algorithms, and network security fundamentals.', pdfUrl: '/pdfs/Computer-Networks-pre-notes-cse-gyan.pdf' },
         { name: 'Software Engineering', icon: Shield, color: '#6366f1', desc: 'SDLC, Agile methodologies, software testing, and project management.' }
     ];
 
@@ -50,16 +50,18 @@ const CoreComputer = () => {
 
                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', flex: 1 }}>{sub.desc}</p>
 
-                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
                             <button className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1 }}>Syllabus</button>
-                            {sub.name === 'Computer Networks' ? (
-                                <button 
-                                    onClick={() => toggleSubject(sub.name)} 
-                                    className="btn btn-primary" 
-                                    style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                            {sub.pdfUrl ? (
+                                <a
+                                    href={sub.pdfUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="btn btn-primary"
+                                    style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', textDecoration: 'none' }}
                                 >
-                                    Notes {expandedSubject === sub.name ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                </button>
+                                    <Download size={15} /> Notes PDF
+                                </a>
                             ) : (
                                 <Link to="/notes" className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', flex: 1, textAlign: 'center' }}>Notes</Link>
                             )}
@@ -94,3 +96,4 @@ const CoreComputer = () => {
 };
 
 export default CoreComputer;
+

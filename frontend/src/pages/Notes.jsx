@@ -8,18 +8,31 @@ const Notes = () => {
     const categories = ['All', 'Class 10', 'Class 12 Board', 'Programming', 'Competitive', 'Core CS'];
 
     const notesList = [
-        { id: 1, title: 'Calculus Complete Formulas', category: 'Class 12 Board', type: 'PDF', pages: 12, size: '2.4 MB', isPremium: false },
-        { id: 2, title: 'Python Zero to Hero Notes', category: 'Programming', type: 'PDF', pages: 145, size: '15.6 MB', isPremium: true },
-        { id: 3, title: 'Class 10 Science Full NCERT Notes', category: 'Class 10', type: 'PDF', pages: 85, size: '8.2 MB', isPremium: false },
-        { id: 4, title: 'Data Structures Cheat Sheet', category: 'Programming', type: 'PDF', pages: 5, size: '1.1 MB', isPremium: false },
-        { id: 5, title: 'JEE Main Physics Mechanics', category: 'Competitive', type: 'PDF', pages: 68, size: '10.5 MB', isPremium: true },
-        { id: 6, title: 'English Grammar Rules', category: 'All', type: 'PDF', pages: 30, size: '4.2 MB', isPremium: false },
-        { id: 7, title: 'Ch 1: Introduction & Network Fundamentals (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '420 KB', isPremium: false, file: 'csegyan-computer-networks-ch1.pdf' },
-        { id: 8, title: 'Ch 2: OSI Model and TCP/IP (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '415 KB', isPremium: false, file: 'csegyan-computer-networks-ch2.pdf' },
-        { id: 9, title: 'Ch 3: Data Link Layer (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '450 KB', isPremium: false, file: 'csegyan-computer-networks-ch3.pdf' },
-        { id: 10, title: 'Ch 4: Network Layer & Routing (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '430 KB', isPremium: false, file: 'csegyan-computer-networks-ch4.pdf' },
-        { id: 11, title: 'Ch 5: Transport Layer (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '390 KB', isPremium: false, file: 'csegyan-computer-networks-ch5.pdf' },
-        { id: 12, title: 'Ch 6: Application Layer & Security (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '410 KB', isPremium: false, file: 'csegyan-computer-networks-ch6.pdf' },
+        { id: 301, title: 'Artificial Intelligence & ML Complete Notes', category: 'Competitive', type: 'PDF', pages: 35, size: '116 KB', isPremium: false, file: 'AI_Complete_Handwritten_Notes.pdf' },
+        { id: 302, title: 'Cloud Computing & DevOps Complete Notes', category: 'Competitive', type: 'PDF', pages: 32, size: '115 KB', isPremium: false, file: 'Cloud_Computing_Complete_Handwritten_Notes.pdf' },
+        { id: 303, title: 'Cyber Security & Ethical Hacking Notes', category: 'Competitive', type: 'PDF', pages: 28, size: '89 KB', isPremium: false, file: 'Cyber_Security_Complete_Handwritten_Notes.pdf' },
+        { id: 304, title: 'Data Science & Analytics Complete Notes', category: 'Competitive', type: 'PDF', pages: 30, size: '100 KB', isPremium: false, file: 'Data_Science_Complete_Handwritten_Notes.pdf' },
+        { id: 201, title: 'Volume 1: C Programming Complete Handwritten Notes', category: 'Programming', type: 'PDF', pages: 76, size: '972 KB', isPremium: false, file: 'C_Programming_Complete_Handwritten_Notes.pdf' },
+        { id: 202, title: 'Volume 2: C++ Programming Complete Handwritten Notes', category: 'Programming', type: 'PDF', pages: 84, size: '540 KB', isPremium: false, file: 'CPP_Programming_Complete_Handwritten_Notes.pdf' },
+        { id: 203, title: 'Volume 3: Java Programming Complete Handwritten Notes', category: 'Programming', type: 'PDF', pages: 86, size: '354 KB', isPremium: false, file: 'Java_Programming_Complete_Handwritten_Notes.pdf' },
+        { id: 204, title: 'Volume 4: HTML & HTML5 Complete Handwritten Notes', category: 'Programming', type: 'PDF', pages: 66, size: '348 KB', isPremium: false, file: 'HTML_Complete_Handwritten_Notes.pdf' },
+        { id: 205, title: 'Volume 5: CSS & CSS3 Complete Handwritten Notes', category: 'Programming', type: 'PDF', pages: 81, size: '363 KB', isPremium: false, file: 'CSS_Complete_Handwritten_Notes.pdf' },
+        { id: 206, title: 'Volume 6: JavaScript (ES6+) Complete Handwritten Notes', category: 'Programming', type: 'PDF', pages: 91, size: '530 KB', isPremium: false, file: 'JavaScript_Complete_Handwritten_Notes.pdf' },
+        { id: 1, title: 'Calculus Complete Formulas', category: 'Class 12 Board', type: 'PDF', pages: 12, size: '2.4 MB', isPremium: false, file: 'class12-english-math-ch1.pdf' },
+        { id: 2, title: 'Python Programming Full Notes (CSE Gyan)', category: 'Programming', type: 'PDF', pages: 45, size: '3.2 MB', isPremium: false, file: 'python-pre-notes-cse-gyan.pdf' },
+        { id: 3, title: 'Data Structures (DSA) Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 38, size: '2.4 MB', isPremium: false, file: 'Data-Structure-DSA-pre-notes-cse-gyan.pdf' },
+        { id: 4, title: 'Operating Systems (OS) Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 52, size: '3.6 MB', isPremium: false, file: 'OS-pre-notes-cse-gyan.pdf' },
+        { id: 5, title: 'DBMS Database Systems Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 64, size: '8.0 MB', isPremium: false, file: 'DBMS-pre-notes-cse-gyan.pdf' },
+        { id: 6, title: 'Computer Networks Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 58, size: '7.7 MB', isPremium: false, file: 'Computer-Networks-pre-notes-cse-gyan.pdf' },
+        { id: 7, title: 'Class 10 Science Full NCERT Notes', category: 'Class 10', type: 'PDF', pages: 85, size: '8.2 MB', isPremium: false, file: 'class10-english-science-ch1.pdf' },
+        { id: 8, title: 'JEE Main Physics Mechanics', category: 'Competitive', type: 'PDF', pages: 68, size: '10.5 MB', isPremium: true, file: 'class11-english-physics-ch1.pdf' },
+        { id: 9, title: 'English Grammar Rules', category: 'All', type: 'PDF', pages: 30, size: '4.2 MB', isPremium: false, file: 'class10-english-english-ch1.pdf' },
+        { id: 10, title: 'Ch 1: Introduction & Network Fundamentals (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '420 KB', isPremium: false, file: 'csegyan-computer-networks-ch1.pdf' },
+        { id: 11, title: 'Ch 2: OSI Model and TCP/IP (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '415 KB', isPremium: false, file: 'csegyan-computer-networks-ch2.pdf' },
+        { id: 12, title: 'Ch 3: Data Link Layer (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '450 KB', isPremium: false, file: 'csegyan-computer-networks-ch3.pdf' },
+        { id: 13, title: 'Ch 4: Network Layer & Routing (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '430 KB', isPremium: false, file: 'csegyan-computer-networks-ch4.pdf' },
+        { id: 14, title: 'Ch 5: Transport Layer (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '390 KB', isPremium: false, file: 'csegyan-computer-networks-ch5.pdf' },
+        { id: 15, title: 'Ch 6: Application Layer & Security (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 2, size: '410 KB', isPremium: false, file: 'csegyan-computer-networks-ch6.pdf' },
     ];
 
     const filteredNotes = notesList.filter(note =>
@@ -139,3 +152,4 @@ const Notes = () => {
 };
 
 export default Notes;
+

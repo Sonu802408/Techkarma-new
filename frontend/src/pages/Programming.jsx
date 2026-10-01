@@ -1,5 +1,5 @@
 import React from 'react';
-import { Terminal, Laptop, Rocket, BookOpen, Globe, Palette, Zap, ArrowRight } from 'lucide-react';
+import { Terminal, Laptop, Rocket, BookOpen, Globe, Palette, Zap, ArrowRight, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Programming = () => {
@@ -11,6 +11,7 @@ const Programming = () => {
             color: '#38bdf8',
             colorRgb: '56, 189, 248',
             desc: 'High-level, versatile language powering artificial intelligence, data science, automation, and full-stack web applications.',
+            pdfUrl: '/pdfs/python-pre-notes-cse-gyan.pdf',
             topics: ['Variables, Lists & Dictionaries', 'Functions & Functional Programming', 'Object-Oriented Programming (OOP)', 'NumPy, Pandas & Automation', 'Django & FastAPI Basics']
         },
         {
@@ -20,6 +21,7 @@ const Programming = () => {
             color: '#60a5fa',
             colorRgb: '96, 165, 250',
             desc: 'The mother of modern programming. Master pointers, raw memory allocation, structured programming, and hardware-level algorithms.',
+            pdfUrl: '/pdfs/C_Programming_Complete_Handwritten_Notes.pdf',
             topics: ['Data Types & Control Flow', 'Arrays, Strings & Matrices', 'Pointers & Memory Architecture', 'Dynamic Memory (malloc/free)', 'Structures, Unions & File I/O']
         },
         {
@@ -29,6 +31,7 @@ const Programming = () => {
             color: '#818cf8',
             colorRgb: '129, 140, 248',
             desc: 'Ultra-fast compiled language designed for system software, game development, high-frequency engines, and competitive coding.',
+            pdfUrl: '/pdfs/CPP_Programming_Complete_Handwritten_Notes.pdf',
             topics: ['Classes, Objects & Constructors', 'Standard Template Library (STL)', 'Pointers, References & Templates', 'Operator Overloading & Virtual Funcs', 'DSA Problem-Solving Patterns']
         },
         {
@@ -38,6 +41,7 @@ const Programming = () => {
             color: '#f97316',
             colorRgb: '249, 115, 22',
             desc: 'Platform-independent enterprise powerhouse language powering scalable backend servers, Android development, and microservices.',
+            pdfUrl: '/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf',
             topics: ['Core Java & OOP Principles', 'Java Collections Framework', 'Multithreading & Concurrency', 'Exception Handling & I/O Streams', 'Spring Boot & JDBC Intro']
         },
         {
@@ -47,6 +51,7 @@ const Programming = () => {
             color: '#ef4444',
             colorRgb: '239, 68, 68',
             desc: 'The universal backbone of the web. Learn semantic tags, modern forms, media streaming, web accessibility, and SEO foundations.',
+            pdfUrl: '/pdfs/HTML_Complete_Handwritten_Notes.pdf',
             topics: ['Semantic HTML5 Elements', 'Modern Forms & Input Types', 'Audio, Video & Canvas Media', 'Web Accessibility (a11y)', 'SEO Optimization & Meta Standards']
         },
         {
@@ -56,6 +61,7 @@ const Programming = () => {
             color: '#06b6d4',
             colorRgb: '6, 182, 212',
             desc: 'Transform web documents into gorgeous user interfaces with Flexbox, CSS Grid, keyframe animations, glassmorphism, and responsive layouts.',
+            pdfUrl: '/pdfs/CSS_Complete_Handwritten_Notes.pdf',
             topics: ['Flexbox & CSS Grid Mastery', 'Transitions & Keyframe Animations', 'Responsive Design & Media Queries', 'CSS Custom Properties (Variables)', 'Glassmorphism & 3D Transforms']
         },
         {
@@ -65,6 +71,7 @@ const Programming = () => {
             color: '#eab308',
             colorRgb: '234, 179, 8',
             desc: 'The heartbeat of modern interactive web development. Master ES6+ syntax, asynchronous programming, DOM APIs, and state management.',
+            pdfUrl: '/pdfs/JavaScript_Complete_Handwritten_Notes.pdf',
             topics: ['ES6+ Syntax & Scope (let/const)', 'DOM Manipulation & Event Handling', 'Promises, Async/Await & Fetch API', 'Closures, Prototypes & Callbacks', 'State, Modules & Web APIs']
         }
     ];
@@ -262,30 +269,60 @@ const Programming = () => {
                             </div>
 
                             {/* Action CTA Button */}
-                            <Link
-                                to="/courses"
-                                className="explore-lang-btn"
-                                style={{
-                                    width: '100%',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '0.5rem',
-                                    padding: '0.85rem 1.25rem',
-                                    borderRadius: '12px',
-                                    background: 'rgba(255, 255, 255, 0.04)',
-                                    border: `1px solid rgba(${lang.colorRgb}, 0.35)`,
-                                    color: 'var(--text-primary)',
-                                    fontWeight: 700,
-                                    fontSize: '0.94rem',
-                                    textAlign: 'center',
-                                    textDecoration: 'none',
-                                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
-                                }}
-                            >
-                                <span>Explore Course</span>
-                                <ArrowRight size={16} />
-                            </Link>
+                            <div style={{ display: 'flex', gap: '0.6rem', marginTop: 'auto', width: '100%', flexWrap: 'wrap' }}>
+                                <Link
+                                    to="/courses"
+                                    className="explore-lang-btn"
+                                    style={{
+                                        flex: 1,
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.5rem',
+                                        padding: '0.85rem 1rem',
+                                        borderRadius: '12px',
+                                        background: 'rgba(255, 255, 255, 0.04)',
+                                        border: `1px solid rgba(${lang.colorRgb}, 0.35)`,
+                                        color: 'var(--text-primary)',
+                                        fontWeight: 700,
+                                        fontSize: '0.92rem',
+                                        textAlign: 'center',
+                                        textDecoration: 'none',
+                                        whiteSpace: 'nowrap',
+                                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                                    }}
+                                >
+                                    <span>Explore Course</span>
+                                    <ArrowRight size={16} />
+                                </Link>
+                                {lang.pdfUrl && (
+                                    <a
+                                        href={lang.pdfUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        style={{
+                                            flex: 1,
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '0.4rem',
+                                            padding: '0.85rem 1rem',
+                                            borderRadius: '12px',
+                                            background: `rgba(${lang.colorRgb}, 0.22)`,
+                                            border: `1px solid rgba(${lang.colorRgb}, 0.6)`,
+                                            color: lang.color,
+                                            fontWeight: 700,
+                                            fontSize: '0.92rem',
+                                            textDecoration: 'none',
+                                            whiteSpace: 'nowrap',
+                                            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                                        }}
+                                    >
+                                        <Download size={16} />
+                                        <span>Notes PDF</span>
+                                    </a>
+                                )}
+                            </div>
                         </div>
                     );
                 })}
@@ -295,3 +332,4 @@ const Programming = () => {
 };
 
 export default Programming;
+

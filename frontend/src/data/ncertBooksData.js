@@ -3,6 +3,7 @@
 // Base Portal URL: https://ncert.nic.in/textbook.php?{bookCode}={chapterIndex}-{totalChapters}
 
 import { classesData, getSubjectName, getChapterName } from './classesData.js';
+import pdfManifest from './pdfManifest.json';
 
 // Map subjects and parts to official 5-letter NCERT codes
 export const ncertSubjectCodes = {
@@ -595,11 +596,61 @@ export const getDirectNcertChapterPdf = (classNum, subject, medium, chapterNumOr
             const ch = chapters[chapterNumOrIndex];
             if (ch && ch.status === 'active') return ch.pdfUrl;
         }
-        // If chapter number exceeds chapters.length, return last active chapter
-        const lastCh = chapters[chapters.length - 1];
-        if (lastCh && lastCh.status === 'active') return lastCh.pdfUrl;
     }
     return chapters[0]?.pdfUrl || null;
+};
+
+export const resolveClassPdfUrl = (classNum, subject, medium, contentType, chapterIndex, stream = '') => {
+    const cls = parseInt(classNum, 10);
+    const med = (medium || 'English').toLowerCase();
+    const chNum = chapterIndex + 1;
+    const subLower = (subject || '').toLowerCase();
+
+    const manifestSet = new Set(pdfManifest || []);
+
+    const subCandidates = [];
+    if (subLower.includes('social') || subLower.includes('sst')) {
+        subCandidates.push('socialstudies', 'social-studies-sst', 'social');
+    } else if (subLower.includes('math')) {
+        subCandidates.push('math', 'mathematics');
+    } else if (subLower.includes('computer')) {
+        subCandidates.push('computerscience', 'computer');
+    } else if (subLower.includes('business')) {
+        subCandidates.push('businessstudies', 'business');
+    } else if (subLower.includes('political')) {
+        subCandidates.push('politicalscience', 'political');
+    } else {
+        subCandidates.push(subLower.replace(/[^a-z0-9]/gi, ''));
+    }
+
+    const typeCandidates = [];
+    if (contentType === 'notes') {
+        typeCandidates.push('', 'notes');
+    } else if (contentType === 'books' || contentType === 'ncert-books') {
+        typeCandidates.push('books', '', 'books-ch');
+    } else {
+        typeCandidates.push(contentType, `${contentType}-ch`, '');
+    }
+
+    for (const subCandidate of subCandidates) {
+        for (const typeCandidate of typeCandidates) {
+            const infix = typeCandidate ? `-${typeCandidate}` : '';
+            const filename = `class${cls}-${med}-${subCandidate}${infix}-ch${chNum}.pdf`;
+            if (manifestSet.has(filename)) {
+                return `/pdfs/${filename}`;
+            }
+        }
+    }
+
+    const prefix = `class${cls}-${med}-${subCandidates[0]}`;
+    const chSuffix = `-ch${chNum}.pdf`;
+    for (const file of pdfManifest || []) {
+        if (file.startsWith(prefix) && file.endsWith(chSuffix)) {
+            return `/pdfs/${file}`;
+        }
+    }
+
+    return getDirectNcertChapterPdf(classNum, subject, medium, chNum, stream);
 };
 
 export const ncertBooksData = [];
@@ -630,3 +681,4 @@ Object.entries(ncertSubjectCodes).forEach(([clsStr, subMap]) => {
 });
 
 export default ncertBooksData;
+

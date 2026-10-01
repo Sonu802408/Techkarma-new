@@ -139,3 +139,4 @@ const EducationalContentContainer = ({
 };
 
 export default EducationalContentContainer;
+

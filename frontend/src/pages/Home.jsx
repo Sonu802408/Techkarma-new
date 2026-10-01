@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, ExternalLink, ShieldCheck, Code, Cpu, Trophy, Star, CheckCircle, Github, Twitter, Linkedin, ArrowLeft, FileText, CheckSquare, Book, File, Clock, PlayCircle, Terminal, Users, TrendingUp, Shield, Zap, Check, Target, Award, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, Laptop, Rocket, Sun, Monitor, Brain, Globe, Palette } from 'lucide-react';
+import { ArrowRight, BookOpen, ExternalLink, ShieldCheck, Code, Cpu, Trophy, Star, CheckCircle, Github, Twitter, Linkedin, ArrowLeft, FileText, CheckSquare, Book, File, Clock, PlayCircle, Terminal, Users, TrendingUp, Shield, Zap, Check, Target, Award, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, Laptop, Rocket, Sun, Monitor, Brain, Globe, Palette, Download, ShieldAlert, Cloud, Database } from 'lucide-react';
 import { classesData, getSubjectName, getChapterName } from '../data/classesData';
 import pdfManifest from '../data/pdfManifest.json';
 import { getNcertChapters, getDirectNcertChapterPdf } from '../data/ncertBooksData';
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ClassCard from '../components/ClassCard.jsx';
+import heroIllustration from '../assets/hero_illustration.png';
+import "./Home.css";
 
 const SectionIcon = ({ icon: Icon, colorHex = "#3b82f6", align = "center" }) => {
     const hexToRgba = (hex, alpha) => {
@@ -45,8 +47,6 @@ const SectionIcon = ({ icon: Icon, colorHex = "#3b82f6", align = "center" }) => 
         </div>
     );
 };
-import heroIllustration from '../assets/hero_illustration.png';
-import "./Home.css";
 
 const SnakeIcon = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -114,31 +114,31 @@ const Home = () => {
         {
             title: "Core Programming",
             courses: [
-                { name: "Python", desc: "High-level language for AI, data science, automation, and backend engineering.", icon: <Terminal size={24} />, tag: "AI & Data", color: "#38bdf8", colorRgb: "56, 189, 248" },
-                { name: "C Language", desc: "Foundational logic, pointers, memory architecture, and systems programming.", icon: <Laptop size={24} />, tag: "Systems & Logic", color: "#60a5fa", colorRgb: "96, 165, 250" },
-                { name: "C++", desc: "High-performance computing, OOP principles, STL, and competitive coding.", icon: <Rocket size={24} />, tag: "High Performance", color: "#818cf8", colorRgb: "129, 140, 248" },
-                { name: "Java", desc: "Enterprise systems, JVM internals, multithreading, and backend architecture.", icon: <BookOpen size={24} />, tag: "Enterprise", color: "#f97316", colorRgb: "249, 115, 22" },
-                { name: "HTML5", desc: "The universal web backbone: semantic structure, modern forms, media, and SEO.", icon: <Globe size={24} />, tag: "Web Structure", color: "#ef4444", colorRgb: "239, 68, 68" },
-                { name: "CSS3", desc: "Modern UI styling, Flexbox, CSS Grid, keyframe animations, and glassmorphism.", icon: <Palette size={24} />, tag: "Modern UI", color: "#06b6d4", colorRgb: "6, 182, 212" },
-                { name: "JavaScript", desc: "Modern ES6+, DOM manipulation, asynchronous programming, and dynamic web APIs.", icon: <Zap size={24} />, tag: "Dynamic Web", color: "#eab308", colorRgb: "234, 179, 8" }
+                { name: "Python", desc: "High-level language for AI, data science, automation, and backend engineering.", icon: <Terminal size={24} />, tag: "AI & Data", color: "#38bdf8", colorRgb: "56, 189, 248", pdfUrl: "/pdfs/python-pre-notes-cse-gyan.pdf" },
+                { name: "C Language", desc: "Foundational logic, pointers, memory architecture, and systems programming.", icon: <Laptop size={24} />, tag: "Systems & Logic", color: "#60a5fa", colorRgb: "96, 165, 250", pdfUrl: "/pdfs/C_Programming_Complete_Handwritten_Notes.pdf" },
+                { name: "C++", desc: "High-performance computing, OOP principles, STL, and competitive coding.", icon: <Rocket size={24} />, tag: "High Performance", color: "#818cf8", colorRgb: "129, 140, 248", pdfUrl: "/pdfs/CPP_Programming_Complete_Handwritten_Notes.pdf" },
+                { name: "Java", desc: "Enterprise systems, JVM internals, multithreading, and backend architecture.", icon: <BookOpen size={24} />, tag: "Enterprise", color: "#f97316", colorRgb: "249, 115, 22", pdfUrl: "/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf" },
+                { name: "HTML5", desc: "The universal web backbone: semantic structure, modern forms, media, and SEO.", icon: <Globe size={24} />, tag: "Web Structure", color: "#ef4444", colorRgb: "239, 68, 68", pdfUrl: "/pdfs/HTML_Complete_Handwritten_Notes.pdf" },
+                { name: "CSS3", desc: "Modern UI styling, Flexbox, CSS Grid, keyframe animations, and glassmorphism.", icon: <Palette size={24} />, tag: "Modern UI", color: "#06b6d4", colorRgb: "6, 182, 212", pdfUrl: "/pdfs/CSS_Complete_Handwritten_Notes.pdf" },
+                { name: "JavaScript", desc: "Modern ES6+, DOM manipulation, asynchronous programming, and dynamic web APIs.", icon: <Zap size={24} />, tag: "Dynamic Web", color: "#eab308", colorRgb: "234, 179, 8", pdfUrl: "/pdfs/JavaScript_Complete_Handwritten_Notes.pdf" }
             ]
         },
         {
             title: "Core Computer Science Subjects",
             courses: [
-                { name: "Data Structures", desc: "Master algorithms, arrays, trees, graphs, and problem solving.", icon: <File size={24} />, tag: "DSA", color: "#10b981", colorRgb: "16, 185, 129" },
-                { name: "Operating Systems", desc: "Understand kernel, concurrency, processes, and memory management.", icon: <Cpu size={24} />, tag: "OS & Kernel", color: "#10b981", colorRgb: "16, 185, 129" },
-                { name: "Database Systems", desc: "SQL, normalization, indexing, NoSQL, and scalable schema design.", icon: <FileText size={24} />, tag: "Databases", color: "#10b981", colorRgb: "16, 185, 129" },
-                { name: "Computer Networks", desc: "TCP/IP protocols, routing, OSI model, socket programming, and security.", icon: <CheckSquare size={24} />, tag: "Networking", color: "#10b981", colorRgb: "16, 185, 129" }
+                { name: "Data Structures", desc: "Master algorithms, arrays, trees, graphs, and problem solving.", icon: <File size={24} />, tag: "DSA", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/Data-Structure-DSA-pre-notes-cse-gyan.pdf" },
+                { name: "Operating Systems", desc: "Understand kernel, concurrency, processes, and memory management.", icon: <Cpu size={24} />, tag: "OS & Kernel", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/OS-pre-notes-cse-gyan.pdf" },
+                { name: "Database Systems", desc: "SQL, normalization, indexing, NoSQL, and scalable schema design.", icon: <FileText size={24} />, tag: "Databases", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/DBMS-pre-notes-cse-gyan.pdf" },
+                { name: "Computer Networks", desc: "TCP/IP protocols, routing, OSI model, socket programming, and security.", icon: <CheckSquare size={24} />, tag: "Networking", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/Computer-Networks-pre-notes-cse-gyan.pdf" }
             ]
         },
         {
             title: "Advanced Technologies",
             courses: [
-                { name: "Artificial Intelligence", desc: "Machine learning, neural networks, deep learning, and generative AI.", icon: <Star size={24} />, tag: "AI & ML", color: "#f43f5e", colorRgb: "244, 63, 94" },
-                { name: "Cloud Computing", desc: "AWS, Azure, containerization (Docker/K8s), and microservices deployment.", icon: <Book size={24} />, tag: "Cloud & DevOps", color: "#f43f5e", colorRgb: "244, 63, 94" },
-                { name: "Cybersecurity", desc: "Ethical hacking, cryptography, threat modeling, and defense mechanisms.", icon: <CheckCircle size={24} />, tag: "Security", color: "#f43f5e", colorRgb: "244, 63, 94" },
-                { name: "Data Science", desc: "Data analytics, statistical modeling, visualization, and big data pipelines.", icon: <Trophy size={24} />, tag: "Analytics", color: "#f43f5e", colorRgb: "244, 63, 94" }
+                { name: "Artificial Intelligence", desc: "Machine learning, neural networks, deep learning, and generative AI.", icon: <Brain size={24} />, tag: "AI & ML", color: "#f43f5e", colorRgb: "244, 63, 94", pdfUrl: "/pdfs/AI_Complete_Handwritten_Notes.pdf" },
+                { name: "Cloud Computing", desc: "AWS, Azure, containerization (Docker/K8s), and microservices deployment.", icon: <Cloud size={24} />, tag: "Cloud & DevOps", color: "#06b6d4", colorRgb: "6, 182, 212", pdfUrl: "/pdfs/Cloud_Computing_Complete_Handwritten_Notes.pdf" },
+                { name: "Cyber Security", desc: "Ethical hacking, cryptography, threat modeling, and defense mechanisms.", icon: <ShieldAlert size={24} />, tag: "Security", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/Cyber_Security_Complete_Handwritten_Notes.pdf" },
+                { name: "Data Science", desc: "Data analytics, statistical modeling, visualization, and big data pipelines.", icon: <Database size={24} />, tag: "Analytics", color: "#8b5cf6", colorRgb: "139, 92, 246", pdfUrl: "/pdfs/Data_Science_Complete_Handwritten_Notes.pdf" }
             ]
         }
     ];
@@ -1148,30 +1148,59 @@ const Home = () => {
                                                     {course.desc}
                                                 </p>
 
-                                                <Link
-                                                    to={category.title.includes("Core Programming") ? "/programming" : "/courses"}
-                                                    className="cs-explore-btn"
-                                                    style={{
-                                                        width: '100%',
-                                                        marginTop: 'auto',
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        gap: '0.5rem',
-                                                        padding: '0.8rem 1.25rem',
-                                                        borderRadius: '12px',
-                                                        background: 'rgba(255, 255, 255, 0.05)',
-                                                        border: `1px solid ${course.color || catColor}40`,
-                                                        color: 'var(--text-primary)',
-                                                        fontWeight: 700,
-                                                        fontSize: '0.92rem',
-                                                        textDecoration: 'none',
-                                                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
-                                                    }}
-                                                >
-                                                    <span>Explore Course</span>
-                                                    <ArrowRight size={15} />
-                                                </Link>
+                                                <div style={{ display: 'flex', gap: '0.6rem', marginTop: 'auto', width: '100%', flexWrap: 'wrap' }}>
+                                                    <Link
+                                                        to={category.title.includes("Core Programming") ? "/programming" : (category.title.includes("Core Computer Science") ? "/core-computer" : "/courses")}
+                                                        className="cs-explore-btn"
+                                                        style={{
+                                                            flex: 1,
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            gap: '0.4rem',
+                                                            padding: '0.8rem 1rem',
+                                                            borderRadius: '12px',
+                                                            background: 'rgba(255, 255, 255, 0.05)',
+                                                            border: `1px solid ${course.color || catColor}40`,
+                                                            color: 'var(--text-primary)',
+                                                            fontWeight: 700,
+                                                            fontSize: '0.88rem',
+                                                            textDecoration: 'none',
+                                                            whiteSpace: 'nowrap',
+                                                            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                                                        }}
+                                                    >
+                                                        <span>Explore</span>
+                                                        <ArrowRight size={15} />
+                                                    </Link>
+                                                    {course.pdfUrl && (
+                                                        <a
+                                                            href={course.pdfUrl}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            style={{
+                                                                flex: 1,
+                                                                display: 'inline-flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                gap: '0.4rem',
+                                                                padding: '0.8rem 1rem',
+                                                                borderRadius: '12px',
+                                                                background: `${course.color || catColor}22`,
+                                                                border: `1px solid ${course.color || catColor}60`,
+                                                                color: course.color || catColor,
+                                                                fontWeight: 700,
+                                                                fontSize: '0.88rem',
+                                                                textDecoration: 'none',
+                                                                whiteSpace: 'nowrap',
+                                                                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                                                            }}
+                                                        >
+                                                            <Download size={15} />
+                                                            <span>Notes PDF</span>
+                                                        </a>
+                                                    )}
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -1188,3 +1217,4 @@ const Home = () => {
 };
 
 export default Home;
+

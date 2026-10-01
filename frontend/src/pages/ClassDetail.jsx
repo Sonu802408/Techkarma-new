@@ -4,6 +4,7 @@ import { ArrowLeft, Book, FileText, CheckSquare, BookOpen, File, Clock, PlayCirc
 import { classesData } from '../data/classesData';
 import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChapterPdf } from '../data/ncertBooksData';
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
+import ErrorBoundary from '../components/common/ErrorBoundary.jsx';
 
 const ClassDetail = () => {
     const { classId } = useParams();
@@ -36,12 +37,12 @@ const ClassDetail = () => {
 
     // Dynamic Subjects based on streams for High School or fixed for Junior
     const currentSubjects = isHighSchool
-        ? (classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects ? Object.keys(classesData[classNum].mediums[selectedMedium].streams[selectedStream].subjects) : [])
-        : (classesData[classNum]?.mediums?.[selectedMedium]?.subjects ? Object.keys(classesData[classNum].mediums[selectedMedium].subjects) : []);
+        ? (classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects ? Object.keys(classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects || {}) : [])
+        : (classesData[classNum]?.mediums?.[selectedMedium]?.subjects ? Object.keys(classesData[classNum]?.mediums?.[selectedMedium]?.subjects || {}) : []);
 
     // Set default subject on load or when stream or class changes
     useEffect(() => {
-        if (currentSubjects.length > 0) {
+        if (currentSubjects && currentSubjects.length > 0) {
             setSelectedSubject(currentSubjects[0].toLowerCase());
         } else {
             setSelectedSubject('');
@@ -50,14 +51,14 @@ const ClassDetail = () => {
 
     // Derive chapters list directly from selectedClass, selectedMedium, selectedStream, and selectedSubject
     const currentSubjectsRaw = isHighSchool
-        ? (classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects ? Object.keys(classesData[classNum].mediums[selectedMedium].streams[selectedStream].subjects) : [])
-        : (classesData[classNum]?.mediums?.[selectedMedium]?.subjects ? Object.keys(classesData[classNum].mediums[selectedMedium].subjects) : []);
+        ? (classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects ? Object.keys(classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects || {}) : [])
+        : (classesData[classNum]?.mediums?.[selectedMedium]?.subjects ? Object.keys(classesData[classNum]?.mediums?.[selectedMedium]?.subjects || {}) : []);
 
-    const originalSubjectName = currentSubjectsRaw.find(sub => sub.toLowerCase() === selectedSubject) || selectedSubject;
+    const originalSubjectName = currentSubjectsRaw.find(sub => sub.toLowerCase() === selectedSubject) || selectedSubject || '';
 
-    const chapters = isHighSchool
-        ? classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects?.[originalSubjectName]?.[activeTab] || []
-        : classesData[classNum]?.mediums?.[selectedMedium]?.subjects?.[originalSubjectName]?.[activeTab] || [];
+    const chapters = (isHighSchool
+        ? classesData[classNum]?.mediums?.[selectedMedium]?.streams?.[selectedStream]?.subjects?.[originalSubjectName]?.[activeTab]
+        : classesData[classNum]?.mediums?.[selectedMedium]?.subjects?.[originalSubjectName]?.[activeTab]) || [];
 
     // Map icon strings back to lucid-react components
     const getIcon = (iconName) => {
@@ -164,6 +165,7 @@ const ClassDetail = () => {
                 </div>
 
                 {/* DEDICATED NCERT BOOKS VIEW */}
+                <ErrorBoundary fallback={<button className="btn btn-primary" onClick={() => window.history.back()} style={{marginTop: '1rem'}}>Go Back</button>}>
                 {activeTab === 'ncert-books' ? (
                     <div>
                         {/* NCERT Official Banner */}
@@ -221,7 +223,7 @@ const ClassDetail = () => {
 
                         {/* Standalone Horizontal Grid (3 per row Desktop, 2 Tablet, 1 Mobile) */}
                         {(() => {
-                            const ncertChapters = getNcertChapters({ classNum, subject: originalSubjectName, medium: selectedMedium, stream: selectedStream });
+                            const ncertChapters = getNcertChapters({ classNum, subject: originalSubjectName, medium: selectedMedium, stream: selectedStream }) || [];
                             if (ncertChapters.length === 0) {
                                 return (
                                     <div style={{ padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'rgba(128,128,128,0.03)', borderRadius: '12px', border: '1px dashed var(--border-color)' }}>
@@ -235,6 +237,7 @@ const ClassDetail = () => {
                             return (
                                 <div className="resource-cards-grid">
                                     {ncertChapters.map((ch, idx) => {
+                                        if (!ch) return null;
                                         const isAvailable = ch.status === 'active';
                                         return (
                                             <div
@@ -259,14 +262,14 @@ const ClassDetail = () => {
                                                         </span>
                                                     </div>
                                                     <h4 className="resource-card-title">
-                                                        {ch.title}
+                                                        {ch.title || 'Untitled Chapter'}
                                                     </h4>
                                                 </div>
 
                                                 <div className="resource-card-actions">
                                                     {isAvailable ? (
                                                         <a
-                                                            href={ch.pdfUrl}
+                                                            href={ch.pdfUrl || '#'}
                                                             target="_blank"
                                                             rel="noreferrer"
                                                             className="btn btn-primary"
@@ -309,12 +312,12 @@ const ClassDetail = () => {
                         activeSubject={originalSubjectName}
                         activeStream={selectedStream}
                         activeContent={activeTab}
-                        chapters={chapters.map((ch, idx) => classesData.getChapterName ? classesData.getChapterName(classNum, originalSubjectName, ch, idx, selectedMedium) : ch)}
+                        chapters={(chapters || []).map((ch, idx) => classesData.getChapterName ? classesData.getChapterName(classNum, originalSubjectName, ch, idx, selectedMedium) : (ch || `Chapter ${idx + 1}`))}
                     />
                 ) : (
                     /* DEFAULT CHAPTER LIST FOR NOTES (3 PER ROW HORIZONTAL GRID) */
                     <div className="resource-cards-grid">
-                        {chapters.map((chapterName, index) => (
+                        {(chapters || []).map((chapterName, index) => (
                             <div key={index} className="resource-card animate-fade-in-up">
                                 <div>
                                     <div className="resource-card-header">
@@ -334,7 +337,7 @@ const ClassDetail = () => {
                                         </span>
                                     </div>
                                     <h4 className="resource-card-title">
-                                        {classesData.getChapterName ? classesData.getChapterName(classNum, originalSubjectName, chapterName, index, selectedMedium) : chapterName}
+                                        {classesData.getChapterName ? classesData.getChapterName(classNum, originalSubjectName, chapterName || `Chapter ${index + 1}`, index, selectedMedium) : (chapterName || `Chapter ${index + 1}`)}
                                     </h4>
                                 </div>
 
@@ -344,7 +347,7 @@ const ClassDetail = () => {
                                     </button>
                                     {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
                                         <a
-                                            href={activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) : `/pdfs/class${classNum}-${selectedMedium.toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : selectedSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
+                                            href={activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) : `/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="btn btn-primary"
@@ -355,7 +358,7 @@ const ClassDetail = () => {
                                 </div>
                             </div>
                         ))}
-                        {chapters.length === 0 && (
+                        {(!chapters || chapters.length === 0) && (
                             <div style={{ gridColumn: '1 / -1', padding: '3rem 2rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'rgba(128,128,128,0.03)', borderRadius: '12px', border: '1px dashed var(--border-color)' }}>
                                 <BookOpen size={40} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
                                 <p style={{ fontSize: '1.1rem', margin: 0 }}>No chapters available for this subject yet.</p>
@@ -363,9 +366,11 @@ const ClassDetail = () => {
                         )}
                     </div>
                 )}
+                </ErrorBoundary>
             </div>
         </div>
     );
 };
 
 export default ClassDetail;
+

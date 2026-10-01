@@ -4,9 +4,23 @@ import { ArrowLeft, BookOpen, ArrowRight, Book, FileText, CheckSquare, File, Clo
 import { classesData, getSubjectName, getChapterName } from '../data/classesData';
 import pdfManifest from '../data/pdfManifest.json';
 import externalBookLinks from '../data/externalBookLinks';
-import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChapterPdf } from '../data/ncertBooksData';
+import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChapterPdf, resolveClassPdfUrl } from '../data/ncertBooksData';
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ClassCard from '../components/ClassCard.jsx';
+import ErrorBoundary from '../components/common/ErrorBoundary.jsx';
+
+const getIcon = (iconName) => {
+    switch(iconName) {
+        case 'FileText': return <FileText size={18} />;
+        case 'BookOpen': return <BookOpen size={18} />;
+        case 'CheckSquare': return <CheckSquare size={18} />;
+        case 'Book': return <Book size={18} />;
+        case 'PlayCircle': return <PlayCircle size={18} />;
+        case 'File': return <File size={18} />;
+        case 'Clock': return <Clock size={18} />;
+        default: return <BookOpen size={18} />;
+    }
+};
 
 const Classes = () => {
     const { classId } = useParams();
@@ -116,19 +130,19 @@ const Classes = () => {
     // Dynamic Class Detail Render
 
     // Derive Available Mediums safely
-    const availableMediums = classesData[activeClass]?.mediums ? Object.keys(classesData[activeClass].mediums) : [];
+    const availableMediums = classesData[activeClass]?.mediums ? Object.keys(classesData[activeClass]?.mediums || {}) : [];
 
     // Derive Available Subjects safely based on chosen medium and stream
     const availableSubjects = (activeMedium && activeClass < 11 && classesData[activeClass]?.mediums?.[activeMedium]?.subjects)
-        ? Object.keys(classesData[activeClass].mediums[activeMedium].subjects)
+        ? Object.keys(classesData[activeClass]?.mediums?.[activeMedium]?.subjects || {})
         : (activeMedium && activeStream && activeClass >= 11 && classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects)
-            ? Object.keys(classesData[activeClass].mediums[activeMedium].streams[activeStream].subjects)
+            ? Object.keys(classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects || {})
             : [];
 
     // Derive Specific Content / Chapters based strictly on requested logic
-    const chapters = (activeClass && activeMedium && (activeClass < 11 || activeStream) && activeSubject && activeContent)
-        ? (activeClass >= 11 ? classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects?.[activeSubject]?.[activeContent] : classesData[activeClass]?.mediums?.[activeMedium]?.subjects?.[activeSubject]?.[activeContent]) || []
-        : [];
+    const chapters = ((activeClass && activeMedium && (activeClass < 11 || activeStream) && activeSubject && activeContent)
+        ? (activeClass >= 11 ? classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects?.[activeSubject]?.[activeContent] : classesData[activeClass]?.mediums?.[activeMedium]?.subjects?.[activeSubject]?.[activeContent])
+        : []) || [];
 
     return (
         <div className="section container animate-fade-in-up" style={{ transition: 'all 0.3s ease-in-out' }}>
@@ -282,6 +296,7 @@ const Classes = () => {
                     </div>
 
                     {/* DEDICATED NCERT BOOKS VIEW */}
+                    <ErrorBoundary fallback={<div style={{padding:'2rem', textAlign:'center'}}><button className="btn btn-primary" onClick={() => window.history.back()}>Go Back</button></div>}>
                     {activeContent === 'ncert-books' ? (
                         <div>
                             {/* NCERT Official Info Banner */}
@@ -342,7 +357,7 @@ const Classes = () => {
 
                             {/* Standalone Horizontal Responsive Grid (3 per row Desktop, 2 Tablet, 1 Mobile) */}
                             {(() => {
-                                const ncertChapters = getNcertChapters({ classNum: activeClass, subject: activeSubject, medium: activeMedium, stream: activeStream });
+                                const ncertChapters = getNcertChapters({ classNum: activeClass, subject: activeSubject, medium: activeMedium, stream: activeStream }) || [];
                                 if (ncertChapters.length === 0) {
                                     return (
                                         <div style={{ padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-secondary)', background: 'rgba(128,128,128,0.03)', borderRadius: '12px', border: '1px dashed var(--border-color)' }}>
@@ -356,6 +371,7 @@ const Classes = () => {
                                 return (
                                     <div className="resource-cards-grid">
                                         {ncertChapters.map((ch, idx) => {
+                                            if (!ch) return null;
                                             const isAvailable = ch.status === 'active';
                                             return (
                                                 <div
@@ -380,14 +396,14 @@ const Classes = () => {
                                                             </span>
                                                         </div>
                                                         <h4 className="resource-card-title">
-                                                            {ch.title}
+                                                            {ch.title || 'Untitled Chapter'}
                                                         </h4>
                                                     </div>
 
                                                     <div className="resource-card-actions">
                                                         {isAvailable ? (
                                                             <a
-                                                                href={ch.pdfUrl}
+                                                                href={ch.pdfUrl || '#'}
                                                                 target="_blank"
                                                                 rel="noreferrer"
                                                                 className="btn btn-primary"
@@ -430,15 +446,14 @@ const Classes = () => {
                             activeSubject={activeSubject}
                             activeStream={activeStream}
                             activeContent={activeContent}
-                            chapters={chapters.map((ch, idx) => getChapterName(activeClass, activeSubject, ch, idx, activeMedium))}
+                            chapters={(chapters || []).map((ch, idx) => getChapterName(activeClass, activeSubject, ch || `Chapter ${idx+1}`, idx, activeMedium))}
                         />
                     ) : (
                         /* DEFAULT CHAPTER-WISE VIEW FOR NOTES AND OTHER TABS (3 PER ROW HORIZONTAL GRID) */
                         <div className="resource-cards-grid">
-                            {chapters.length > 0 ? chapters.map((chapterName, index) => {
-                                const translatedChapter = getChapterName(activeClass, activeSubject, chapterName, index, activeMedium);
-                                const pdfFilename = activeContent === 'notes' ? `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-ch${index + 1}.pdf` : `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-${activeContent}-ch${index + 1}.pdf`;
-                                const pdfExists = pdfManifest.includes(pdfFilename);
+                            {(chapters && chapters.length > 0) ? chapters.map((chapterName, index) => {
+                                const translatedChapter = getChapterName(activeClass, activeSubject, chapterName || `Chapter ${index+1}`, index, activeMedium);
+                                const resolvedPdfUrl = resolveClassPdfUrl(activeClass, activeSubject, activeMedium, activeContent, index, activeStream);
                                 return (
                                     <div
                                         key={index}
@@ -472,27 +487,9 @@ const Classes = () => {
                                             </button>
 
                                             {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
-                                                externalBookLinks[pdfFilename] ? (
+                                                resolvedPdfUrl ? (
                                                     <a
-                                                        href={externalBookLinks[pdfFilename]}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="btn btn-primary"
-                                                    >
-                                                        <FileText size={16} /> View PDF <ArrowRight size={15} />
-                                                    </a>
-                                                ) : pdfExists ? (
-                                                    <a
-                                                        href={`/pdfs/${pdfFilename}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="btn btn-primary"
-                                                    >
-                                                        <FileText size={16} /> View PDF <ArrowRight size={15} />
-                                                    </a>
-                                                ) : (activeContent === 'books' && getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, index + 1, activeStream)) ? (
-                                                    <a
-                                                        href={getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, index + 1, activeStream)}
+                                                        href={resolvedPdfUrl}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="btn btn-primary"
@@ -520,6 +517,7 @@ const Classes = () => {
                             )}
                         </div>
                     )}
+                    </ErrorBoundary>
                 </div>
             )}
         </div>
