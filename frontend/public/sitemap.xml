@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/</loc>
+    <loc>https://techkarmaclasses.vercel.app/</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/notes</loc>
+    <loc>https://techkarmaclasses.vercel.app/notes</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/classes</loc>
+    <loc>https://techkarmaclasses.vercel.app/classes</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/courses</loc>
+    <loc>https://techkarmaclasses.vercel.app/courses</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/programming</loc>
+    <loc>https://techkarmaclasses.vercel.app/programming</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/exam</loc>
+    <loc>https://techkarmaclasses.vercel.app/exam</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/admission</loc>
+    <loc>https://techkarmaclasses.vercel.app/admission</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://techkarma-new-blku.vercel.app/contact</loc>
+    <loc>https://techkarmaclasses.vercel.app/contact</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
