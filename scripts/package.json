@@ -11,7 +11,9 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1145.0",
     "cloudinary": "^2.11.0",
-    "dotenv": "^18.0.5"
+    "dotenv": "^18.0.5",
+    "pdf-lib": "^1.17.1"
   }
 }

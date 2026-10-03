@@ -114,31 +114,31 @@ const Home = () => {
         {
             title: "Core Programming",
             courses: [
-                { name: "Python", desc: "High-level language for AI, data science, automation, and backend engineering.", icon: <Terminal size={24} />, tag: "AI & Data", color: "#38bdf8", colorRgb: "56, 189, 248", pdfUrl: "/pdfs/python-pre-notes-cse-gyan.pdf" },
-                { name: "C Language", desc: "Foundational logic, pointers, memory architecture, and systems programming.", icon: <Laptop size={24} />, tag: "Systems & Logic", color: "#60a5fa", colorRgb: "96, 165, 250", pdfUrl: "/pdfs/C_Programming_Complete_Handwritten_Notes.pdf" },
-                { name: "C++", desc: "High-performance computing, OOP principles, STL, and competitive coding.", icon: <Rocket size={24} />, tag: "High Performance", color: "#818cf8", colorRgb: "129, 140, 248", pdfUrl: "/pdfs/CPP_Programming_Complete_Handwritten_Notes.pdf" },
-                { name: "Java", desc: "Enterprise systems, JVM internals, multithreading, and backend architecture.", icon: <BookOpen size={24} />, tag: "Enterprise", color: "#f97316", colorRgb: "249, 115, 22", pdfUrl: "/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf" },
-                { name: "HTML5", desc: "The universal web backbone: semantic structure, modern forms, media, and SEO.", icon: <Globe size={24} />, tag: "Web Structure", color: "#ef4444", colorRgb: "239, 68, 68", pdfUrl: "/pdfs/HTML_Complete_Handwritten_Notes.pdf" },
-                { name: "CSS3", desc: "Modern UI styling, Flexbox, CSS Grid, keyframe animations, and glassmorphism.", icon: <Palette size={24} />, tag: "Modern UI", color: "#06b6d4", colorRgb: "6, 182, 212", pdfUrl: "/pdfs/CSS_Complete_Handwritten_Notes.pdf" },
-                { name: "JavaScript", desc: "Modern ES6+, DOM manipulation, asynchronous programming, and dynamic web APIs.", icon: <Zap size={24} />, tag: "Dynamic Web", color: "#eab308", colorRgb: "234, 179, 8", pdfUrl: "/pdfs/JavaScript_Complete_Handwritten_Notes.pdf" }
+                { name: "Python", desc: "High-level language for AI, data science, automation, and backend engineering.", icon: <Terminal size={24} />, tag: "AI & Data", color: "#38bdf8", colorRgb: "56, 189, 248", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/python-pre-notes-cse-gyan.pdf" },
+                { name: "C Language", desc: "Foundational logic, pointers, memory architecture, and systems programming.", icon: <Laptop size={24} />, tag: "Systems & Logic", color: "#60a5fa", colorRgb: "96, 165, 250", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/C_Programming_Complete_Handwritten_Notes.pdf" },
+                { name: "C++", desc: "High-performance computing, OOP principles, STL, and competitive coding.", icon: <Rocket size={24} />, tag: "High Performance", color: "#818cf8", colorRgb: "129, 140, 248", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/CPP_Programming_Complete_Handwritten_Notes.pdf" },
+                { name: "Java", desc: "Enterprise systems, JVM internals, multithreading, and backend architecture.", icon: <BookOpen size={24} />, tag: "Enterprise", color: "#f97316", colorRgb: "249, 115, 22", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf" },
+                { name: "HTML5", desc: "The universal web backbone: semantic structure, modern forms, media, and SEO.", icon: <Globe size={24} />, tag: "Web Structure", color: "#ef4444", colorRgb: "239, 68, 68", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/HTML_Complete_Handwritten_Notes.pdf" },
+                { name: "CSS3", desc: "Modern UI styling, Flexbox, CSS Grid, keyframe animations, and glassmorphism.", icon: <Palette size={24} />, tag: "Modern UI", color: "#06b6d4", colorRgb: "6, 182, 212", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/CSS_Complete_Handwritten_Notes.pdf" },
+                { name: "JavaScript", desc: "Modern ES6+, DOM manipulation, asynchronous programming, and dynamic web APIs.", icon: <Zap size={24} />, tag: "Dynamic Web", color: "#eab308", colorRgb: "234, 179, 8", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/JavaScript_Complete_Handwritten_Notes.pdf" }
             ]
         },
         {
             title: "Core Computer Science Subjects",
             courses: [
-                { name: "Data Structures", desc: "Master algorithms, arrays, trees, graphs, and problem solving.", icon: <File size={24} />, tag: "DSA", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/Data-Structure-DSA-pre-notes-cse-gyan.pdf" },
-                { name: "Operating Systems", desc: "Understand kernel, concurrency, processes, and memory management.", icon: <Cpu size={24} />, tag: "OS & Kernel", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/OS-pre-notes-cse-gyan.pdf" },
-                { name: "Database Systems", desc: "SQL, normalization, indexing, NoSQL, and scalable schema design.", icon: <FileText size={24} />, tag: "Databases", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/DBMS-pre-notes-cse-gyan.pdf" },
-                { name: "Computer Networks", desc: "TCP/IP protocols, routing, OSI model, socket programming, and security.", icon: <CheckSquare size={24} />, tag: "Networking", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/Computer-Networks-pre-notes-cse-gyan.pdf" }
+                { name: "Data Structures", desc: "Master algorithms, arrays, trees, graphs, and problem solving.", icon: <File size={24} />, tag: "DSA", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data-Structure-DSA-pre-notes-cse-gyan.pdf" },
+                { name: "Operating Systems", desc: "Understand kernel, concurrency, processes, and memory management.", icon: <Cpu size={24} />, tag: "OS & Kernel", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/OS-pre-notes-cse-gyan.pdf" },
+                { name: "Database Systems", desc: "SQL, normalization, indexing, NoSQL, and scalable schema design.", icon: <FileText size={24} />, tag: "Databases", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/DBMS-pre-notes-cse-gyan.pdf" },
+                { name: "Computer Networks", desc: "TCP/IP protocols, routing, OSI model, socket programming, and security.", icon: <CheckSquare size={24} />, tag: "Networking", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Computer-Networks-pre-notes-cse-gyan.pdf" }
             ]
         },
         {
             title: "Advanced Technologies",
             courses: [
-                { name: "Artificial Intelligence", desc: "Machine learning, neural networks, deep learning, and generative AI.", icon: <Brain size={24} />, tag: "AI & ML", color: "#f43f5e", colorRgb: "244, 63, 94", pdfUrl: "/pdfs/AI_Complete_Handwritten_Notes.pdf" },
-                { name: "Cloud Computing", desc: "AWS, Azure, containerization (Docker/K8s), and microservices deployment.", icon: <Cloud size={24} />, tag: "Cloud & DevOps", color: "#06b6d4", colorRgb: "6, 182, 212", pdfUrl: "/pdfs/Cloud_Computing_Complete_Handwritten_Notes.pdf" },
-                { name: "Cyber Security", desc: "Ethical hacking, cryptography, threat modeling, and defense mechanisms.", icon: <ShieldAlert size={24} />, tag: "Security", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/Cyber_Security_Complete_Handwritten_Notes.pdf" },
-                { name: "Data Science", desc: "Data analytics, statistical modeling, visualization, and big data pipelines.", icon: <Database size={24} />, tag: "Analytics", color: "#8b5cf6", colorRgb: "139, 92, 246", pdfUrl: "/pdfs/Data_Science_Complete_Handwritten_Notes.pdf" }
+                { name: "Artificial Intelligence", desc: "Machine learning, neural networks, deep learning, and generative AI.", icon: <Brain size={24} />, tag: "AI & ML", color: "#f43f5e", colorRgb: "244, 63, 94", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/AI_Complete_Handwritten_Notes.pdf" },
+                { name: "Cloud Computing", desc: "AWS, Azure, containerization (Docker/K8s), and microservices deployment.", icon: <Cloud size={24} />, tag: "Cloud & DevOps", color: "#06b6d4", colorRgb: "6, 182, 212", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Cloud_Computing_Complete_Handwritten_Notes.pdf" },
+                { name: "Cyber Security", desc: "Ethical hacking, cryptography, threat modeling, and defense mechanisms.", icon: <ShieldAlert size={24} />, tag: "Security", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Cyber_Security_Complete_Handwritten_Notes.pdf" },
+                { name: "Data Science", desc: "Data analytics, statistical modeling, visualization, and big data pipelines.", icon: <Database size={24} />, tag: "Analytics", color: "#8b5cf6", colorRgb: "139, 92, 246", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data_Science_Complete_Handwritten_Notes.pdf" }
             ]
         }
     ];
@@ -991,7 +991,7 @@ const Home = () => {
                                                     {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
                                                         pdfExists ? (
                                                             <a
-                                                                href={pdfFilename.startsWith("class") ? `https://res.cloudinary.com/dtcuvept/image/upload/pdfs/${pdfFilename}` : `/pdfs/${pdfFilename}`}
+                                                                href={pdfFilename.startsWith("class") ? `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}` : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}`}
                                                                 target="_blank"
                                                                 rel="noreferrer"
                                                                 className="btn btn-primary"

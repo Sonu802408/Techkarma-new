@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Upload, Users, BookOpen, Settings, FileText, Database, Plus, Trash2, Shield, RefreshCw, Search, Phone, Mail, Clock, CheckCircle2, ExternalLink, Book, Check, MessageSquare } from 'lucide-react';
 import { ncertBooksData } from '../data/ncertBooksData';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 
 const AdminDashboard = () => {
     const { token, isAdmin, isLoggedIn, presence } = useAuth();
@@ -156,7 +157,10 @@ const AdminDashboard = () => {
 
                         {/* Search Bar */}
                         <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
-                            <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                            <div style={{ position: 'absolute', left: '0.6rem', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.4rem', pointerEvents: 'none', zIndex: 2 }}>
+                                <img src={logo} alt="Logo" style={{ width: '28px', height: '28px', objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(56, 189, 248, 0.65))' }} />
+                                <Search size={16} style={{ color: 'var(--text-secondary)' }} />
+                            </div>
                             <input
                                 type="text"
                                 placeholder="Search students by name, email, or phone number..."
@@ -164,7 +168,7 @@ const AdminDashboard = () => {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 style={{
                                     width: '100%',
-                                    padding: '0.8rem 1rem 0.8rem 2.8rem',
+                                    padding: '0.8rem 1rem 0.8rem 3.6rem',
                                     borderRadius: 'var(--border-radius)',
                                     border: '1px solid var(--border-color)',
                                     background: 'var(--bg-primary)',
@@ -287,7 +291,10 @@ const AdminDashboard = () => {
                         {/* Search & Filter Bar */}
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                             <div style={{ position: 'relative', flex: '1 1 250px' }}>
-                                <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                                <div style={{ position: 'absolute', left: '0.6rem', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.4rem', pointerEvents: 'none', zIndex: 2 }}>
+                                    <img src={logo} alt="Logo" style={{ width: '28px', height: '28px', objectFit: 'contain', filter: 'drop-shadow(0 0 6px rgba(56, 189, 248, 0.65))' }} />
+                                    <Search size={16} style={{ color: 'var(--text-secondary)' }} />
+                                </div>
                                 <input
                                     type="text"
                                     placeholder="Search by book title, subject, or code..."
@@ -295,7 +302,7 @@ const AdminDashboard = () => {
                                     onChange={(e) => setNcertSearch(e.target.value)}
                                     style={{
                                         width: '100%',
-                                        padding: '0.75rem 1rem 0.75rem 2.8rem',
+                                        padding: '0.75rem 1rem 0.75rem 3.6rem',
                                         borderRadius: 'var(--border-radius)',
                                         border: '1px solid var(--border-color)',
                                         background: 'var(--bg-primary)',

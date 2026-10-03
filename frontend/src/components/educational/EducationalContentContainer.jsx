@@ -33,8 +33,11 @@ const EducationalContentContainer = ({
     });
 
     const subjectSlug = (activeSubject === 'Social Studies (SST)' ? 'socialstudies' : (activeSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, ''));
-    const pdfUrl = `https://res.cloudinary.com/dtcuvept/image/upload/pdfs/class${activeClass}-${(activeMedium || 'English').toLowerCase()}-${subjectSlug}-${activeContent}-ch${selectedChapterIdx + 1}.pdf`;
-    const officialSamplePdf = `/pdfs/sample-papers/cbse-class-${activeClass}-${subjectSlug}-2026.pdf`;
+    const fileName = `class${activeClass}-${(activeMedium || 'English').toLowerCase()}-${subjectSlug}-${activeContent}-ch${selectedChapterIdx + 1}.pdf`;
+    const pdfUrl = `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${fileName}`;
+    
+    const sampleFileName = `cbse-class-${activeClass}-${subjectSlug}-2026.pdf`;
+    const officialSamplePdf = `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${sampleFileName}`;
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>

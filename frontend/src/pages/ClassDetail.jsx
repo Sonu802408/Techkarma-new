@@ -347,7 +347,7 @@ const ClassDetail = () => {
                                     </button>
                                     {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
                                         <a
-                                            href={activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) : `https://res.cloudinary.com/dtcuvept/image/upload/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
+                                            href={activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="btn btn-primary"

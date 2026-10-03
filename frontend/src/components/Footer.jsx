@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { GraduationCap, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const Footer = () => {
     return (
@@ -10,10 +11,26 @@ const Footer = () => {
 
                     {/* Brand Col */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <div style={{ background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))', padding: '0.5rem', borderRadius: '12px', color: 'white' }}>
-                                <GraduationCap size={28} />
-                            </div>
+                        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
+                            <img
+                                src={logo}
+                                alt="Tech Karma Classes"
+                                style={{
+                                    height: '56px',
+                                    width: '56px',
+                                    objectFit: 'contain',
+                                    filter: 'drop-shadow(0 0 10px rgba(56, 189, 248, 0.55))',
+                                    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'perspective(400px) rotateY(-20deg) rotateX(12deg) scale(1.2) translateZ(10px)';
+                                    e.currentTarget.style.filter = 'drop-shadow(0 0 20px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 35px rgba(14, 165, 233, 0.6))';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'none';
+                                    e.currentTarget.style.filter = 'drop-shadow(0 0 10px rgba(56, 189, 248, 0.55))';
+                                }}
+                            />
                             <span style={{ fontWeight: 800, fontSize: '1.5rem', letterSpacing: '-0.5px' }} className="gradient-text">
                                 Tech Karma
                             </span>

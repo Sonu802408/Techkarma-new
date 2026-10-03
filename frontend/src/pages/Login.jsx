@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, Mail, Phone, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.png';
 
 const Login = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -82,6 +83,28 @@ const Login = () => {
         <section className="section" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
             <div className="card animate-fade-in-up" style={{ width: '100%', maxWidth: '480px', padding: '2.5rem 2rem' }}>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                    <div style={{ display: 'inline-block', marginBottom: '1rem' }}>
+                        <img
+                            src={logo}
+                            alt="Tech Karma Classes"
+                            style={{
+                                width: '85px',
+                                height: '85px',
+                                objectFit: 'contain',
+                                filter: 'drop-shadow(0 0 16px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 5px rgba(14, 165, 233, 0.45))',
+                                transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                                cursor: 'pointer'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'perspective(500px) rotateY(18deg) rotateX(-12deg) scale(1.2) translateZ(15px)';
+                                e.currentTarget.style.filter = 'drop-shadow(0 8px 25px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 40px rgba(14, 165, 233, 0.7))';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'none';
+                                e.currentTarget.style.filter = 'drop-shadow(0 0 16px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 5px rgba(14, 165, 233, 0.45))';
+                            }}
+                        />
+                    </div>
                     <h2 className="gradient-text" style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
                         {isLogin ? 'Welcome Back' : 'Join Tech Karma Classes'}
                     </h2>

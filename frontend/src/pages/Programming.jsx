@@ -11,7 +11,7 @@ const Programming = () => {
             color: '#38bdf8',
             colorRgb: '56, 189, 248',
             desc: 'High-level, versatile language powering artificial intelligence, data science, automation, and full-stack web applications.',
-            pdfUrl: '/pdfs/python-pre-notes-cse-gyan.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/python-pre-notes-cse-gyan.pdf',
             topics: ['Variables, Lists & Dictionaries', 'Functions & Functional Programming', 'Object-Oriented Programming (OOP)', 'NumPy, Pandas & Automation', 'Django & FastAPI Basics']
         },
         {
@@ -21,7 +21,7 @@ const Programming = () => {
             color: '#60a5fa',
             colorRgb: '96, 165, 250',
             desc: 'The mother of modern programming. Master pointers, raw memory allocation, structured programming, and hardware-level algorithms.',
-            pdfUrl: '/pdfs/C_Programming_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/C_Programming_Complete_Handwritten_Notes.pdf',
             topics: ['Data Types & Control Flow', 'Arrays, Strings & Matrices', 'Pointers & Memory Architecture', 'Dynamic Memory (malloc/free)', 'Structures, Unions & File I/O']
         },
         {
@@ -31,7 +31,7 @@ const Programming = () => {
             color: '#818cf8',
             colorRgb: '129, 140, 248',
             desc: 'Ultra-fast compiled language designed for system software, game development, high-frequency engines, and competitive coding.',
-            pdfUrl: '/pdfs/CPP_Programming_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/CPP_Programming_Complete_Handwritten_Notes.pdf',
             topics: ['Classes, Objects & Constructors', 'Standard Template Library (STL)', 'Pointers, References & Templates', 'Operator Overloading & Virtual Funcs', 'DSA Problem-Solving Patterns']
         },
         {
@@ -41,7 +41,7 @@ const Programming = () => {
             color: '#f97316',
             colorRgb: '249, 115, 22',
             desc: 'Platform-independent enterprise powerhouse language powering scalable backend servers, Android development, and microservices.',
-            pdfUrl: '/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf',
             topics: ['Core Java & OOP Principles', 'Java Collections Framework', 'Multithreading & Concurrency', 'Exception Handling & I/O Streams', 'Spring Boot & JDBC Intro']
         },
         {
@@ -51,7 +51,7 @@ const Programming = () => {
             color: '#ef4444',
             colorRgb: '239, 68, 68',
             desc: 'The universal backbone of the web. Learn semantic tags, modern forms, media streaming, web accessibility, and SEO foundations.',
-            pdfUrl: '/pdfs/HTML_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/HTML_Complete_Handwritten_Notes.pdf',
             topics: ['Semantic HTML5 Elements', 'Modern Forms & Input Types', 'Audio, Video & Canvas Media', 'Web Accessibility (a11y)', 'SEO Optimization & Meta Standards']
         },
         {
@@ -61,7 +61,7 @@ const Programming = () => {
             color: '#06b6d4',
             colorRgb: '6, 182, 212',
             desc: 'Transform web documents into gorgeous user interfaces with Flexbox, CSS Grid, keyframe animations, glassmorphism, and responsive layouts.',
-            pdfUrl: '/pdfs/CSS_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/CSS_Complete_Handwritten_Notes.pdf',
             topics: ['Flexbox & CSS Grid Mastery', 'Transitions & Keyframe Animations', 'Responsive Design & Media Queries', 'CSS Custom Properties (Variables)', 'Glassmorphism & 3D Transforms']
         },
         {
@@ -71,7 +71,7 @@ const Programming = () => {
             color: '#eab308',
             colorRgb: '234, 179, 8',
             desc: 'The heartbeat of modern interactive web development. Master ES6+ syntax, asynchronous programming, DOM APIs, and state management.',
-            pdfUrl: '/pdfs/JavaScript_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/JavaScript_Complete_Handwritten_Notes.pdf',
             topics: ['ES6+ Syntax & Scope (let/const)', 'DOM Manipulation & Event Handling', 'Promises, Async/Await & Fetch API', 'Closures, Prototypes & Callbacks', 'State, Modules & Web APIs']
         }
     ];

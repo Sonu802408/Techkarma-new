@@ -32,6 +32,22 @@ const Navbar = ({ theme, setTheme }) => {
     };
 
     const [scrolled, setScrolled] = useState(false);
+    const [logoTilt, setLogoTilt] = useState({ rotateX: 0, rotateY: 0, isHovered: false });
+
+    const handleLogoMouseMove = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotX = ((centerY - y) / centerY) * 24;
+        const rotY = ((x - centerX) / centerX) * 24;
+        setLogoTilt({ rotateX: rotX, rotateY: rotY, isHovered: true });
+    };
+
+    const handleLogoMouseLeave = () => {
+        setLogoTilt({ rotateX: 0, rotateY: 0, isHovered: false });
+    };
 
     useEffect(() => {
         let ticking = false;
@@ -115,30 +131,48 @@ const Navbar = ({ theme, setTheme }) => {
                 {/* Logo */}
                 <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '15px', zIndex: 1001, paddingLeft: '20px', textDecoration: 'none' }} onClick={closeMenu}>
                     <div
-                        className="logo-img"
+                        className="logo-3d-stage"
+                        onMouseMove={handleLogoMouseMove}
+                        onMouseEnter={() => setLogoTilt(prev => ({ ...prev, isHovered: true }))}
+                        onMouseLeave={handleLogoMouseLeave}
                         style={{
                             height: 'var(--logo-height, 110px)',
                             width: 'var(--logo-height, 110px)',
-                            borderRadius: '50%',
-                            overflow: 'hidden',
+                            perspective: '1000px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            background: 'transparent',
-                            flexShrink: 0
+                            flexShrink: 0,
+                            cursor: 'pointer'
                         }}
                     >
-                        <img
-                            src={logo}
-                            alt="Tech Karma Classes"
+                        <div
+                            className={`logo-3d-card ${logoTilt.isHovered ? 'hovered' : 'floating'}`}
                             style={{
-                                height: '100%',
                                 width: '100%',
-                                objectFit: 'cover',
-                                transform: 'scale(1.25)', // Scales up the logo graphic to push white borders out of the circular frame
-                                transition: 'all 0.3s ease'
+                                height: '100%',
+                                transformStyle: 'preserve-3d',
+                                transform: logoTilt.isHovered
+                                    ? `perspective(800px) rotateX(${logoTilt.rotateX}deg) rotateY(${logoTilt.rotateY}deg) scale3d(1.18, 1.18, 1.18) translateZ(28px)`
+                                    : undefined,
+                                transition: logoTilt.isHovered ? 'transform 0.08s ease-out' : 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)'
                             }}
-                        />
+                        >
+                            <img
+                                src={logo}
+                                alt="Tech Karma Classes"
+                                className="logo-3d-img"
+                                style={{
+                                    height: '100%',
+                                    width: '100%',
+                                    objectFit: 'contain',
+                                    filter: logoTilt.isHovered
+                                        ? 'drop-shadow(0 16px 28px rgba(56, 189, 248, 0.9)) drop-shadow(0 0 35px rgba(14, 165, 233, 0.7))'
+                                        : 'drop-shadow(0 8px 16px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 16px rgba(14, 165, 233, 0.4))',
+                                    transition: 'filter 0.3s ease'
+                                }}
+                            />
+                        </div>
                     </div>
                     <span className="navbar-brand-name" style={{
                         fontSize: 'clamp(1.2rem, 2vw, 1.8rem)',
@@ -508,12 +542,34 @@ const Navbar = ({ theme, setTheme }) => {
            background: rgba(99, 102, 241, 0.1);
            color: var(--primary-color) !important;
         }
-        .logo-img { --logo-height: 110px; }
+        .logo-3d-stage {
+          --logo-height: 110px;
+          user-select: none;
+        }
         @media (max-width: 1024px) {
-          .logo-img { --logo-height: 85px; }
+          .logo-3d-stage { --logo-height: 85px; }
         }
         @media (max-width: 768px) {
-          .logo-img { --logo-height: 65px; }
+          .logo-3d-stage { --logo-height: 65px; }
+        }
+
+        @keyframes logo3dFloat {
+          0% {
+            transform: perspective(900px) rotateX(6deg) rotateY(-8deg) translateY(0px) translateZ(0px);
+          }
+          33% {
+            transform: perspective(900px) rotateX(-5deg) rotateY(7deg) translateY(-8px) translateZ(16px);
+          }
+          66% {
+            transform: perspective(900px) rotateX(5deg) rotateY(6deg) translateY(-4px) translateZ(8px);
+          }
+          100% {
+            transform: perspective(900px) rotateX(6deg) rotateY(-8deg) translateY(0px) translateZ(0px);
+          }
+        }
+
+        .logo-3d-card.floating {
+          animation: logo3dFloat 5.5s ease-in-out infinite;
         }
       `}} />
         </nav>

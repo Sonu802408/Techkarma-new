@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Download, FileText, Lock, ArrowRight } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const Notes = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -49,14 +50,47 @@ const Notes = () => {
 
             <div className="glass-card" style={{ marginBottom: '2.5rem', padding: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', maxWidth: '100%' }}>
                 <div style={{ position: 'relative', flex: '1 1 300px' }}>
-                    <Search size={20} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                    <div style={{
+                        position: 'absolute',
+                        left: '0.6rem',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        pointerEvents: 'none',
+                        zIndex: 2
+                    }}>
+                        <img
+                            src={logo}
+                            alt="Tech Karma Classes"
+                            style={{
+                                width: '32px',
+                                height: '32px',
+                                objectFit: 'contain',
+                                filter: 'drop-shadow(0 0 7px rgba(56, 189, 248, 0.65))',
+                                transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                                cursor: 'pointer',
+                                pointerEvents: 'auto'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'perspective(400px) rotateY(25deg) rotateX(-12deg) scale(1.35) translateZ(12px)';
+                                e.currentTarget.style.filter = 'drop-shadow(0 4px 14px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 25px rgba(14, 165, 233, 0.6))';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'none';
+                                e.currentTarget.style.filter = 'drop-shadow(0 0 7px rgba(56, 189, 248, 0.65))';
+                            }}
+                        />
+                        <Search size={16} style={{ color: 'var(--text-secondary)' }} />
+                    </div>
                     <input
                         type="text"
                         placeholder="Search notes, topics, or subjects..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         autoComplete="off"
-                        style={{ paddingLeft: '3rem', borderRadius: '50px' }}
+                        style={{ paddingLeft: '3.8rem', borderRadius: '50px' }}
                     />
                 </div>
 
@@ -130,7 +164,7 @@ const Notes = () => {
                                     Unlock Note <ArrowRight size={15} />
                                 </button>
                             ) : note.file ? (
-                                <a href={`/pdfs/${note.file}`} target="_blank" rel="noreferrer" className="btn btn-primary">
+                                <a href={`https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${note.file}`} target="_blank" rel="noreferrer" className="btn btn-primary">
                                     <Download size={16} /> Download PDF
                                 </a>
                             ) : (
