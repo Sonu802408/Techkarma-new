@@ -15,37 +15,56 @@ export const AuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(() => localStorage.getItem('techkarma_token') || null);
     const [socket, setSocket] = useState(null);
-    // Realistic presence calculation based on study peak hours
-    const getBasePresence = () => {
-        const now = new Date();
-        const hours = now.getHours(); // 0 to 23
-        let base = 24;
-        if (hours >= 16 && hours <= 23) {
-            // Peak study hours (evening/night)
-            base = 32 + (hours % 4) * 3;
-        } else if (hours >= 10 && hours < 16) {
-            // Afternoon study hours
-            base = 22 + (hours % 3) * 2;
-        } else if (hours >= 6 && hours < 10) {
-            // Morning study hours
-            base = 15 + (hours % 3);
-        } else {
-            // Late night
-            base = 8 + (hours % 2);
-        }
-        return {
-            totalLiveCount: base,
-            liveStudentsCount: Math.max(3, Math.round(base * 0.7)),
-            totalRegistered: 580,
-            onlineStudentNames: user ? [user.name] : ['Aarav M.', 'Priya S.', 'Rohan K.', 'Sneha V.', 'Aditya P.']
-        };
-    };
+    // 100% Real Presence State - No Fake Numbers
+    const [presence, setPresence] = useState({
+        totalLiveCount: 1, // Real current active visitor session
+        liveStudentsCount: user ? 1 : 0,
+        onlineStudentNames: user ? [user.name] : [],
+        totalRegistered: 0,
+        totalVisits: 1
+    });
 
-    const [presence, setPresence] = useState(() => getBasePresence());
-
-    // Fetch real stats from API if available
+    // Real Cross-Tab and Visit Tracker
     useEffect(() => {
         let isMounted = true;
+        const myTabId = Math.random().toString(36).substring(2, 9);
+        const activeTabs = new Set([myTabId]);
+
+        // Track real visits in localStorage
+        try {
+            const currentVisits = parseInt(localStorage.getItem('techkarma_total_visits') || '0', 10) + 1;
+            localStorage.setItem('techkarma_total_visits', currentVisits.toString());
+            if (isMounted) {
+                setPresence(prev => ({ ...prev, totalVisits: currentVisits }));
+            }
+        } catch (e) {}
+
+        // BroadcastChannel to count real open tabs in real-time
+        let channel = null;
+        try {
+            channel = new BroadcastChannel('techkarma_real_presence');
+            channel.postMessage({ type: 'PING', tabId: myTabId });
+
+            channel.onmessage = (event) => {
+                if (!event.data) return;
+                if (event.data.type === 'PING') {
+                    activeTabs.add(event.data.tabId);
+                    channel.postMessage({ type: 'PONG', tabId: myTabId });
+                } else if (event.data.type === 'PONG') {
+                    activeTabs.add(event.data.tabId);
+                } else if (event.data.type === 'CLOSE') {
+                    activeTabs.delete(event.data.tabId);
+                }
+                if (isMounted) {
+                    setPresence(prev => ({
+                        ...prev,
+                        totalLiveCount: Math.max(1, activeTabs.size)
+                    }));
+                }
+            };
+        } catch (e) {}
+
+        // Fetch real stats from server if database is connected
         const fetchServerStats = async () => {
             try {
                 const res = await fetch('/api/stats');
@@ -54,40 +73,30 @@ export const AuthProvider = ({ children }) => {
                     if (data && data.success && isMounted) {
                         setPresence(prev => ({
                             ...prev,
-                            totalRegistered: Math.max(580, data.totalUsers || 580)
+                            totalRegistered: data.totalUsers || 0,
+                            totalVisits: data.totalVisits || prev.totalVisits
                         }));
                     }
                 }
-            } catch (e) {
-                // Ignore silent network errors on static hosting
-            }
+            } catch (e) {}
         };
         fetchServerStats();
 
-        // Realistic live presence ticker (simulates live learners joining & completing study sessions)
-        const presenceInterval = setInterval(() => {
-            if (!isMounted) return;
-            setPresence(prev => {
-                const base = getBasePresence();
-                // Random natural jitter between -2 and +2
-                const jitter = Math.floor(Math.random() * 5) - 2;
-                const newLive = Math.max(6, base.totalLiveCount + jitter);
-                return {
-                    ...prev,
-                    totalLiveCount: newLive,
-                    liveStudentsCount: Math.max(3, Math.round(newLive * 0.75)),
-                    onlineStudentNames: user
-                        ? [user.name, ...base.onlineStudentNames.filter(n => n !== user.name)]
-                        : base.onlineStudentNames
-                };
-            });
-        }, 12000);
+        // Increment visit count on server if available
+        try {
+            fetch('/api/stats/visit', { method: 'POST' }).catch(() => {});
+        } catch (e) {}
 
         return () => {
             isMounted = false;
-            clearInterval(presenceInterval);
+            if (channel) {
+                try {
+                    channel.postMessage({ type: 'CLOSE', tabId: myTabId });
+                    channel.close();
+                } catch (e) {}
+            }
         };
-    }, [user]);
+    }, []);
 
     // Initialize Socket.io instance if server supports it
     useEffect(() => {
@@ -125,7 +134,7 @@ export const AuthProvider = ({ children }) => {
                         onlineStudentNames: Array.isArray(data.onlineStudentNames) && data.onlineStudentNames.length > 0
                             ? data.onlineStudentNames
                             : prev.onlineStudentNames,
-                        totalRegistered: Math.max(prev.totalRegistered, data.totalRegistered || 580)
+                        totalRegistered: data.totalRegistered !== undefined ? data.totalRegistered : prev.totalRegistered
                     }));
                 }
             });

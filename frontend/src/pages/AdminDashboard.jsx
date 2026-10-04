@@ -142,7 +142,7 @@ const AdminDashboard = () => {
                             <div>
                                 <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Registered Students & Presence</h2>
                                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.2rem' }}>
-                                    Total Registered: <strong>{usersList.length > 0 ? usersList.length : (presence?.totalRegistered || 580)}</strong> | Currently Live: <strong style={{ color: '#22c55e' }}>{presence?.totalLiveCount || 24}</strong>
+                                    Total Registered: <strong>{usersList.length}</strong> | Currently Live: <strong style={{ color: '#22c55e' }}>{presence?.totalLiveCount || 1}</strong> | Total Visits: <strong style={{ color: '#38bdf8' }}>{presence?.totalVisits || 1}</strong>
                                 </p>
                             </div>
                             <button

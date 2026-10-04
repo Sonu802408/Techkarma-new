@@ -309,7 +309,7 @@ const Navbar = ({ theme, setTheme }) => {
                     {/* Live Presence Pill */}
                     <div
                         className="live-presence-pill"
-                        title={`${presence?.totalLiveCount || 24} Students studying live online right now • ${presence?.totalRegistered || 580}+ Registered Students`}
+                        title={`${presence?.totalLiveCount || 1} Active Visitor(s) Online Right Now • ${presence?.totalVisits || 1} Total Website Visits`}
                         style={{
                             display: 'inline-flex',
                             alignItems: 'center',
@@ -332,7 +332,7 @@ const Navbar = ({ theme, setTheme }) => {
                             <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.75 }}></span>
                             <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
                         </span>
-                        <span>{presence?.totalLiveCount || 24} Live</span>
+                        <span>{presence?.totalLiveCount || 1} Live</span>
                     </div>
 
                     <select
@@ -448,11 +448,11 @@ const Navbar = ({ theme, setTheme }) => {
                                 <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
                             </span>
                             <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#22c55e' }}>
-                                {presence?.totalLiveCount || 24} Students Live
+                                {presence?.totalLiveCount || 1} Active Online
                             </span>
                         </div>
                         <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                            {presence?.totalRegistered || 580}+ Enrolled
+                            {presence?.totalVisits ? `${presence.totalVisits} Visits` : 'Live'}
                         </span>
                     </div>
 

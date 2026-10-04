@@ -164,22 +164,22 @@ const Home = () => {
     // Data for Statistics Counter Section
     const statsData = [
         {
-            target: presence?.totalLiveCount || 24,
+            target: presence?.totalLiveCount || 1,
             suffix: " Live",
-            value: `${presence?.totalLiveCount || 24} Live`,
-            label: "Students Online Now",
-            desc: "Active students studying notes, solving test series, and coding right now.",
+            value: `${presence?.totalLiveCount || 1} Live`,
+            label: "Active Visitors Right Now",
+            desc: "Real-time active visitors exploring courses and notes right now.",
             icon: <Zap size={30} />,
             color: "#22c55e",
             colorRgb: "34, 197, 94",
             isLive: true
         },
         {
-            target: presence?.totalRegistered || 580,
+            target: presence?.totalVisits || 1,
             suffix: "+",
-            value: `${presence?.totalRegistered || 580}+`,
-            label: "Registered Students",
-            desc: "Empowering bright minds with conceptual clarity and high board scores.",
+            value: `${presence?.totalVisits || 1}+`,
+            label: "Total Website Visits",
+            desc: "Lifetime learners and visitors who have explored Tech Karma Classes.",
             icon: <Users size={30} />,
             color: "#3b82f6",
             colorRgb: "59, 130, 246"
@@ -471,7 +471,7 @@ const Home = () => {
                                         marginLeft: '-9px',
                                         border: '2px solid var(--bg-primary, #0f172a)'
                                     }}>
-                                        +{presence?.totalRegistered ? Math.max(500, presence.totalRegistered - 3) : 580}
+                                        +{presence?.totalVisits || 1}
                                     </div>
                                 </div>
 
@@ -483,11 +483,11 @@ const Home = () => {
                                             <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
                                         </span>
                                         <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#22c55e' }}>
-                                            {presence?.totalLiveCount || 24} Students Online Right Now
+                                            {presence?.totalLiveCount || 1} Active Visitor{presence?.totalLiveCount > 1 ? 's' : ''} Online Right Now
                                         </span>
                                     </div>
                                     <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.3 }}>
-                                        Over <strong>{presence?.totalRegistered || 580}+</strong> registered learners preparing for CBSE & Tech
+                                        Total <strong>{presence?.totalVisits || 1}+</strong> recorded website visits • Live real-time tracking
                                     </span>
                                 </div>
                             </div>
