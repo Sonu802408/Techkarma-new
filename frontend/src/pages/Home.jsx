@@ -7,6 +7,7 @@ import { getNcertChapters, getDirectNcertChapterPdf } from '../data/ncertBooksDa
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ClassCard from '../components/ClassCard.jsx';
 import heroIllustration from '../assets/hero_illustration.png';
+import { useAuth } from '../context/AuthContext';
 import "./Home.css";
 
 const SectionIcon = ({ icon: Icon, colorHex = "#3b82f6", align = "center" }) => {
@@ -94,6 +95,7 @@ const TypingHero = ({ fullText }) => {
 };
 
 const Home = () => {
+    const { presence } = useAuth();
     // 5-Step Flow States
     const [activeClass, setActiveClass] = useState(null);
     const [activeMedium, setActiveMedium] = useState(null);
@@ -162,10 +164,21 @@ const Home = () => {
     // Data for Statistics Counter Section
     const statsData = [
         {
-            target: 500,
+            target: presence?.totalLiveCount || 24,
+            suffix: " Live",
+            value: `${presence?.totalLiveCount || 24} Live`,
+            label: "Students Online Now",
+            desc: "Active students studying notes, solving test series, and coding right now.",
+            icon: <Zap size={30} />,
+            color: "#22c55e",
+            colorRgb: "34, 197, 94",
+            isLive: true
+        },
+        {
+            target: presence?.totalRegistered || 580,
             suffix: "+",
-            value: "500+",
-            label: "Students Enrolled",
+            value: `${presence?.totalRegistered || 580}+`,
+            label: "Registered Students",
             desc: "Empowering bright minds with conceptual clarity and high board scores.",
             icon: <Users size={30} />,
             color: "#3b82f6",
@@ -409,6 +422,75 @@ const Home = () => {
                                     Explore Courses
                                 </Link>
                             </div>
+
+                            {/* Real-time Live Social Proof Bar */}
+                            <div className="hero-live-proof animate-fade-in" style={{
+                                marginTop: '2.5rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1.1rem',
+                                padding: '0.8rem 1.3rem',
+                                borderRadius: '16px',
+                                background: 'rgba(255, 255, 255, 0.04)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                backdropFilter: 'blur(12px)',
+                                maxWidth: '530px'
+                            }}>
+                                {/* Student Avatar Stack */}
+                                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                                    {[
+                                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80',
+                                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80',
+                                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80'
+                                    ].map((avatar, idx) => (
+                                        <img
+                                            key={idx}
+                                            src={avatar}
+                                            alt="Enrolled student"
+                                            style={{
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '50%',
+                                                border: '2px solid var(--bg-primary, #0f172a)',
+                                                marginLeft: idx === 0 ? 0 : '-9px',
+                                                objectFit: 'cover'
+                                            }}
+                                        />
+                                    ))}
+                                    <div style={{
+                                        width: '32px',
+                                        height: '32px',
+                                        borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                                        color: '#fff',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '0.72rem',
+                                        fontWeight: 800,
+                                        marginLeft: '-9px',
+                                        border: '2px solid var(--bg-primary, #0f172a)'
+                                    }}>
+                                        +{presence?.totalRegistered ? Math.max(500, presence.totalRegistered - 3) : 580}
+                                    </div>
+                                </div>
+
+                                {/* Live Status Text */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                                        <span style={{ position: 'relative', display: 'inline-flex', width: '8px', height: '8px', alignItems: 'center', justifyContent: 'center' }}>
+                                            <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.85 }}></span>
+                                            <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
+                                        </span>
+                                        <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#22c55e' }}>
+                                            {presence?.totalLiveCount || 24} Students Online Right Now
+                                        </span>
+                                    </div>
+                                    <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.3 }}>
+                                        Over <strong>{presence?.totalRegistered || 580}+</strong> registered learners preparing for CBSE & Tech
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Right Column: 3D Illustration Graphic */}
@@ -525,21 +607,29 @@ const Home = () => {
                                     >
                                         {stat.icon}
                                     </div>
-                                    <h3
-                                        className="stat-counter"
-                                        data-target={stat.target}
-                                        data-suffix={stat.suffix}
-                                        style={{
-                                            fontSize: '3.2rem',
-                                            fontWeight: 900,
-                                            letterSpacing: '-1px',
-                                            color: 'var(--text-primary)',
-                                            margin: '0 0 0.5rem 0',
-                                            fontFamily: "'Outfit', 'Inter', sans-serif"
-                                        }}
-                                    >
-                                        {stat.value}
-                                    </h3>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', margin: '0 0 0.5rem 0' }}>
+                                        {stat.isLive && (
+                                            <span style={{ position: 'relative', display: 'inline-flex', width: '12px', height: '12px', alignItems: 'center', justifyContent: 'center' }}>
+                                                <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.85 }}></span>
+                                                <span style={{ position: 'relative', width: '8px', height: '8px', borderRadius: '50%', background: '#16a34a' }}></span>
+                                            </span>
+                                        )}
+                                        <h3
+                                            className="stat-counter"
+                                            data-target={stat.target}
+                                            data-suffix={stat.suffix}
+                                            style={{
+                                                fontSize: '3.2rem',
+                                                fontWeight: 900,
+                                                letterSpacing: '-1px',
+                                                color: 'var(--text-primary)',
+                                                margin: 0,
+                                                fontFamily: "'Outfit', 'Inter', sans-serif"
+                                            }}
+                                        >
+                                            {stat.value}
+                                        </h3>
+                                    </div>
                                     <h4 style={{ fontSize: '1.25rem', fontWeight: 700, color: stat.color, margin: '0 0 0.75rem 0' }}>
                                         {stat.label}
                                     </h4>

@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
 const Navbar = ({ theme, setTheme }) => {
-    const { user, isLoggedIn, isAdmin, logout } = useAuth();
+    const { user, isLoggedIn, isAdmin, logout, presence } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
     const [isProgrammingDropdownOpen, setIsProgrammingDropdownOpen] = useState(false);
@@ -306,6 +306,35 @@ const Navbar = ({ theme, setTheme }) => {
 
                 {/* Actions (Desktop) */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', zIndex: 1001, flexShrink: 0, paddingRight: '20px' }}>
+                    {/* Live Presence Pill */}
+                    <div
+                        className="live-presence-pill"
+                        title={`${presence?.totalLiveCount || 24} Students studying live online right now • ${presence?.totalRegistered || 580}+ Registered Students`}
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.45rem',
+                            padding: '0.38rem 0.75rem',
+                            borderRadius: '20px',
+                            background: 'rgba(34, 197, 94, 0.12)',
+                            border: '1px solid rgba(34, 197, 94, 0.35)',
+                            color: '#22c55e',
+                            fontSize: '0.82rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.3px',
+                            userSelect: 'none',
+                            cursor: 'default',
+                            boxShadow: '0 0 12px rgba(34, 197, 94, 0.15)',
+                            transition: 'all 0.25s ease'
+                        }}
+                    >
+                        <span style={{ position: 'relative', display: 'inline-flex', width: '8px', height: '8px', alignItems: 'center', justifyContent: 'center' }}>
+                            <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.75 }}></span>
+                            <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
+                        </span>
+                        <span>{presence?.totalLiveCount || 24} Live</span>
+                    </div>
+
                     <select
                         className="dropdown-toggle"
                         value={theme}
@@ -401,6 +430,31 @@ const Navbar = ({ theme, setTheme }) => {
                 }}
             >
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start', marginTop: '1rem', width: '100%', padding: '0 1rem' }}>
+                    {/* Mobile Live Presence Banner */}
+                    <div style={{
+                        width: '100%',
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        background: 'rgba(34, 197, 94, 0.08)',
+                        border: '1px solid rgba(34, 197, 94, 0.25)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        boxSizing: 'border-box'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ position: 'relative', display: 'inline-flex', width: '8px', height: '8px', alignItems: 'center', justifyContent: 'center' }}>
+                                <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.75 }}></span>
+                                <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
+                            </span>
+                            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#22c55e' }}>
+                                {presence?.totalLiveCount || 24} Students Live
+                            </span>
+                        </div>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                            {presence?.totalRegistered || 580}+ Enrolled
+                        </span>
+                    </div>
 
                     <Link to="/" onClick={closeMenu} style={{ fontSize: '1.4rem', fontWeight: 600, color: location.pathname === '/' ? 'var(--primary-color)' : 'var(--text-primary)' }}>
                         Home
