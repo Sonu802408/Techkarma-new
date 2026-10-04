@@ -837,7 +837,7 @@ const Home = () => {
                                     {activeClass >= 11 ? (activeStream === 'science' ? '3. Select Content Type' : '4. Select Content Type') : '3. Select Content Type'}
                                 </h3>
                                 <div className="content-types-grid">
-                                    {classesData.tabs.map(tab => (
+                                    {classesData.tabs.filter(tab => !([6, 7, 8].includes(parseInt(activeClass, 10)) && tab.id === 'books')).map(tab => (
                                         <button
                                             key={tab.id}
                                             className={`tab-btn ${activeContent === tab.id ? 'active' : ''}`}
@@ -1078,10 +1078,19 @@ const Home = () => {
                                                         Open Resource <ArrowRight size={15} />
                                                     </Link>
 
-                                                    {['notes', 'ncert-solution', 'mcqs'].includes(activeContent) && (
+                                                    {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
                                                         pdfExists ? (
                                                             <a
                                                                 href={pdfFilename.startsWith("class") ? `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}` : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="btn btn-primary"
+                                                            >
+                                                                <FileText size={16} /> View PDF <ArrowRight size={15} />
+                                                            </a>
+                                                        ) : (activeContent === 'books' && getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)) ? (
+                                                            <a
+                                                                href={getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)}
                                                                 target="_blank"
                                                                 rel="noreferrer"
                                                                 className="btn btn-primary"

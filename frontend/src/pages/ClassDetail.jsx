@@ -123,7 +123,10 @@ const ClassDetail = () => {
 
                 {/* Content Tabs (4 Columns Per Row) */}
                 <div className="content-types-grid">
-                    {classesData.tabs.map(tab => (
+                    {classesData.tabs.filter(tab => {
+                        if ([6, 7, 8].includes(parseInt(classNum, 10)) && tab.id === 'books') return false;
+                        return true;
+                    }).map(tab => (
                         <button
                             key={tab.id}
                             className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
@@ -345,9 +348,9 @@ const ClassDetail = () => {
                                     <button className="btn btn-secondary">
                                         Open Resource <ArrowRight size={15} />
                                     </button>
-                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
+                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
                                         <a
-                                            href={`https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
+                                            href={activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="btn btn-primary"

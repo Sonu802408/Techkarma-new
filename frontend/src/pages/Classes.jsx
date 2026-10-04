@@ -242,7 +242,7 @@ const Classes = () => {
                         {activeClass >= 11 ? (activeStream === 'science' ? '3. Select Content Type' : '4. Select Content Type') : '3. Select Content Type'}
                     </h3>
                     <div className="content-types-grid">
-                        {classesData.tabs.map(tab => (
+                        {classesData.tabs.filter(tab => !([6, 7, 8].includes(parseInt(activeClass, 10)) && tab.id === 'books')).map(tab => (
                             <button
                                 key={tab.id}
                                 className={`tab-btn ${activeContent === tab.id ? 'active' : ''}`}
@@ -486,7 +486,7 @@ const Classes = () => {
                                                 Open Resource <ArrowRight size={15} />
                                             </button>
 
-                                            {['notes', 'ncert-solution', 'mcqs'].includes(activeContent) && (
+                                            {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
                                                 resolvedPdfUrl ? (
                                                     <a
                                                         href={resolvedPdfUrl}
