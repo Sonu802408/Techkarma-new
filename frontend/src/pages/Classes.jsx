@@ -242,7 +242,7 @@ const Classes = () => {
                         {activeClass >= 11 ? (activeStream === 'science' ? '3. Select Content Type' : '4. Select Content Type') : '3. Select Content Type'}
                     </h3>
                     <div className="content-types-grid">
-                        {classesData.tabs.filter(tab => !([6, 7, 8].includes(parseInt(activeClass, 10)) && tab.id === 'books')).map(tab => (
+                        {classesData.tabs.map(tab => (
                             <button
                                 key={tab.id}
                                 className={`tab-btn ${activeContent === tab.id ? 'active' : ''}`}
@@ -439,7 +439,7 @@ const Classes = () => {
                                 );
                             })()}
                         </div>
-                    ) : ((activeContent === 'notes' && [6, 7, 8].includes(parseInt(activeClass, 10))) || ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeContent)) ? (
+                    ) : ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeContent) ? (
                         <EducationalContentContainer
                             activeClass={activeClass}
                             activeMedium={activeMedium}

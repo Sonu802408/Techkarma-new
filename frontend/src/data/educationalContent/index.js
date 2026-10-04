@@ -5,7 +5,6 @@
 import { classesData, getSubjectName, getChapterName } from '../classesData.js';
 import { class10EducationalData } from './class10_content.js';
 import { class12EducationalData } from './class12_content.js';
-import { isJuniorClass, getJuniorEducationalContent } from './juniorCurriculumEngine.js';
 
 // Curriculum topic and pedagogical repository across subjects
 const subjectConceptBank = {
@@ -111,7 +110,6 @@ const normalizeSubjectName = (sub) => {
 };
 
 const contentTypeMap = {
-    'notes': 'notes',
     'mcqs': 'mcqs',
     'online-test': 'onlineTest',
     'onlineTest': 'onlineTest',
@@ -137,27 +135,6 @@ export const getEducationalContent = ({ classNum, medium, subject, chapterIndex,
     const chName = chapterName || getChapterName(cls, sub, '', chIndex, med) || `Chapter ${chNum}`;
     const normSub = normalizeSubjectName(sub);
     const mappedKey = contentType ? (contentTypeMap[contentType] || contentType) : null;
-
-    // Check direct curated database for Junior Classes (6, 7, 8)
-    if (isJuniorClass(cls)) {
-        const juniorContent = getJuniorEducationalContent({
-            classNum: cls,
-            medium: med,
-            subject: sub,
-            chapterIndex: chIndex,
-            chapterName: chName,
-            contentType
-        });
-        if (juniorContent) {
-            if (mappedKey && juniorContent[mappedKey]) {
-                return juniorContent[mappedKey];
-            }
-            if (contentType && juniorContent[contentType]) {
-                return juniorContent[contentType];
-            }
-            return juniorContent;
-        }
-    }
 
     // Check direct curated database for Class 10 / Class 12
     const mathSubKey10 = normSub === 'Math' ? 'Mathematics' : normSub;

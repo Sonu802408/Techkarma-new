@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, CheckCircle, ChevronDown, ChevronUp, FileText, Sparkles, Printer } from 'lucide-react';
+import { BookOpen, CheckCircle, ChevronDown, ChevronUp, FileText, Sparkles } from 'lucide-react';
 
 const NcertSolutionsViewer = ({ solutionsData, chapterTitle = '', activeMedium = 'English', pdfUrl }) => {
     const [expandedExercises, setExpandedExercises] = useState({ 0: true });
@@ -60,13 +60,6 @@ const NcertSolutionsViewer = ({ solutionsData, chapterTitle = '', activeMedium =
                             <FileText size={16} /> {activeMedium === 'Hindi' ? 'संपूर्ण पीडीएफ देखें' : 'View Chapter PDF'}
                         </a>
                     )}
-                    <button
-                        onClick={() => window.print()}
-                        className="btn-secondary no-print"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', fontSize: '0.88rem', cursor: 'pointer', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
-                    >
-                        <Printer size={16} /> {activeMedium === 'Hindi' ? 'प्रिंट हल' : 'Print Solutions'}
-                    </button>
                     <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', padding: '0.4rem 1rem', borderRadius: '50px', fontSize: '0.85rem', fontWeight: 600 }}>
                         CBSE 2026 Marking Scheme Aligned
                     </span>

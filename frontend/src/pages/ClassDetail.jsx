@@ -123,10 +123,7 @@ const ClassDetail = () => {
 
                 {/* Content Tabs (4 Columns Per Row) */}
                 <div className="content-types-grid">
-                    {classesData.tabs.filter(tab => {
-                        if ([6, 7, 8].includes(parseInt(classNum, 10)) && tab.id === 'books') return false;
-                        return true;
-                    }).map(tab => (
+                    {classesData.tabs.map(tab => (
                         <button
                             key={tab.id}
                             className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
@@ -308,7 +305,7 @@ const ClassDetail = () => {
                             );
                         })()}
                     </div>
-                ) : ((activeTab === 'notes' && [6, 7, 8].includes(parseInt(classNum, 10))) || ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeTab)) ? (
+                ) : ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeTab) ? (
                     <EducationalContentContainer
                         activeClass={classNum}
                         activeMedium={selectedMedium}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bookmark, Printer } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
 
 const SubjectiveViewer = ({ subjectiveData, chapterTitle = '', activeMedium = 'English' }) => {
     const sections = subjectiveData?.sections || [];
@@ -10,40 +10,14 @@ const SubjectiveViewer = ({ subjectiveData, chapterTitle = '', activeMedium = 'E
                 background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.06))',
                 border: '1px solid var(--border-color)',
                 borderRadius: '16px',
-                padding: '1.5rem 2rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '1rem'
+                padding: '1.5rem 2rem'
             }}>
-                <div>
-                    <h3 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--text-primary)', fontWeight: 700 }}>
-                        {subjectiveData?.title || 'Tech Karma Classes Subjective Questions & Model Answers'}
-                    </h3>
-                    <p style={{ margin: '0.3rem 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                        {chapterTitle} • {activeMedium === 'Hindi' ? 'लघु एवं दीर्घ उत्तरीय प्रश्न संग्रह' : 'Very Short, Short, Long & Case-Based Questions'}
-                    </p>
-                </div>
-                <button
-                    onClick={() => window.print()}
-                    className="btn-secondary no-print"
-                    style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        padding: '0.55rem 1.2rem',
-                        fontSize: '0.88rem',
-                        cursor: 'pointer',
-                        background: 'var(--bg-secondary)',
-                        border: '1px solid var(--border-color)',
-                        borderRadius: '8px',
-                        color: 'var(--text-primary)',
-                        fontWeight: 600
-                    }}
-                >
-                    <Printer size={16} /> {activeMedium === 'Hindi' ? 'प्रिंट प्रश्न बैंक' : 'Print Questions'}
-                </button>
+                <h3 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+                    {subjectiveData?.title || 'Tech Karma Classes Subjective Questions & Model Answers'}
+                </h3>
+                <p style={{ margin: '0.3rem 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    {chapterTitle} • {activeMedium === 'Hindi' ? 'लघु एवं दीर्घ उत्तरीय प्रश्न संग्रह' : 'Very Short, Short, Long & Case-Based Questions'}
+                </p>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
