@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { CheckCircle2, XCircle, HelpCircle, Award, RotateCcw, Filter, FileText } from 'lucide-react';
+import { CheckCircle2, XCircle, HelpCircle, Award, RotateCcw, Filter, FileText, Download } from 'lucide-react';
 
-const McqViewer = ({ mcqs = [], chapterTitle = '', activeMedium = 'English', pdfUrl }) => {
+const McqViewer = ({ mcqs = [], chapterTitle = '', activeMedium = 'English', pdfUrl, onOpenPdf }) => {
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [showExplanations, setShowExplanations] = useState({});
     const [difficultyFilter, setDifficultyFilter] = useState('All');
@@ -49,17 +49,28 @@ const McqViewer = ({ mcqs = [], chapterTitle = '', activeMedium = 'English', pdf
                     </p>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                     {pdfUrl && (
-                        <a
-                            href={pdfUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="btn btn-primary"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 1.1rem', fontSize: '0.85rem', textDecoration: 'none' }}
-                        >
-                            <FileText size={15} /> {activeMedium === 'Hindi' ? 'MCQ पीडीएफ' : 'MCQs PDF'}
-                        </a>
+                        <>
+                            <button
+                                onClick={() => onOpenPdf ? onOpenPdf(pdfUrl, chapterTitle, 'MCQ Practice', 'MCQs PDF') : window.open(pdfUrl, '_blank')}
+                                className="btn btn-primary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 1.1rem', fontSize: '0.85rem' }}
+                            >
+                                <FileText size={15} /> {activeMedium === 'Hindi' ? 'MCQ पीडीएफ' : 'MCQs PDF'}
+                            </button>
+                            <a
+                                href={pdfUrl}
+                                download
+                                target="_blank"
+                                rel="noreferrer"
+                                className="btn btn-secondary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 0.9rem', fontSize: '0.85rem' }}
+                                title="Download PDF directly"
+                            >
+                                <Download size={14} /> {activeMedium === 'Hindi' ? 'डाउनलोड' : 'Download'}
+                            </a>
+                        </>
                     )}
                     {totalAnswered > 0 && (
                         <div style={{

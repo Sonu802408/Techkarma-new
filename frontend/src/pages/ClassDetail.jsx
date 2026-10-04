@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Book, FileText, CheckSquare, BookOpen, File, Clock, PlayCircle, ExternalLink, ShieldCheck, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Book, FileText, CheckSquare, BookOpen, File, Clock, PlayCircle, ExternalLink, ShieldCheck, ArrowRight, Download } from 'lucide-react';
 import { classesData } from '../data/classesData';
 import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChapterPdf } from '../data/ncertBooksData';
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ErrorBoundary from '../components/common/ErrorBoundary.jsx';
+import PdfViewerModal from '../components/common/PdfViewerModal.jsx';
 
 const ClassDetail = () => {
     const { classId } = useParams();
@@ -26,6 +27,32 @@ const ClassDetail = () => {
     const [selectedMedium, setSelectedMedium] = useState('English');
     const [selectedSubject, setSelectedSubject] = useState('');
     const [activeTab, setActiveTab] = useState('notes');
+
+    // PDF View Mode Modal State
+    const [activePdfModal, setActivePdfModal] = useState({
+        isOpen: false,
+        pdfUrl: '',
+        title: '',
+        subtitle: '',
+        badge: 'PDF',
+        filename: ''
+    });
+
+    const handleOpenPdf = (pdfUrl, title, subtitle, badge, filename) => {
+        if (!pdfUrl) return;
+        setActivePdfModal({
+            isOpen: true,
+            pdfUrl,
+            title,
+            subtitle: subtitle || `Class ${classNum} • ${selectedSubject} • ${selectedMedium}`,
+            badge: badge || 'PDF',
+            filename
+        });
+    };
+
+    const handleClosePdf = () => {
+        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
+    };
 
     // Handle stream change: auto-select English for science
     const handleStreamChange = (newStream) => {
@@ -268,14 +295,31 @@ const ClassDetail = () => {
 
                                                 <div className="resource-card-actions">
                                                     {isAvailable ? (
-                                                        <a
-                                                            href={ch.pdfUrl || '#'}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="btn btn-primary"
-                                                        >
-                                                            <FileText size={16} /> Read PDF
-                                                        </a>
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleOpenPdf(
+                                                                    ch.pdfUrl,
+                                                                    `${ch.partTitle ? ch.partTitle + ' - ' : ''}${selectedMedium === 'Hindi' ? 'अध्याय' : 'Chapter'} ${ch.chapterInPart || ch.chapterNumber}: ${ch.title || 'NCERT Book'}`,
+                                                                    `Class ${classNum} • ${originalSubjectName || selectedSubject} • NCERT Textbook (${selectedMedium})`,
+                                                                    'NCERT Book',
+                                                                    `Class${classNum}_${(originalSubjectName || selectedSubject).replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`
+                                                                )}
+                                                                className="btn btn-primary"
+                                                            >
+                                                                <FileText size={16} /> Read PDF
+                                                            </button>
+                                                            <a
+                                                                href={ch.pdfUrl}
+                                                                download={`Class${classNum}_${(originalSubjectName || selectedSubject).replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="btn btn-secondary"
+                                                                title="Download PDF directly"
+                                                                style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                                                            >
+                                                                <Download size={14} /> Download
+                                                            </a>
+                                                        </>
                                                     ) : (
                                                         <button
                                                             disabled
@@ -342,19 +386,42 @@ const ClassDetail = () => {
                                 </div>
 
                                 <div className="resource-card-actions">
-                                    <button className="btn btn-secondary">
-                                        Open Resource <ArrowRight size={15} />
-                                    </button>
-                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
-                                        <a
-                                            href={activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="btn btn-primary"
-                                        >
-                                            <FileText size={16} /> View {classesData.tabs.find(t => t.id === activeTab)?.label || 'PDF'} <ArrowRight size={15} />
-                                        </a>
-                                    )}
+                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (() => {
+                                        const targetPdfUrl = activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream)
+                                            ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream)
+                                            : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`;
+                                        const chapterTitleText = classesData.getChapterName ? classesData.getChapterName(classNum, originalSubjectName, chapterName || `Chapter ${index + 1}`, index, selectedMedium) : (chapterName || `Chapter ${index + 1}`);
+                                        const tabLabel = classesData.tabs.find(t => t.id === activeTab)?.label || 'PDF';
+                                        const cleanDownloadName = `Class${classNum}_${(originalSubjectName || selectedSubject).replace(/\s+/g, '_')}_Ch${index + 1}_${activeTab}.pdf`;
+
+                                        return (
+                                            <>
+                                                <button
+                                                    onClick={() => handleOpenPdf(
+                                                        targetPdfUrl,
+                                                        `${chapterTitleText}`,
+                                                        `Class ${classNum} • ${originalSubjectName || selectedSubject} • ${tabLabel} (${selectedMedium})`,
+                                                        tabLabel,
+                                                        cleanDownloadName
+                                                    )}
+                                                    className="btn btn-primary"
+                                                >
+                                                    <FileText size={16} /> View {tabLabel} <ArrowRight size={15} />
+                                                </button>
+                                                <a
+                                                    href={targetPdfUrl}
+                                                    download={cleanDownloadName}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="btn btn-secondary"
+                                                    title="Download PDF directly"
+                                                    style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                                                >
+                                                    <Download size={14} /> Download
+                                                </a>
+                                            </>
+                                        );
+                                    })()}
                                 </div>
                             </div>
                         ))}
@@ -368,6 +435,17 @@ const ClassDetail = () => {
                 )}
                 </ErrorBoundary>
             </div>
+
+            {/* Embedded PDF View Mode Modal */}
+            <PdfViewerModal
+                isOpen={activePdfModal.isOpen}
+                onClose={handleClosePdf}
+                pdfUrl={activePdfModal.pdfUrl}
+                title={activePdfModal.title}
+                subtitle={activePdfModal.subtitle}
+                badge={activePdfModal.badge}
+                filename={activePdfModal.filename}
+            />
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { BookOpen, CheckCircle, ChevronDown, ChevronUp, FileText, Sparkles } from 'lucide-react';
+import { BookOpen, CheckCircle, ChevronDown, ChevronUp, FileText, Sparkles, Download } from 'lucide-react';
 
-const NcertSolutionsViewer = ({ solutionsData, chapterTitle = '', activeMedium = 'English', pdfUrl }) => {
+const NcertSolutionsViewer = ({ solutionsData, chapterTitle = '', activeMedium = 'English', pdfUrl, onOpenPdf }) => {
     const [expandedExercises, setExpandedExercises] = useState({ 0: true });
 
     const toggleExercise = (idx) => {
@@ -48,17 +48,28 @@ const NcertSolutionsViewer = ({ solutionsData, chapterTitle = '', activeMedium =
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                     {pdfUrl && (
-                        <a
-                            href={pdfUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="btn btn-primary"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.25rem', fontSize: '0.88rem', textDecoration: 'none' }}
-                        >
-                            <FileText size={16} /> {activeMedium === 'Hindi' ? 'संपूर्ण पीडीएफ देखें' : 'View Chapter PDF'}
-                        </a>
+                        <>
+                            <button
+                                onClick={() => onOpenPdf ? onOpenPdf(pdfUrl, chapterTitle, 'NCERT Solutions', 'Solutions PDF') : window.open(pdfUrl, '_blank')}
+                                className="btn btn-primary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.25rem', fontSize: '0.88rem' }}
+                            >
+                                <FileText size={16} /> {activeMedium === 'Hindi' ? 'संपूर्ण पीडीएफ देखें' : 'View Chapter PDF'}
+                            </button>
+                            <a
+                                href={pdfUrl}
+                                download
+                                target="_blank"
+                                rel="noreferrer"
+                                className="btn btn-secondary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 0.9rem', fontSize: '0.85rem' }}
+                                title="Download PDF directly"
+                            >
+                                <Download size={15} /> {activeMedium === 'Hindi' ? 'डाउनलोड' : 'Download'}
+                            </a>
+                        </>
                     )}
                     <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success-color)', padding: '0.4rem 1rem', borderRadius: '50px', fontSize: '0.85rem', fontWeight: 600 }}>
                         CBSE 2026 Marking Scheme Aligned

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Clock, Award, Eye, EyeOff, Printer, FileDown, FileText } from 'lucide-react';
 
-const SamplePaperViewer = ({ paperData, chapterTitle = '', activeMedium = 'English', pdfUrl, officialSamplePdf }) => {
+const SamplePaperViewer = ({ paperData, chapterTitle = '', activeMedium = 'English', pdfUrl, officialSamplePdf, onOpenPdf }) => {
     const [showSolutions, setShowSolutions] = useState(false);
 
     const sections = paperData?.sections || [];
@@ -31,26 +31,48 @@ const SamplePaperViewer = ({ paperData, chapterTitle = '', activeMedium = 'Engli
 
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
                     {officialSamplePdf && (
-                        <a
-                            href={officialSamplePdf}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="btn btn-primary"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.4rem', textDecoration: 'none' }}
-                        >
-                            <FileDown size={16} /> Download CBSE 2026 Board Sample Paper (PDF)
-                        </a>
+                        <>
+                            <button
+                                onClick={() => onOpenPdf ? onOpenPdf(officialSamplePdf, `${paperData?.paperTitle || 'CBSE Board Sample Paper'}`, 'Official CBSE Assessment', 'Sample Paper') : window.open(officialSamplePdf, '_blank')}
+                                className="btn btn-primary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.4rem' }}
+                            >
+                                <FileText size={16} /> View CBSE 2026 Sample Paper
+                            </button>
+                            <a
+                                href={officialSamplePdf}
+                                download
+                                target="_blank"
+                                rel="noreferrer"
+                                className="btn btn-secondary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem' }}
+                                title="Download PDF directly"
+                            >
+                                <FileDown size={16} /> Download
+                            </a>
+                        </>
                     )}
                     {pdfUrl && (
-                        <a
-                            href={pdfUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="btn-secondary"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', textDecoration: 'none', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
-                        >
-                            <FileText size={16} /> Unit Test PDF
-                        </a>
+                        <>
+                            <button
+                                onClick={() => onOpenPdf ? onOpenPdf(pdfUrl, `${chapterTitle} - Unit Test Paper`, 'Tech Karma Assessment Series', 'Unit Test') : window.open(pdfUrl, '_blank')}
+                                className="btn-secondary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', cursor: 'pointer' }}
+                            >
+                                <FileText size={16} /> View Unit Test
+                            </button>
+                            <a
+                                href={pdfUrl}
+                                download
+                                target="_blank"
+                                rel="noreferrer"
+                                className="btn-secondary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 0.9rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }}
+                                title="Download Unit Test PDF directly"
+                            >
+                                <FileDown size={14} /> Download
+                            </a>
+                        </>
                     )}
                     <button
                         onClick={() => setShowSolutions(prev => !prev)}

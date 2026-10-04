@@ -8,6 +8,7 @@ import EducationalContentContainer from '../components/educational/EducationalCo
 import ClassCard from '../components/ClassCard.jsx';
 import heroIllustration from '../assets/hero_illustration.png';
 import { useAuth } from '../context/AuthContext';
+import PdfViewerModal from '../components/common/PdfViewerModal.jsx';
 import "./Home.css";
 
 const SectionIcon = ({ icon: Icon, colorHex = "#3b82f6", align = "center" }) => {
@@ -102,6 +103,32 @@ const Home = () => {
     const [activeStream, setActiveStream] = useState(null);
     const [activeSubject, setActiveSubject] = useState(null);
     const [activeContent, setActiveContent] = useState(null);
+
+    // PDF View Mode Modal State
+    const [activePdfModal, setActivePdfModal] = useState({
+        isOpen: false,
+        pdfUrl: '',
+        title: '',
+        subtitle: '',
+        badge: 'PDF',
+        filename: ''
+    });
+
+    const handleOpenPdf = (pdfUrl, title, subtitle, badge, filename) => {
+        if (!pdfUrl) return;
+        setActivePdfModal({
+            isOpen: true,
+            pdfUrl,
+            title,
+            subtitle: subtitle || (activeClass ? `Class ${activeClass} • ${activeSubject || ''} • ${activeMedium || ''}` : ''),
+            badge: badge || 'PDF',
+            filename
+        });
+    };
+
+    const handleClosePdf = () => {
+        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
+    };
 
     const allClasses = [...classesData.junior.classes, ...classesData.senior.classes];
     const programmingCourses = [
@@ -992,16 +1019,33 @@ const Home = () => {
                                                                     </h4>
                                                                 </div>
 
-                                                                <div className="resource-card-actions">
+                                                                 <div className="resource-card-actions">
                                                                     {isAvailable ? (
-                                                                        <a
-                                                                            href={ch.pdfUrl}
-                                                                            target="_blank"
-                                                                            rel="noreferrer"
-                                                                            className="btn btn-primary"
-                                                                        >
-                                                                            <FileText size={16} /> Read PDF
-                                                                        </a>
+                                                                        <>
+                                                                            <button
+                                                                                onClick={() => handleOpenPdf(
+                                                                                    ch.pdfUrl,
+                                                                                    `${ch.partTitle ? ch.partTitle + ' - ' : ''}${activeMedium === 'Hindi' ? 'अध्याय' : 'Chapter'} ${ch.chapterInPart || ch.chapterNumber}: ${ch.title}`,
+                                                                                    `Class ${activeClass} • ${activeSubject} • NCERT Textbook (${activeMedium})`,
+                                                                                    'NCERT Book',
+                                                                                    `Class${activeClass}_${(activeSubject || '').replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`
+                                                                                )}
+                                                                                className="btn btn-primary"
+                                                                            >
+                                                                                <FileText size={16} /> Read PDF
+                                                                            </button>
+                                                                            <a
+                                                                                href={ch.pdfUrl}
+                                                                                download={`Class${activeClass}_${(activeSubject || '').replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                                className="btn btn-secondary"
+                                                                                title="Download PDF directly"
+                                                                                style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                                                                            >
+                                                                                <Download size={14} /> Download
+                                                                            </a>
+                                                                        </>
                                                                     ) : (
                                                                         <button
                                                                             disabled
@@ -1074,39 +1118,55 @@ const Home = () => {
                                                 </div>
 
                                                 <div className="resource-card-actions">
-                                                    <button className="btn btn-secondary">
-                                                        Open Resource <ArrowRight size={15} />
-                                                    </button>
+                                                    {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (() => {
+                                                        const targetPdfUrl = pdfExists
+                                                            ? `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}`
+                                                            : (activeContent === 'books' && getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream))
+                                                                ? getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)
+                                                                : null;
+                                                        const contentTabLabel = classesData.tabs.find(t => t.id === activeContent)?.label || 'PDF';
+                                                        const cleanDownloadName = `Class${activeClass}_${(activeSubject || '').replace(/\s+/g, '_')}_Ch${idx + 1}_${activeContent}.pdf`;
 
-                                                    {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
-                                                        pdfExists ? (
-                                                            <a
-                                                                href={pdfFilename.startsWith("class") ? `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}` : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}`}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                className="btn btn-primary"
-                                                            >
-                                                                <FileText size={16} /> View PDF <ArrowRight size={15} />
-                                                            </a>
-                                                        ) : (activeContent === 'books' && getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)) ? (
-                                                            <a
-                                                                href={getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                className="btn btn-primary"
-                                                            >
-                                                                <FileText size={16} /> View PDF <ArrowRight size={15} />
-                                                            </a>
-                                                        ) : (
-                                                            <button
-                                                                disabled
-                                                                className="btn btn-secondary"
-                                                                style={{ opacity: 0.5, cursor: 'not-allowed' }}
-                                                            >
-                                                                Unavailable
-                                                            </button>
-                                                        )
-                                                    )}
+                                                        if (!targetPdfUrl) {
+                                                            return (
+                                                                <button
+                                                                    disabled
+                                                                    className="btn btn-secondary"
+                                                                    style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                                                                >
+                                                                    Unavailable
+                                                                </button>
+                                                            );
+                                                        }
+
+                                                        return (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => handleOpenPdf(
+                                                                        targetPdfUrl,
+                                                                        translatedChapter,
+                                                                        `Class ${activeClass} • ${activeSubject} • ${contentTabLabel} (${activeMedium})`,
+                                                                        contentTabLabel,
+                                                                        cleanDownloadName
+                                                                    )}
+                                                                    className="btn btn-primary"
+                                                                >
+                                                                    <FileText size={16} /> View PDF <ArrowRight size={15} />
+                                                                </button>
+                                                                <a
+                                                                    href={targetPdfUrl}
+                                                                    download={cleanDownloadName}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="btn btn-secondary"
+                                                                    title="Download PDF directly"
+                                                                    style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                                                                >
+                                                                    <Download size={14} /> Download
+                                                                </a>
+                                                            </>
+                                                        );
+                                                    })()}
                                                 </div>
                                             </div>
                                         );
@@ -1264,10 +1324,14 @@ const Home = () => {
                                                         <ArrowRight size={15} />
                                                     </Link>
                                                     {course.pdfUrl && (
-                                                        <a
-                                                            href={course.pdfUrl}
-                                                            target="_blank"
-                                                            rel="noreferrer"
+                                                        <button
+                                                            onClick={() => handleOpenPdf(
+                                                                course.pdfUrl,
+                                                                `${course.name} - Complete Notes`,
+                                                                `${course.tag || 'Programming'} • Tech Karma Comprehensive Guide`,
+                                                                'Notes PDF',
+                                                                `${course.name.replace(/\s+/g, '_')}_Complete_Notes.pdf`
+                                                            )}
                                                             style={{
                                                                 flex: 1,
                                                                 display: 'inline-flex',
@@ -1281,14 +1345,14 @@ const Home = () => {
                                                                 color: course.color || catColor,
                                                                 fontWeight: 700,
                                                                 fontSize: '0.88rem',
-                                                                textDecoration: 'none',
+                                                                cursor: 'pointer',
                                                                 whiteSpace: 'nowrap',
                                                                 transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
                                                             }}
                                                         >
-                                                            <Download size={15} />
-                                                            <span>Notes PDF</span>
-                                                        </a>
+                                                            <FileText size={15} />
+                                                            <span>View Notes</span>
+                                                        </button>
                                                     )}
                                                 </div>
                                             </div>
@@ -1302,6 +1366,16 @@ const Home = () => {
             </section>
             )}
 
+            {/* Embedded PDF View Mode Modal */}
+            <PdfViewerModal
+                isOpen={activePdfModal.isOpen}
+                onClose={handleClosePdf}
+                pdfUrl={activePdfModal.pdfUrl}
+                title={activePdfModal.title}
+                subtitle={activePdfModal.subtitle}
+                badge={activePdfModal.badge}
+                filename={activePdfModal.filename}
+            />
         </div>
     );
 };

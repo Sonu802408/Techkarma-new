@@ -1,10 +1,37 @@
 import React, { useState } from 'react';
 import { Search, Download, FileText, Lock, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
+import PdfViewerModal from '../components/common/PdfViewerModal.jsx';
 
 const Notes = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('all');
+
+    // PDF View Mode Modal State
+    const [activePdfModal, setActivePdfModal] = useState({
+        isOpen: false,
+        pdfUrl: '',
+        title: '',
+        subtitle: '',
+        badge: 'PDF',
+        filename: ''
+    });
+
+    const handleOpenPdf = (pdfUrl, title, subtitle, badge, filename) => {
+        if (!pdfUrl) return;
+        setActivePdfModal({
+            isOpen: true,
+            pdfUrl,
+            title,
+            subtitle: subtitle || 'Tech Karma Study Material',
+            badge: badge || 'Notes PDF',
+            filename
+        });
+    };
+
+    const handleClosePdf = () => {
+        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
+    };
 
     const categories = ['All', 'Class 10', 'Class 12 Board', 'Programming', 'Competitive', 'Core CS'];
 
@@ -163,13 +190,33 @@ const Notes = () => {
                                 <button className="btn btn-secondary">
                                     Unlock Note <ArrowRight size={15} />
                                 </button>
-                            ) : note.file ? (
-                                <a href={`https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${note.file}`} target="_blank" rel="noreferrer" className="btn btn-primary">
-                                    <Download size={16} /> Download PDF
-                                </a>
-                            ) : (
-                                <button className="btn btn-primary">
-                                    <Download size={16} /> Download PDF
+                            ) : note.file ? (() => {
+                                const notePdfUrl = `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${note.file}`;
+                                return (
+                                    <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                                        <button
+                                            onClick={() => handleOpenPdf(notePdfUrl, note.title, `${note.category} • ${note.pages} Pages`, 'Notes PDF', note.file)}
+                                            className="btn btn-primary"
+                                            style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+                                        >
+                                            <FileText size={15} /> View Note
+                                        </button>
+                                        <a
+                                            href={notePdfUrl}
+                                            download={note.file}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="btn btn-secondary"
+                                            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 0.8rem', fontSize: '0.82rem' }}
+                                            title="Download PDF directly"
+                                        >
+                                            <Download size={14} />
+                                        </a>
+                                    </div>
+                                );
+                            })() : (
+                                <button className="btn btn-secondary" disabled>
+                                    Unavailable
                                 </button>
                             )}
                         </div>
@@ -181,6 +228,17 @@ const Notes = () => {
                     </div>
                 )}
             </div>
+
+            {/* Embedded PDF View Mode Modal */}
+            <PdfViewerModal
+                isOpen={activePdfModal.isOpen}
+                onClose={handleClosePdf}
+                pdfUrl={activePdfModal.pdfUrl}
+                title={activePdfModal.title}
+                subtitle={activePdfModal.subtitle}
+                badge={activePdfModal.badge}
+                filename={activePdfModal.filename}
+            />
         </div>
     );
 };

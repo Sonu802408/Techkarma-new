@@ -8,6 +8,7 @@ import SamplePaperViewer from './SamplePaperViewer.jsx';
 import PyqViewer from './PyqViewer.jsx';
 import VideoLecturesViewer from './VideoLecturesViewer.jsx';
 import { Layers } from 'lucide-react';
+import PdfViewerModal from '../common/PdfViewerModal.jsx';
 
 const EducationalContentContainer = ({
     activeClass,
@@ -19,6 +20,31 @@ const EducationalContentContainer = ({
     initialChapterIndex = 0
 }) => {
     const [selectedChapterIdx, setSelectedChapterIdx] = useState(initialChapterIndex || 0);
+
+    const [activePdfModal, setActivePdfModal] = useState({
+        isOpen: false,
+        pdfUrl: '',
+        title: '',
+        subtitle: '',
+        badge: 'PDF',
+        filename: ''
+    });
+
+    const handleOpenPdf = (url, title, subtitle, badge, filename) => {
+        if (!url) return;
+        setActivePdfModal({
+            isOpen: true,
+            pdfUrl: url,
+            title: title || currentChapterName,
+            subtitle: subtitle || `Class ${activeClass} • ${activeSubject} • ${activeMedium}`,
+            badge: badge || 'PDF',
+            filename: filename || ''
+        });
+    };
+
+    const handleClosePdf = () => {
+        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
+    };
 
     const currentChapterName = chapters[selectedChapterIdx] || `Chapter ${selectedChapterIdx + 1}`;
 
@@ -82,6 +108,7 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
+                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -99,6 +126,7 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
+                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -108,6 +136,7 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
+                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -118,6 +147,7 @@ const EducationalContentContainer = ({
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
                     officialSamplePdf={officialSamplePdf}
+                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -127,6 +157,7 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
+                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -137,6 +168,17 @@ const EducationalContentContainer = ({
                     activeMedium={activeMedium}
                 />
             )}
+
+            {/* Embedded PDF View Mode Modal */}
+            <PdfViewerModal
+                isOpen={activePdfModal.isOpen}
+                onClose={handleClosePdf}
+                pdfUrl={activePdfModal.pdfUrl}
+                title={activePdfModal.title}
+                subtitle={activePdfModal.subtitle}
+                badge={activePdfModal.badge}
+                filename={activePdfModal.filename}
+            />
         </div>
     );
 };
