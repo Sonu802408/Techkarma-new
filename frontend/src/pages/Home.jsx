@@ -1031,7 +1031,7 @@ const Home = () => {
                                             );
                                         })()}
                                     </div>
-                                ) : ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeContent) ? (
+                                ) : ((activeContent === 'notes' && [6, 7, 8].includes(parseInt(activeClass, 10))) || ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeContent)) ? (
                                     <EducationalContentContainer
                                         activeClass={activeClass}
                                         activeMedium={activeMedium}
@@ -1074,23 +1074,14 @@ const Home = () => {
                                                 </div>
 
                                                 <div className="resource-card-actions">
-                                                    <button className="btn btn-secondary">
+                                                    <Link to={`/classes/${activeClass}`} className="btn btn-secondary" style={{ textDecoration: 'none' }}>
                                                         Open Resource <ArrowRight size={15} />
-                                                    </button>
+                                                    </Link>
 
-                                                    {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
+                                                    {['notes', 'ncert-solution', 'mcqs'].includes(activeContent) && (
                                                         pdfExists ? (
                                                             <a
                                                                 href={pdfFilename.startsWith("class") ? `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}` : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}`}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                className="btn btn-primary"
-                                                            >
-                                                                <FileText size={16} /> View PDF <ArrowRight size={15} />
-                                                            </a>
-                                                        ) : (activeContent === 'books' && getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)) ? (
-                                                            <a
-                                                                href={getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)}
                                                                 target="_blank"
                                                                 rel="noreferrer"
                                                                 className="btn btn-primary"

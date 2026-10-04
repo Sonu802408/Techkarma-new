@@ -7,6 +7,7 @@ import SubjectiveViewer from './SubjectiveViewer.jsx';
 import SamplePaperViewer from './SamplePaperViewer.jsx';
 import PyqViewer from './PyqViewer.jsx';
 import VideoLecturesViewer from './VideoLecturesViewer.jsx';
+import NotesViewer from './NotesViewer.jsx';
 import { Layers } from 'lucide-react';
 
 const EducationalContentContainer = ({
@@ -74,6 +75,16 @@ const EducationalContentContainer = ({
                         ))}
                     </select>
                 </div>
+            )}
+
+            {activeContent === 'notes' && (
+                <NotesViewer
+                    notesData={contentData?.notes || contentData}
+                    chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
+                    activeMedium={activeMedium}
+                    classNum={activeClass}
+                    subject={activeSubject}
+                />
             )}
 
             {activeContent === 'mcqs' && (

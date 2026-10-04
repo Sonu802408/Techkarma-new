@@ -626,7 +626,7 @@ export const resolveClassPdfUrl = (classNum, subject, medium, contentType, chapt
     const typeCandidates = [];
     if (contentType === 'notes') {
         typeCandidates.push('', 'notes');
-    } else if (contentType === 'books' || contentType === 'ncert-books') {
+    } else if (contentType === 'ncert-books') {
         typeCandidates.push('books', '', 'books-ch');
     } else {
         typeCandidates.push(contentType, `${contentType}-ch`, '');

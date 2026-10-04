@@ -305,7 +305,7 @@ const ClassDetail = () => {
                             );
                         })()}
                     </div>
-                ) : ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeTab) ? (
+                ) : ((activeTab === 'notes' && [6, 7, 8].includes(parseInt(classNum, 10))) || ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeTab)) ? (
                     <EducationalContentContainer
                         activeClass={classNum}
                         activeMedium={selectedMedium}
@@ -345,9 +345,9 @@ const ClassDetail = () => {
                                     <button className="btn btn-secondary">
                                         Open Resource <ArrowRight size={15} />
                                     </button>
-                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
+                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (
                                         <a
-                                            href={activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream) : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
+                                            href={`https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="btn btn-primary"

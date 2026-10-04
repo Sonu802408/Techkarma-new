@@ -78,7 +78,6 @@ const tabs = [
     { id: 'ncert-books', label: 'NCERT Books', icon: 'BookOpen' },
     { id: 'mcqs', label: 'MCQs', icon: 'CheckSquare' },
     { id: 'subjective', label: 'Subjective', icon: 'FileText' },
-    { id: 'books', label: 'Books', icon: 'Book' },
     { id: 'online-test', label: 'Online Test', icon: 'PlayCircle' },
     { id: 'ncert-solution', label: 'NCERT Solution', icon: 'BookOpen' },
     { id: 'sample-paper', label: 'Sample Paper', icon: 'File' },

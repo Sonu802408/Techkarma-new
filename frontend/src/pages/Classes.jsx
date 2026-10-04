@@ -439,7 +439,7 @@ const Classes = () => {
                                 );
                             })()}
                         </div>
-                    ) : ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeContent) ? (
+                    ) : ((activeContent === 'notes' && [6, 7, 8].includes(parseInt(activeClass, 10))) || ['mcqs', 'online-test', 'ncert-solution', 'subjective', 'sample-paper', 'pyq', 'video-lecture'].includes(activeContent)) ? (
                         <EducationalContentContainer
                             activeClass={activeClass}
                             activeMedium={activeMedium}
@@ -486,7 +486,7 @@ const Classes = () => {
                                                 Open Resource <ArrowRight size={15} />
                                             </button>
 
-                                            {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
+                                            {['notes', 'ncert-solution', 'mcqs'].includes(activeContent) && (
                                                 resolvedPdfUrl ? (
                                                     <a
                                                         href={resolvedPdfUrl}
