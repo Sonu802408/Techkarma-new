@@ -60,7 +60,7 @@ const AdvancedTech = () => {
                 '4. Generative AI & LLMs: Transformer Architectures, RAG Pipelines, Prompt Engineering & Fine-tuning',
                 '5. Autonomous Systems & Edge AI: Reinforcement Agents, TensorRT, Model Quantization & Production Scaling'
             ],
-            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/AI_Complete_Handwritten_Notes.pdf',
+            pdfUrl: '/pdfs/AIML_Complete_Handwritten_Notes.pdf',
             pdfTitle: 'AIML Complete Notes PDF'
         },
         {

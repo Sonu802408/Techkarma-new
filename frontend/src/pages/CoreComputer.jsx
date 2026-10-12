@@ -3,14 +3,13 @@ import { Database, Server, GitBranch, Shield, Globe, Layers, Download, ChevronDo
 import { Link } from 'react-router-dom';
 
 const CoreComputer = () => {
-    const hfBase = 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs';
     const subjects = [
-        { name: 'Data Structures & Algorithms', icon: GitBranch, color: '#ec4899', desc: 'The backbone of computer science. Learn arrays, trees, graphs, dynamic programming, and algorithm optimization.', pdfUrl: `${hfBase}/Data-Structure-DSA-pre-notes-cse-gyan.pdf` },
-        { name: 'Database Management (DBMS)', icon: Database, color: '#f59e0b', desc: 'Master SQL, normalization, ER diagrams, transaction management, and NoSQL databases.', pdfUrl: `${hfBase}/DBMS-pre-notes-cse-gyan.pdf` },
-        { name: 'Operating Systems (OS)', icon: Server, color: '#10b981', desc: 'Process management, memory management, deadlocks, and internal workings of Linux/Windows.', pdfUrl: `${hfBase}/OS-pre-notes-cse-gyan.pdf` },
-        { name: 'Object Oriented Programming', icon: Layers, color: '#3b82f6', desc: 'Classes, Objects, Inheritance, Polymorphism, Abstraction, and Encapsulation.', pdfUrl: `${hfBase}/Java_Programming_Complete_Handwritten_Notes.pdf` },
-        { name: 'Computer Networks', icon: Globe, color: '#8b5cf6', desc: 'OSI Model, TCP/IP, Routing algorithms, and network security fundamentals.', pdfUrl: `${hfBase}/Computer-Networks-pre-notes-cse-gyan.pdf` },
-        { name: 'Compiler Design', icon: Binary, color: '#06b6d4', desc: 'Lexical analysis, CFG, LL/LR parsing, syntax-directed translation, intermediate code generation, and optimization.' },
+        { name: 'Data Structures & Algorithms', icon: GitBranch, color: '#ec4899', desc: 'The backbone of computer science. Learn arrays, trees, graphs, dynamic programming, and algorithm optimization.', pdfUrl: '/pdfs/Data-Structure-DSA-pre-notes-cse-gyan.pdf' },
+        { name: 'Database Management (DBMS)', icon: Database, color: '#f59e0b', desc: 'Master SQL, normalization, ER diagrams, transaction management, and NoSQL databases.', pdfUrl: '/pdfs/DBMS-pre-notes-cse-gyan.pdf' },
+        { name: 'Operating Systems (OS)', icon: Server, color: '#10b981', desc: 'Process management, memory management, deadlocks, and internal workings of Linux/Windows.', pdfUrl: '/pdfs/OS-pre-notes-cse-gyan.pdf' },
+        { name: 'Object Oriented Programming', icon: Layers, color: '#3b82f6', desc: 'Classes, Objects, Inheritance, Polymorphism, Abstraction, and Encapsulation.', pdfUrl: '/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf' },
+        { name: 'Computer Networks', icon: Globe, color: '#8b5cf6', desc: 'OSI Model, TCP/IP, Routing algorithms, and network security fundamentals.', pdfUrl: '/pdfs/CN_Tech_Karma_Complete_Notes.pdf' },
+        { name: 'Compiler Design', icon: Binary, color: '#06b6d4', desc: 'Lexical analysis, CFG, LL/LR parsing, syntax-directed translation, intermediate code generation, and optimization.', pdfUrl: '/pdfs/Compiler_Design_Notes.pdf' },
         { name: 'Software Engineering', icon: Shield, color: '#6366f1', desc: 'SDLC, Agile methodologies, software testing, and project management.' }
     ];
 
@@ -75,7 +74,7 @@ const CoreComputer = () => {
                                 {computerNetworkChapters.map((chapter, i) => (
                                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', background: 'var(--bg-primary)', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
                                         <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{chapter.title}</span>
-                                        <a href={`${hfBase}/${chapter.file}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary-color)', display: 'flex', alignItems: 'center' }}>
+                                        <a href={`/pdfs/${chapter.file}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary-color)', display: 'flex', alignItems: 'center' }}>
                                             <Download size={16} />
                                         </a>
                                     </div>
