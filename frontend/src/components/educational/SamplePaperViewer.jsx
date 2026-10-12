@@ -32,13 +32,15 @@ const SamplePaperViewer = ({ paperData, chapterTitle = '', activeMedium = 'Engli
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
                     {officialSamplePdf && (
                         <>
-                            <button
-                                onClick={() => onOpenPdf ? onOpenPdf(officialSamplePdf, `${paperData?.paperTitle || 'CBSE Board Sample Paper'}`, 'Official CBSE Assessment', 'Sample Paper') : window.open(officialSamplePdf, '_blank')}
+                            <a
+                                href={officialSamplePdf}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="btn btn-primary"
-                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.4rem' }}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.4rem', textDecoration: 'none' }}
                             >
                                 <FileText size={16} /> View CBSE 2026 Sample Paper
-                            </button>
+                            </a>
                             <a
                                 href={officialSamplePdf}
                                 download
@@ -54,13 +56,15 @@ const SamplePaperViewer = ({ paperData, chapterTitle = '', activeMedium = 'Engli
                     )}
                     {pdfUrl && (
                         <>
-                            <button
-                                onClick={() => onOpenPdf ? onOpenPdf(pdfUrl, `${chapterTitle} - Unit Test Paper`, 'Tech Karma Assessment Series', 'Unit Test') : window.open(pdfUrl, '_blank')}
+                            <a
+                                href={pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="btn-secondary"
-                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', cursor: 'pointer' }}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', textDecoration: 'none' }}
                             >
                                 <FileText size={16} /> View Unit Test
-                            </button>
+                            </a>
                             <a
                                 href={pdfUrl}
                                 download

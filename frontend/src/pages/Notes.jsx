@@ -1,41 +1,14 @@
 import React, { useState } from 'react';
 import { Search, Download, FileText, Lock, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
-import PdfViewerModal from '../components/common/PdfViewerModal.jsx';
-
 const Notes = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('all');
 
-    // PDF View Mode Modal State
-    const [activePdfModal, setActivePdfModal] = useState({
-        isOpen: false,
-        pdfUrl: '',
-        title: '',
-        subtitle: '',
-        badge: 'PDF',
-        filename: ''
-    });
-
-    const handleOpenPdf = (pdfUrl, title, subtitle, badge, filename) => {
-        if (!pdfUrl) return;
-        setActivePdfModal({
-            isOpen: true,
-            pdfUrl,
-            title,
-            subtitle: subtitle || 'Tech Karma Study Material',
-            badge: badge || 'Notes PDF',
-            filename
-        });
-    };
-
-    const handleClosePdf = () => {
-        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
-    };
-
     const categories = ['All', 'Class 10', 'Class 12 Board', 'Programming', 'Competitive', 'Core CS'];
 
     const notesList = [
+        { id: 305, title: 'AIML (AI & Machine Learning) Complete Notes', category: 'Competitive', type: 'PDF', pages: 320, size: '330 MB', isPremium: false, file: 'AIML_Complete_Handwritten_Notes.pdf' },
         { id: 301, title: 'Artificial Intelligence & ML Complete Notes', category: 'Competitive', type: 'PDF', pages: 35, size: '116 KB', isPremium: false, file: 'AI_Complete_Handwritten_Notes.pdf' },
         { id: 302, title: 'Cloud Computing & DevOps Complete Notes', category: 'Competitive', type: 'PDF', pages: 32, size: '115 KB', isPremium: false, file: 'Cloud_Computing_Complete_Handwritten_Notes.pdf' },
         { id: 303, title: 'Cyber Security & Ethical Hacking Notes', category: 'Competitive', type: 'PDF', pages: 28, size: '89 KB', isPremium: false, file: 'Cyber_Security_Complete_Handwritten_Notes.pdf' },
@@ -51,7 +24,8 @@ const Notes = () => {
         { id: 3, title: 'Data Structures (DSA) Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 38, size: '2.4 MB', isPremium: false, file: 'Data-Structure-DSA-pre-notes-cse-gyan.pdf' },
         { id: 4, title: 'Operating Systems (OS) Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 52, size: '3.6 MB', isPremium: false, file: 'OS-pre-notes-cse-gyan.pdf' },
         { id: 5, title: 'DBMS Database Systems Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 64, size: '8.0 MB', isPremium: false, file: 'DBMS-pre-notes-cse-gyan.pdf' },
-        { id: 6, title: 'Computer Networks Full Notes (CSE Gyan)', category: 'Core CS', type: 'PDF', pages: 58, size: '7.7 MB', isPremium: false, file: 'Computer-Networks-pre-notes-cse-gyan.pdf' },
+        { id: 6, title: 'Computer Networks Complete Notes (Tech Karma)', category: 'Core CS', type: 'PDF', pages: 58, size: '2.2 MB', isPremium: false, file: 'CN_Tech_Karma_Complete_Notes.pdf' },
+        { id: 28, title: 'Compiler Design Complete Notes (Tech Karma)', category: 'Core CS', type: 'PDF', pages: 113, size: '600 MB', isPremium: false, file: 'Compiler_Design_Notes.pdf' },
         { id: 7, title: 'Class 10 Science Full NCERT Notes', category: 'Class 10', type: 'PDF', pages: 85, size: '8.2 MB', isPremium: false, file: 'class10-english-science-ch1.pdf' },
         { id: 8, title: 'JEE Main Physics Mechanics', category: 'Competitive', type: 'PDF', pages: 68, size: '10.5 MB', isPremium: true, file: 'class11-english-physics-ch1.pdf' },
         { id: 9, title: 'English Grammar Rules', category: 'All', type: 'PDF', pages: 30, size: '4.2 MB', isPremium: false, file: 'class10-english-english-ch1.pdf' },
@@ -191,16 +165,21 @@ const Notes = () => {
                                     Unlock Note <ArrowRight size={15} />
                                 </button>
                             ) : note.file ? (() => {
-                                const notePdfUrl = `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${note.file}`;
+                                const localPdfFiles = ['AIML_Complete_Handwritten_Notes.pdf', 'CN_Tech_Karma_Complete_Notes.pdf', 'Compiler_Design_Notes.pdf'];
+                                const notePdfUrl = localPdfFiles.includes(note.file)
+                                    ? `/pdfs/${note.file}`
+                                    : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${note.file}`;
                                 return (
                                     <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
-                                        <button
-                                            onClick={() => handleOpenPdf(notePdfUrl, note.title, `${note.category} • ${note.pages} Pages`, 'Notes PDF', note.file)}
+                                        <a
+                                            href={notePdfUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                             className="btn btn-primary"
-                                            style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+                                            style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.85rem', textDecoration: 'none' }}
                                         >
                                             <FileText size={15} /> View Note
-                                        </button>
+                                        </a>
                                         <a
                                             href={notePdfUrl}
                                             download={note.file}
@@ -229,16 +208,6 @@ const Notes = () => {
                 )}
             </div>
 
-            {/* Embedded PDF View Mode Modal */}
-            <PdfViewerModal
-                isOpen={activePdfModal.isOpen}
-                onClose={handleClosePdf}
-                pdfUrl={activePdfModal.pdfUrl}
-                title={activePdfModal.title}
-                subtitle={activePdfModal.subtitle}
-                badge={activePdfModal.badge}
-                filename={activePdfModal.filename}
-            />
         </div>
     );
 };

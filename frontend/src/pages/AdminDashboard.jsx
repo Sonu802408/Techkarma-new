@@ -425,7 +425,7 @@ const AdminDashboard = () => {
                                                                 fontSize: '0.85rem'
                                                             }}
                                                         >
-                                                            Open NCERT <ExternalLink size={14} />
+                                                            Open PDF <ExternalLink size={14} />
                                                         </a>
                                                     ) : (
                                                         <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No URL</span>

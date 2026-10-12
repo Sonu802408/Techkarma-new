@@ -1,16 +1,30 @@
 import express from 'express';
 import Query from '../models/Query.js';
 import { protect, adminOnly } from '../middlewares/authMiddleware.js';
+import { sendWhatsAppNotification } from '../services/whatsappService.js';
 
 const router = express.Router();
 
-// POST new query (Public)
+// POST new query or visitor lead (Public)
 router.post('/', async (req, res) => {
     try {
         const query = new Query(req.body);
         const createdQuery = await query.save();
-        // Later we can add Nodemailer to send notification to admin
-        res.status(201).json(createdQuery);
+
+        // Trigger WhatsApp Notification to Admin
+        const waResult = await sendWhatsAppNotification({
+            name: createdQuery.name,
+            phone: createdQuery.phone,
+            email: createdQuery.email,
+            className: createdQuery.className || req.body.className || '',
+            message: createdQuery.message,
+            source: createdQuery.source || 'Website Visitor'
+        });
+
+        res.status(201).json({
+            ...createdQuery.toObject(),
+            waDirectUrl: waResult?.waDirectUrl
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

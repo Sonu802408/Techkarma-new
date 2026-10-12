@@ -52,13 +52,15 @@ const McqViewer = ({ mcqs = [], chapterTitle = '', activeMedium = 'English', pdf
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                     {pdfUrl && (
                         <>
-                            <button
-                                onClick={() => onOpenPdf ? onOpenPdf(pdfUrl, chapterTitle, 'MCQ Practice', 'MCQs PDF') : window.open(pdfUrl, '_blank')}
+                            <a
+                                href={pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="btn btn-primary"
-                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 1.1rem', fontSize: '0.85rem' }}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 1.1rem', fontSize: '0.85rem', textDecoration: 'none' }}
                             >
                                 <FileText size={15} /> {activeMedium === 'Hindi' ? 'MCQ पीडीएफ' : 'MCQs PDF'}
-                            </button>
+                            </a>
                             <a
                                 href={pdfUrl}
                                 download

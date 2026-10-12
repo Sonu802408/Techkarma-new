@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Cloud, ShieldAlert, Database, Download, ArrowRight, Sparkles, CheckCircle2, ChevronDown, ChevronUp, BookOpen } from 'lucide-react';
+import { Brain, Cloud, ShieldAlert, Database, Download, ArrowRight, Sparkles, CheckCircle2, ChevronDown, ChevronUp, BookOpen, Cpu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AdvancedTech = () => {
@@ -9,21 +9,59 @@ const AdvancedTech = () => {
         {
             id: 'ai',
             title: 'Artificial Intelligence (AI)',
-            subtitle: 'Machine Learning, Neural Networks & Generative AI',
+            subtitle: 'Neural Networks, Knowledge Systems & GenAI',
             icon: Brain,
-            tag: 'AI & ML',
+            tag: 'Artificial Intelligence',
             color: '#f43f5e',
             colorRgb: '244, 63, 94',
-            desc: 'Master AI fundamentals, machine learning algorithms, deep neural architectures, PyTorch, computer vision, natural language processing, and Generative AI (LLMs & Transformers).',
+            desc: 'Master AI fundamentals, heuristic search algorithms, knowledge representation, expert systems, computer vision, natural language processing, and Generative AI (LLMs & Transformers).',
             topics: [
                 '1. Foundations: Linear Algebra, Probability & AI Search Algorithms',
-                '2. Supervised & Unsupervised ML: Regression, Decision Trees, Clustering',
-                '3. Deep Learning: Neural Networks, Backpropagation & Optimizers',
-                '4. Computer Vision: CNNs, Object Detection & Image Segmentation',
-                '5. NLP & Generative AI: Transformers, Attention Mechanism & LLM Engineering'
+                '2. Knowledge Systems: Propositional Logic, Inference Engines & Expert Systems',
+                '3. Computer Vision: CNNs, Object Detection & Image Segmentation',
+                '4. NLP & Speech: Text Processing, Sequence Models, Speech Recognition',
+                '5. Generative AI: Transformers, Attention Mechanism & LLM Engineering'
             ],
-            pdfUrl: '/pdfs/AI_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/AI_Complete_Handwritten_Notes.pdf',
             pdfTitle: 'AI Notes PDF'
+        },
+        {
+            id: 'ml',
+            title: 'Machine Learning (ML)',
+            subtitle: 'Supervised, Unsupervised & Reinforcement Learning',
+            icon: Sparkles,
+            tag: 'Machine Learning',
+            color: '#3b82f6',
+            colorRgb: '59, 130, 246',
+            desc: 'Master the science of getting computers to learn without being explicitly programmed. Learn regression, decision trees, random forests, SVMs, clustering, dimensionality reduction, Scikit-Learn, and model deployment.',
+            topics: [
+                '1. Foundations: Python Stack, Linear Algebra, Statistics & Scikit-Learn',
+                '2. Supervised Learning: Linear & Logistic Regression, Decision Trees, Ensembles (XGBoost)',
+                '3. Unsupervised Learning: K-Means, Hierarchical Clustering, PCA & Dimensionality Reduction',
+                '4. Model Evaluation: Bias-Variance Tradeoff, Cross-Validation, ROC-AUC & Hyperparameter Tuning',
+                '5. Reinforcement Learning & MLOps: Q-Learning, Model Deployment with FastAPI & Docker'
+            ],
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data_Science_Complete_Handwritten_Notes.pdf',
+            pdfTitle: 'ML Notes PDF'
+        },
+        {
+            id: 'aiml',
+            title: 'AI & Machine Learning (AIML)',
+            subtitle: 'Integrated Autonomous Agents, Deep Learning & GenAI',
+            icon: Cpu,
+            tag: 'AIML Specialization',
+            color: '#a855f7',
+            colorRgb: '168, 85, 247',
+            desc: 'Comprehensive dual-specialization fusing Artificial Intelligence theory and Machine Learning pipelines. Develop neural architectures, deep learning models, intelligent agents, and generative systems.',
+            topics: [
+                '1. Unified Architecture: Symbolic AI vs Statistical Learning & Optimization',
+                '2. Deep Neural Networks: Multi-Layer Perceptrons, Backpropagation, PyTorch & TensorFlow',
+                '3. Computer Vision & NLP: CNNs, ResNets, RNNs, LSTMs & Attention Mechanisms',
+                '4. Generative AI & LLMs: Transformer Architectures, RAG Pipelines, Prompt Engineering & Fine-tuning',
+                '5. Autonomous Systems & Edge AI: Reinforcement Agents, TensorRT, Model Quantization & Production Scaling'
+            ],
+            pdfUrl: '/pdfs/AIML_Complete_Handwritten_Notes.pdf',
+            pdfTitle: 'AIML Complete Notes PDF'
         },
         {
             id: 'cloud',
@@ -41,7 +79,7 @@ const AdvancedTech = () => {
                 '4. Container Orchestration: Kubernetes Pods, Deployments & Ingress',
                 '5. DevOps & Serverless: CI/CD Pipelines, AWS Lambda & Microservices'
             ],
-            pdfUrl: '/pdfs/Cloud_Computing_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Cloud_Computing_Complete_Handwritten_Notes.pdf',
             pdfTitle: 'Cloud Notes PDF'
         },
         {
@@ -60,7 +98,7 @@ const AdvancedTech = () => {
                 '4. Web Security: OWASP Top 10 (SQLi, XSS, CSRF) & Penetration Testing',
                 '5. Advanced Cyber Defense: Incident Response, Forensics & Cloud Security'
             ],
-            pdfUrl: '/pdfs/Cyber_Security_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Cyber_Security_Complete_Handwritten_Notes.pdf',
             pdfTitle: 'Cyber Security PDF'
         },
         {
@@ -69,8 +107,8 @@ const AdvancedTech = () => {
             subtitle: 'Data Analytics, Statistical Modeling & Big Data',
             icon: Database,
             tag: 'Data & Analytics',
-            color: '#8b5cf6',
-            colorRgb: '139, 92, 246',
+            color: '#ec4899',
+            colorRgb: '236, 72, 153',
             desc: 'Extract actionable insights from complex data. Master data wrangling with Pandas & NumPy, interactive visualizations, statistical inference, hypothesis testing, and predictive ML models.',
             topics: [
                 '1. Data Foundations: Python Stack & Exploratory Data Analysis (EDA)',
@@ -79,7 +117,7 @@ const AdvancedTech = () => {
                 '4. Data Visualization: Matplotlib, Seaborn & Interactive Dashboards',
                 '5. Advanced Analytics: Time-Series Forecasting & Big Data Pipelines'
             ],
-            pdfUrl: '/pdfs/Data_Science_Complete_Handwritten_Notes.pdf',
+            pdfUrl: 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data_Science_Complete_Handwritten_Notes.pdf',
             pdfTitle: 'Data Science PDF'
         }
     ];

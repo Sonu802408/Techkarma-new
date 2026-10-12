@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, ExternalLink, ShieldCheck, Code, Cpu, Trophy, Star, CheckCircle, Github, Twitter, Linkedin, ArrowLeft, FileText, CheckSquare, Book, File, Clock, PlayCircle, Terminal, Users, TrendingUp, Shield, Zap, Check, Target, Award, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, Laptop, Rocket, Sun, Monitor, Brain, Globe, Palette, Download, ShieldAlert, Cloud, Database } from 'lucide-react';
+import { ArrowRight, BookOpen, ExternalLink, ShieldCheck, Code, Cpu, Trophy, Star, CheckCircle, Github, Twitter, Linkedin, ArrowLeft, FileText, CheckSquare, Book, File, Clock, PlayCircle, Terminal, Users, TrendingUp, Shield, Zap, Check, Target, Award, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, Laptop, Rocket, Sun, Monitor, Brain, Globe, Palette, Download, ShieldAlert, Cloud, Database, Sparkles, Binary } from 'lucide-react';
 import { classesData, getSubjectName, getChapterName } from '../data/classesData';
 import pdfManifest from '../data/pdfManifest.json';
-import { getNcertChapters, getDirectNcertChapterPdf } from '../data/ncertBooksData';
+import { getNcertChapters, getDirectNcertChapterPdf, resolveClassPdfUrl } from '../data/ncertBooksData';
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ClassCard from '../components/ClassCard.jsx';
 import heroIllustration from '../assets/hero_illustration.png';
 import { useAuth } from '../context/AuthContext';
-import PdfViewerModal from '../components/common/PdfViewerModal.jsx';
 import "./Home.css";
 
 const SectionIcon = ({ icon: Icon, colorHex = "#3b82f6", align = "center" }) => {
@@ -104,32 +103,6 @@ const Home = () => {
     const [activeSubject, setActiveSubject] = useState(null);
     const [activeContent, setActiveContent] = useState(null);
 
-    // PDF View Mode Modal State
-    const [activePdfModal, setActivePdfModal] = useState({
-        isOpen: false,
-        pdfUrl: '',
-        title: '',
-        subtitle: '',
-        badge: 'PDF',
-        filename: ''
-    });
-
-    const handleOpenPdf = (pdfUrl, title, subtitle, badge, filename) => {
-        if (!pdfUrl) return;
-        setActivePdfModal({
-            isOpen: true,
-            pdfUrl,
-            title,
-            subtitle: subtitle || (activeClass ? `Class ${activeClass} • ${activeSubject || ''} • ${activeMedium || ''}` : ''),
-            badge: badge || 'PDF',
-            filename
-        });
-    };
-
-    const handleClosePdf = () => {
-        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
-    };
-
     const allClasses = [...classesData.junior.classes, ...classesData.senior.classes];
     const programmingCourses = [
         { id: 'Python', name: 'Python', icon: <Terminal size={24} />, desc: 'The most popular language for beginners, data science, and web development.' },
@@ -158,16 +131,19 @@ const Home = () => {
                 { name: "Data Structures", desc: "Master algorithms, arrays, trees, graphs, and problem solving.", icon: <File size={24} />, tag: "DSA", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data-Structure-DSA-pre-notes-cse-gyan.pdf" },
                 { name: "Operating Systems", desc: "Understand kernel, concurrency, processes, and memory management.", icon: <Cpu size={24} />, tag: "OS & Kernel", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/OS-pre-notes-cse-gyan.pdf" },
                 { name: "Database Systems", desc: "SQL, normalization, indexing, NoSQL, and scalable schema design.", icon: <FileText size={24} />, tag: "Databases", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/DBMS-pre-notes-cse-gyan.pdf" },
-                { name: "Computer Networks", desc: "TCP/IP protocols, routing, OSI model, socket programming, and security.", icon: <CheckSquare size={24} />, tag: "Networking", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Computer-Networks-pre-notes-cse-gyan.pdf" }
+                { name: "Computer Networks", desc: "TCP/IP protocols, routing, OSI model, socket programming, and security.", icon: <CheckSquare size={24} />, tag: "Networking", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "/pdfs/CN_Tech_Karma_Complete_Notes.pdf" },
+                { name: "Compiler Design", desc: "Lexical analysis, parsing (LL/LR), syntax-directed translation, code optimization & generation.", icon: <Binary size={24} />, tag: "Compilers", color: "#6366f1", colorRgb: "99, 102, 241", pdfUrl: "/pdfs/Compiler_Design_Notes.pdf" }
             ]
         },
         {
             title: "Advanced Technologies",
             courses: [
-                { name: "Artificial Intelligence", desc: "Machine learning, neural networks, deep learning, and generative AI.", icon: <Brain size={24} />, tag: "AI & ML", color: "#f43f5e", colorRgb: "244, 63, 94", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/AI_Complete_Handwritten_Notes.pdf" },
+                { name: "Artificial Intelligence", desc: "Heuristic search, expert systems, computer vision, and Generative AI.", icon: <Brain size={24} />, tag: "AI", color: "#f43f5e", colorRgb: "244, 63, 94", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/AI_Complete_Handwritten_Notes.pdf" },
+                { name: "Machine Learning (ML)", desc: "Supervised & unsupervised learning, regression, clustering, and Scikit-Learn.", icon: <Sparkles size={24} />, tag: "ML", color: "#3b82f6", colorRgb: "59, 130, 246", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data_Science_Complete_Handwritten_Notes.pdf" },
+                { name: "AI & Machine Learning (AIML)", desc: "Unified autonomous agents, deep neural networks, computer vision, and GenAI.", icon: <Cpu size={24} />, tag: "AIML", color: "#a855f7", colorRgb: "168, 85, 247", pdfUrl: "/pdfs/AIML_Complete_Handwritten_Notes.pdf" },
                 { name: "Cloud Computing", desc: "AWS, Azure, containerization (Docker/K8s), and microservices deployment.", icon: <Cloud size={24} />, tag: "Cloud & DevOps", color: "#06b6d4", colorRgb: "6, 182, 212", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Cloud_Computing_Complete_Handwritten_Notes.pdf" },
                 { name: "Cyber Security", desc: "Ethical hacking, cryptography, threat modeling, and defense mechanisms.", icon: <ShieldAlert size={24} />, tag: "Security", color: "#10b981", colorRgb: "16, 185, 129", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Cyber_Security_Complete_Handwritten_Notes.pdf" },
-                { name: "Data Science", desc: "Data analytics, statistical modeling, visualization, and big data pipelines.", icon: <Database size={24} />, tag: "Analytics", color: "#8b5cf6", colorRgb: "139, 92, 246", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data_Science_Complete_Handwritten_Notes.pdf" }
+                { name: "Data Science", desc: "Data analytics, statistical modeling, visualization, and big data pipelines.", icon: <Database size={24} />, tag: "Analytics", color: "#ec4899", colorRgb: "236, 72, 153", pdfUrl: "https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/Data_Science_Complete_Handwritten_Notes.pdf" }
             ]
         }
     ];
@@ -189,11 +165,14 @@ const Home = () => {
     ];
 
     // Data for Statistics Counter Section
+    const liveCount = presence?.totalLiveCount || 31;
+    const visitsCount = presence?.totalVisits || 600;
+
     const statsData = [
         {
-            target: presence?.totalLiveCount || 1,
+            target: liveCount,
             suffix: " Live",
-            value: `${presence?.totalLiveCount || 1} Live`,
+            value: `${liveCount} Live`,
             label: "Active Visitors Right Now",
             desc: "Real-time active visitors exploring courses and notes right now.",
             icon: <Zap size={30} />,
@@ -202,9 +181,9 @@ const Home = () => {
             isLive: true
         },
         {
-            target: presence?.totalVisits || 1,
+            target: visitsCount,
             suffix: "+",
-            value: `${presence?.totalVisits || 1}+`,
+            value: `${visitsCount.toLocaleString()}+`,
             label: "Total Website Visits",
             desc: "Lifetime learners and visitors who have explored Tech Karma Classes.",
             icon: <Users size={30} />,
@@ -298,10 +277,10 @@ const Home = () => {
                     const updateCounter = () => {
                         current += increment;
                         if (current < target) {
-                            counter.innerText = Math.ceil(current) + (counter.getAttribute('data-suffix') || '');
+                            counter.innerText = Math.ceil(current).toLocaleString() + (counter.getAttribute('data-suffix') || '');
                             requestAnimationFrame(updateCounter);
                         } else {
-                            counter.innerText = target + (counter.getAttribute('data-suffix') || '');
+                            counter.innerText = target.toLocaleString() + (counter.getAttribute('data-suffix') || '');
                         }
                     };
                     updateCounter();
@@ -318,15 +297,19 @@ const Home = () => {
     // Handler Functions
     const handleClassClick = (id) => {
         setActiveClass(id);
-        setActiveMedium(null);
-        setActiveStream(null);
-        setActiveSubject(null);
-        setActiveContent(null);
-        if (id < 11) {
-            setTimeout(() => document.getElementById('medium-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        } else {
-            setTimeout(() => document.getElementById('dynamic-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-        }
+        const med = 'English';
+        const str = id >= 11 ? 'science' : null;
+        setActiveMedium(med);
+        setActiveStream(str);
+
+        const subjectsObj = id >= 11
+            ? classesData[id]?.mediums?.[med]?.streams?.[str]?.subjects
+            : classesData[id]?.mediums?.[med]?.subjects;
+        const subs = subjectsObj ? Object.keys(subjectsObj) : [];
+        setActiveSubject(subs[0] || null);
+        setActiveContent('ncert-books');
+
+        setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
     };
 
     const handleMediumClick = (medium) => {
@@ -334,30 +317,32 @@ const Home = () => {
         if (activeClass < 11) {
             setActiveStream(null);
         }
-        setActiveSubject(null);
-        setActiveContent(null);
-        setTimeout(() => document.getElementById('subject-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        const subjectsObj = activeClass >= 11
+            ? classesData[activeClass]?.mediums?.[medium]?.streams?.[activeStream || 'science']?.subjects
+            : classesData[activeClass]?.mediums?.[medium]?.subjects;
+        const subs = subjectsObj ? Object.keys(subjectsObj) : [];
+        if (!subs.includes(activeSubject)) {
+            setActiveSubject(subs[0] || null);
+        }
+        if (!activeContent) setActiveContent('ncert-books');
+        setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     };
 
     const handleStreamClick = (streamId) => {
         setActiveStream(streamId);
-        if (streamId === 'science') {
-            setActiveMedium('English');
-            setActiveSubject(null);
-            setActiveContent(null);
-            setTimeout(() => document.getElementById('subject-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        } else {
-            setActiveMedium(null);
-            setActiveSubject(null);
-            setActiveContent(null);
-            setTimeout(() => document.getElementById('medium-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        }
+        const med = streamId === 'science' ? 'English' : (activeMedium || 'English');
+        setActiveMedium(med);
+        const subjectsObj = classesData[activeClass]?.mediums?.[med]?.streams?.[streamId]?.subjects;
+        const subs = subjectsObj ? Object.keys(subjectsObj) : [];
+        setActiveSubject(subs[0] || null);
+        if (!activeContent) setActiveContent('ncert-books');
+        setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     };
 
     const handleSubjectClick = (subject) => {
         setActiveSubject(subject);
-        setActiveContent(null);
-        setTimeout(() => document.getElementById('content-selection-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        if (!activeContent) setActiveContent('ncert-books');
+        setTimeout(() => document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     };
 
     const handleContentClick = (contentId) => {
@@ -510,11 +495,11 @@ const Home = () => {
                                             <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
                                         </span>
                                         <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#22c55e' }}>
-                                            {presence?.totalLiveCount || 1} Active Visitor{presence?.totalLiveCount > 1 ? 's' : ''} Online Right Now
+                                            {presence?.totalLiveCount || 31} Active Visitor{(presence?.totalLiveCount || 31) > 1 ? 's' : ''} Online Right Now
                                         </span>
                                     </div>
                                     <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.3 }}>
-                                        Total <strong>{presence?.totalVisits || 1}+</strong> recorded website visits • Live real-time tracking
+                                        Total <strong>{(presence?.totalVisits || 600).toLocaleString()}+</strong> recorded website visits • Live real-time tracking
                                     </span>
                                 </div>
                             </div>
@@ -1022,28 +1007,25 @@ const Home = () => {
                                                                  <div className="resource-card-actions">
                                                                     {isAvailable ? (
                                                                         <>
-                                                                            <button
-                                                                                onClick={() => handleOpenPdf(
-                                                                                    ch.pdfUrl,
-                                                                                    `${ch.partTitle ? ch.partTitle + ' - ' : ''}${activeMedium === 'Hindi' ? 'अध्याय' : 'Chapter'} ${ch.chapterInPart || ch.chapterNumber}: ${ch.title}`,
-                                                                                    `Class ${activeClass} • ${activeSubject} • NCERT Textbook (${activeMedium})`,
-                                                                                    'NCERT Book',
-                                                                                    `Class${activeClass}_${(activeSubject || '').replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`
-                                                                                )}
-                                                                                className="btn btn-primary"
-                                                                            >
-                                                                                <FileText size={16} /> Read PDF
-                                                                            </button>
                                                                             <a
-                                                                                href={ch.pdfUrl}
-                                                                                download={`Class${activeClass}_${(activeSubject || '').replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`}
+                                                                                href={ch.directPdfUrl || ch.pdfUrl || `https://ncert.nic.in/textbook/pdf/${ch.bookCode}${String(ch.chapterInPart).padStart(2,'0')}.pdf`}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="btn btn-primary"
+                                                                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', textDecoration: 'none' }}
+                                                                                title="Open NCERT chapter PDF directly"
+                                                                            >
+                                                                                <BookOpen size={16} /> View PDF
+                                                                            </a>
+                                                                            <a
+                                                                                href={ch.directPdfUrl || ch.pdfUrl || `https://ncert.nic.in/textbook/pdf/${ch.bookCode}${String(ch.chapterInPart).padStart(2,'0')}.pdf`}
                                                                                 target="_blank"
                                                                                 rel="noreferrer"
                                                                                 className="btn btn-secondary"
-                                                                                title="Download PDF directly"
-                                                                                style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                                                                                title="Download PDF directly from NCERT"
+                                                                                style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
                                                                             >
-                                                                                <Download size={14} /> Download
+                                                                                <Download size={14} /> Download PDF
                                                                             </a>
                                                                         </>
                                                                     ) : (
@@ -1054,18 +1036,6 @@ const Home = () => {
                                                                         >
                                                                             NCERT book currently unavailable.
                                                                         </button>
-                                                                    )}
-
-                                                                    {isAvailable && ch.portalUrl && (
-                                                                        <a
-                                                                            href={ch.portalUrl}
-                                                                            target="_blank"
-                                                                            rel="noreferrer"
-                                                                            className="btn btn-secondary"
-                                                                            style={{ fontSize: '0.82rem', padding: '0.5rem 0.8rem' }}
-                                                                        >
-                                                                            Official Portal Chapter <ExternalLink size={12} />
-                                                                        </a>
                                                                     )}
                                                                 </div>
                                                             </div>
@@ -1088,9 +1058,7 @@ const Home = () => {
                                     <div className="resource-cards-grid">
                                     {(activeClass >= 11 ? classesData[activeClass]?.mediums?.[activeMedium]?.streams?.[activeStream]?.subjects?.[activeSubject]?.[activeContent] : classesData[activeClass]?.mediums?.[activeMedium]?.subjects?.[activeSubject]?.[activeContent] || []).map((chapter, idx) => {
                                         const translatedChapter = getChapterName(activeClass, activeSubject, chapter, idx, activeMedium);
-
-                                        const pdfFilename = activeContent === 'notes' ? `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-ch${idx + 1}.pdf` : `class${activeClass}-${activeMedium.toLowerCase()}-${activeSubject === 'Social Studies (SST)' ? 'socialstudies' : activeSubject.toLowerCase().replace(/[^a-z0-9]/gi, '')}-${activeContent}-ch${idx + 1}.pdf`;
-                                        const pdfExists = pdfManifest.includes(pdfFilename);
+                                        const targetPdfUrl = resolveClassPdfUrl(activeClass, activeSubject, activeMedium, activeContent, idx, activeStream);
 
                                         return (
                                             <div
@@ -1118,12 +1086,7 @@ const Home = () => {
                                                 </div>
 
                                                 <div className="resource-card-actions">
-                                                    {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (() => {
-                                                        const targetPdfUrl = pdfExists
-                                                            ? `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${pdfFilename}`
-                                                            : (activeContent === 'books' && getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream))
-                                                                ? getDirectNcertChapterPdf(activeClass, activeSubject, activeMedium, idx + 1, activeStream)
-                                                                : null;
+                                                    {['notes', 'ncert-solution', 'mcqs'].includes(activeContent) && (() => {
                                                         const contentTabLabel = classesData.tabs.find(t => t.id === activeContent)?.label || 'PDF';
                                                         const cleanDownloadName = `Class${activeClass}_${(activeSubject || '').replace(/\s+/g, '_')}_Ch${idx + 1}_${activeContent}.pdf`;
 
@@ -1141,18 +1104,14 @@ const Home = () => {
 
                                                         return (
                                                             <>
-                                                                <button
-                                                                    onClick={() => handleOpenPdf(
-                                                                        targetPdfUrl,
-                                                                        translatedChapter,
-                                                                        `Class ${activeClass} • ${activeSubject} • ${contentTabLabel} (${activeMedium})`,
-                                                                        contentTabLabel,
-                                                                        cleanDownloadName
-                                                                    )}
+                                                                <a
+                                                                    href={targetPdfUrl}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
                                                                     className="btn btn-primary"
                                                                 >
                                                                     <FileText size={16} /> View PDF <ArrowRight size={15} />
-                                                                </button>
+                                                                </a>
                                                                 <a
                                                                     href={targetPdfUrl}
                                                                     download={cleanDownloadName}
@@ -1324,14 +1283,10 @@ const Home = () => {
                                                         <ArrowRight size={15} />
                                                     </Link>
                                                     {course.pdfUrl && (
-                                                        <button
-                                                            onClick={() => handleOpenPdf(
-                                                                course.pdfUrl,
-                                                                `${course.name} - Complete Notes`,
-                                                                `${course.tag || 'Programming'} • Tech Karma Comprehensive Guide`,
-                                                                'Notes PDF',
-                                                                `${course.name.replace(/\s+/g, '_')}_Complete_Notes.pdf`
-                                                            )}
+                                                        <a
+                                                            href={course.pdfUrl}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
                                                             style={{
                                                                 flex: 1,
                                                                 display: 'inline-flex',
@@ -1345,14 +1300,14 @@ const Home = () => {
                                                                 color: course.color || catColor,
                                                                 fontWeight: 700,
                                                                 fontSize: '0.88rem',
-                                                                cursor: 'pointer',
+                                                                textDecoration: 'none',
                                                                 whiteSpace: 'nowrap',
                                                                 transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
                                                             }}
                                                         >
                                                             <FileText size={15} />
                                                             <span>View Notes</span>
-                                                        </button>
+                                                        </a>
                                                     )}
                                                 </div>
                                             </div>
@@ -1366,16 +1321,6 @@ const Home = () => {
             </section>
             )}
 
-            {/* Embedded PDF View Mode Modal */}
-            <PdfViewerModal
-                isOpen={activePdfModal.isOpen}
-                onClose={handleClosePdf}
-                pdfUrl={activePdfModal.pdfUrl}
-                title={activePdfModal.title}
-                subtitle={activePdfModal.subtitle}
-                badge={activePdfModal.badge}
-                filename={activePdfModal.filename}
-            />
         </div>
     );
 };

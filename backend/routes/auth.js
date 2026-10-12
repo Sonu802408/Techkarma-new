@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { protect, adminOnly } from '../middlewares/authMiddleware.js';
+import { sendWhatsAppNotification } from '../services/whatsappService.js';
 
 const router = express.Router();
 
@@ -46,6 +47,14 @@ router.post('/register', async (req, res) => {
         });
 
         if (user) {
+            // Trigger WhatsApp Notification to Admin
+            sendWhatsAppNotification({
+                name: user.name,
+                phone: user.phone,
+                email: user.email,
+                source: 'New Student Registration'
+            }).catch(e => console.error('WhatsApp notify error:', e.message));
+
             res.status(201).json({
                 _id: user._id,
                 name: user.name,

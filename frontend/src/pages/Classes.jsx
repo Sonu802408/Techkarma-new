@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, ArrowRight, Book, FileText, CheckSquare, File, Clock, PlayCircle, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, ExternalLink, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, BookOpen, ArrowRight, Book, FileText, CheckSquare, File, Clock, PlayCircle, Briefcase, Library, PenTool, Beaker, Atom, FlaskConical, GraduationCap, ExternalLink, ShieldCheck, Download } from 'lucide-react';
 import { classesData, getSubjectName, getChapterName } from '../data/classesData';
 import pdfManifest from '../data/pdfManifest.json';
-import externalBookLinks from '../data/externalBookLinks';
 import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChapterPdf, resolveClassPdfUrl } from '../data/ncertBooksData';
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ClassCard from '../components/ClassCard.jsx';
@@ -34,17 +33,24 @@ const Classes = () => {
     const [activeSubject, setActiveSubject] = useState(null);
     const [activeContent, setActiveContent] = useState(null);
 
-    // Sync activeClass with URL param
+    // Sync activeClass with URL param with intelligent initial defaults
     useEffect(() => {
         if (classId) {
             const num = parseInt(classId, 10);
             if (allClasses.includes(num)) {
                 setActiveClass(num);
-                // Class changed from URL: reset everything deeply
-                setActiveMedium(null);
-                setActiveStream(null);
-                setActiveSubject(null);
-                setActiveContent(null);
+                const defaultStream = num >= 11 ? 'science' : null;
+                const defaultMedium = 'English';
+                setActiveStream(defaultStream);
+                setActiveMedium(defaultMedium);
+
+                // Auto-select first available subject
+                const subjectsObj = num >= 11
+                    ? classesData[num]?.mediums?.[defaultMedium]?.streams?.[defaultStream]?.subjects
+                    : classesData[num]?.mediums?.[defaultMedium]?.subjects;
+                const subs = subjectsObj ? Object.keys(subjectsObj) : [];
+                setActiveSubject(subs[0] || null);
+                setActiveContent('ncert-books');
             } else {
                 navigate('/classes');
             }
@@ -59,11 +65,6 @@ const Classes = () => {
 
     // Handle Class Card Click (Step 1)
     const handleClassClick = (id) => {
-        setActiveClass(id);
-        setActiveMedium(null);
-        setActiveStream(null);
-        setActiveSubject(null);
-        setActiveContent(null);
         navigate(`/classes/${id}`);
     };
 
@@ -73,26 +74,31 @@ const Classes = () => {
         if (activeClass < 11) {
             setActiveStream(null);
         }
-        setActiveSubject(null);
-        setActiveContent(null);
+        const subjectsObj = activeClass >= 11
+            ? classesData[activeClass]?.mediums?.[medium]?.streams?.[activeStream || 'science']?.subjects
+            : classesData[activeClass]?.mediums?.[medium]?.subjects;
+        const subs = subjectsObj ? Object.keys(subjectsObj) : [];
+        if (!subs.includes(activeSubject)) {
+            setActiveSubject(subs[0] || null);
+        }
+        if (!activeContent) setActiveContent('ncert-books');
     };
 
-    // Handle Stream Click (Step 1 for Class 11/12) - Automatically bypass medium selection for Science
+    // Handle Stream Click (Step 1 for Class 11/12)
     const handleStreamClick = (streamId) => {
         setActiveStream(streamId);
-        if (streamId === 'science') {
-            setActiveMedium('English');
-        } else {
-            setActiveMedium(null);
-        }
-        setActiveSubject(null);
-        setActiveContent(null);
+        const med = streamId === 'science' ? 'English' : (activeMedium || 'English');
+        setActiveMedium(med);
+        const subjectsObj = classesData[activeClass]?.mediums?.[med]?.streams?.[streamId]?.subjects;
+        const subs = subjectsObj ? Object.keys(subjectsObj) : [];
+        setActiveSubject(subs[0] || null);
+        if (!activeContent) setActiveContent('ncert-books');
     };
 
-    // Handle Subject Click (Step 3 or Step 2 for Science)
+    // Handle Subject Click (Step 3)
     const handleSubjectClick = (subject) => {
         setActiveSubject(subject);
-        setActiveContent(null);
+        if (!activeContent) setActiveContent('ncert-books');
     };
 
     // Handle Content Tab Click
@@ -402,14 +408,28 @@ const Classes = () => {
 
                                                     <div className="resource-card-actions">
                                                         {isAvailable ? (
-                                                            <a
-                                                                href={ch.pdfUrl || '#'}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                className="btn btn-primary"
-                                                            >
-                                                                <FileText size={16} /> Read PDF
-                                                            </a>
+                                                            <>
+                                                                <a
+                                                                    href={ch.directPdfUrl || `https://ncert.nic.in/textbook/pdf/${ch.bookCode}${String(ch.chapterInPart).padStart(2,'0')}.pdf`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="btn btn-primary"
+                                                                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', textDecoration: 'none' }}
+                                                                    title="Open NCERT chapter PDF"
+                                                                >
+                                                                    <BookOpen size={16} /> View PDF
+                                                                </a>
+                                                                <a
+                                                                    href={ch.directPdfUrl || `https://ncert.nic.in/textbook/pdf/${ch.bookCode}${String(ch.chapterInPart).padStart(2,'0')}.pdf`}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="btn btn-secondary"
+                                                                    title="Download PDF directly from NCERT"
+                                                                    style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
+                                                                >
+                                                                    <Download size={14} /> Download PDF
+                                                                </a>
+                                                            </>
                                                         ) : (
                                                             <button
                                                                 disabled
@@ -418,18 +438,6 @@ const Classes = () => {
                                                             >
                                                                 Unavailable
                                                             </button>
-                                                        )}
-
-                                                        {isAvailable && ch.portalUrl && (
-                                                            <a
-                                                                href={ch.portalUrl}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                className="btn btn-secondary"
-                                                                style={{ fontSize: '0.82rem', padding: '0.5rem 0.8rem' }}
-                                                            >
-                                                                Official Portal Chapter <ExternalLink size={13} />
-                                                            </a>
                                                         )}
                                                     </div>
                                                 </div>
@@ -482,29 +490,36 @@ const Classes = () => {
                                         </div>
 
                                         <div className="resource-card-actions">
-                                            <button className="btn btn-secondary">
-                                                Open Resource <ArrowRight size={15} />
-                                            </button>
-
-                                            {['notes', 'ncert-solution', 'mcqs', 'books'].includes(activeContent) && (
-                                                resolvedPdfUrl ? (
+                                            {resolvedPdfUrl ? (
+                                                <>
                                                     <a
                                                         href={resolvedPdfUrl}
                                                         target="_blank"
-                                                        rel="noreferrer"
+                                                        rel="noopener noreferrer"
                                                         className="btn btn-primary"
                                                     >
-                                                        <FileText size={16} /> View PDF <ArrowRight size={15} />
+                                                        <FileText size={16} /> View {classesData.tabs.find(t => t.id === activeContent)?.label || 'PDF'} <ArrowRight size={15} />
                                                     </a>
-                                                ) : (
-                                                    <button
-                                                        disabled
+                                                    <a
+                                                        href={resolvedPdfUrl}
+                                                        download={`Class${activeClass}_${(activeSubject || '').replace(/\s+/g, '_')}_Ch${index + 1}_${activeContent}.pdf`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
                                                         className="btn btn-secondary"
-                                                        style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                                                        title="Download PDF directly"
+                                                        style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
                                                     >
-                                                        Unavailable
-                                                    </button>
-                                                )
+                                                        <Download size={14} /> Download
+                                                    </a>
+                                                </>
+                                            ) : (
+                                                <button
+                                                    disabled
+                                                    className="btn btn-secondary"
+                                                    style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                                                >
+                                                    Unavailable
+                                                </button>
                                             )}
                                         </div>
                                     </div>

@@ -51,13 +51,15 @@ const NcertSolutionsViewer = ({ solutionsData, chapterTitle = '', activeMedium =
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                     {pdfUrl && (
                         <>
-                            <button
-                                onClick={() => onOpenPdf ? onOpenPdf(pdfUrl, chapterTitle, 'NCERT Solutions', 'Solutions PDF') : window.open(pdfUrl, '_blank')}
+                            <a
+                                href={pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="btn btn-primary"
-                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.25rem', fontSize: '0.88rem' }}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1.25rem', fontSize: '0.88rem', textDecoration: 'none' }}
                             >
                                 <FileText size={16} /> {activeMedium === 'Hindi' ? 'संपूर्ण पीडीएफ देखें' : 'View Chapter PDF'}
-                            </button>
+                            </a>
                             <a
                                 href={pdfUrl}
                                 download

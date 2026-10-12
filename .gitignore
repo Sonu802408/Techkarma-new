@@ -17,3 +17,7 @@ frontend/public/pdfs/
 gs_installer.exe
 test_compress.py
 test_type.py
+
+data/
+scripts/*.png
+

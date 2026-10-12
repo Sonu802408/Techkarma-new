@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Book, FileText, CheckSquare, BookOpen, File, Clock, PlayCircle, ExternalLink, ShieldCheck, ArrowRight, Download } from 'lucide-react';
 import { classesData } from '../data/classesData';
-import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChapterPdf } from '../data/ncertBooksData';
+import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChapterPdf, resolveClassPdfUrl } from '../data/ncertBooksData';
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ErrorBoundary from '../components/common/ErrorBoundary.jsx';
-import PdfViewerModal from '../components/common/PdfViewerModal.jsx';
 
 const ClassDetail = () => {
     const { classId } = useParams();
@@ -27,32 +26,6 @@ const ClassDetail = () => {
     const [selectedMedium, setSelectedMedium] = useState('English');
     const [selectedSubject, setSelectedSubject] = useState('');
     const [activeTab, setActiveTab] = useState('notes');
-
-    // PDF View Mode Modal State
-    const [activePdfModal, setActivePdfModal] = useState({
-        isOpen: false,
-        pdfUrl: '',
-        title: '',
-        subtitle: '',
-        badge: 'PDF',
-        filename: ''
-    });
-
-    const handleOpenPdf = (pdfUrl, title, subtitle, badge, filename) => {
-        if (!pdfUrl) return;
-        setActivePdfModal({
-            isOpen: true,
-            pdfUrl,
-            title,
-            subtitle: subtitle || `Class ${classNum} • ${selectedSubject} • ${selectedMedium}`,
-            badge: badge || 'PDF',
-            filename
-        });
-    };
-
-    const handleClosePdf = () => {
-        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
-    };
 
     // Handle stream change: auto-select English for science
     const handleStreamChange = (newStream) => {
@@ -296,28 +269,25 @@ const ClassDetail = () => {
                                                 <div className="resource-card-actions">
                                                     {isAvailable ? (
                                                         <>
-                                                            <button
-                                                                onClick={() => handleOpenPdf(
-                                                                    ch.pdfUrl,
-                                                                    `${ch.partTitle ? ch.partTitle + ' - ' : ''}${selectedMedium === 'Hindi' ? 'अध्याय' : 'Chapter'} ${ch.chapterInPart || ch.chapterNumber}: ${ch.title || 'NCERT Book'}`,
-                                                                    `Class ${classNum} • ${originalSubjectName || selectedSubject} • NCERT Textbook (${selectedMedium})`,
-                                                                    'NCERT Book',
-                                                                    `Class${classNum}_${(originalSubjectName || selectedSubject).replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`
-                                                                )}
-                                                                className="btn btn-primary"
-                                                            >
-                                                                <FileText size={16} /> Read PDF
-                                                            </button>
                                                             <a
-                                                                href={ch.pdfUrl}
-                                                                download={`Class${classNum}_${(originalSubjectName || selectedSubject).replace(/\s+/g, '_')}_Ch${ch.chapterNumber}_NCERT.pdf`}
+                                                                href={ch.directPdfUrl || `https://ncert.nic.in/textbook/pdf/${ch.bookCode}${String(ch.chapterInPart).padStart(2,'0')}.pdf`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="btn btn-primary"
+                                                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', textDecoration: 'none' }}
+                                                                title="Open NCERT chapter PDF"
+                                                            >
+                                                                <BookOpen size={16} /> View PDF
+                                                            </a>
+                                                            <a
+                                                                href={ch.directPdfUrl || `https://ncert.nic.in/textbook/pdf/${ch.bookCode}${String(ch.chapterInPart).padStart(2,'0')}.pdf`}
                                                                 target="_blank"
                                                                 rel="noreferrer"
                                                                 className="btn btn-secondary"
-                                                                title="Download PDF directly"
-                                                                style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                                                                title="Download PDF directly from NCERT"
+                                                                style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
                                                             >
-                                                                <Download size={14} /> Download
+                                                                <Download size={14} /> Download PDF
                                                             </a>
                                                         </>
                                                     ) : (
@@ -328,18 +298,6 @@ const ClassDetail = () => {
                                                         >
                                                             Unavailable
                                                         </button>
-                                                    )}
-
-                                                    {isAvailable && ch.portalUrl && (
-                                                        <a
-                                                            href={ch.portalUrl}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="btn btn-secondary"
-                                                            style={{ fontSize: '0.82rem', padding: '0.5rem 0.8rem' }}
-                                                        >
-                                                            Official Portal Chapter <ExternalLink size={13} />
-                                                        </a>
                                                     )}
                                                 </div>
                                             </div>
@@ -386,30 +344,36 @@ const ClassDetail = () => {
                                 </div>
 
                                 <div className="resource-card-actions">
-                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'books', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (() => {
-                                        const targetPdfUrl = activeTab === 'books' && getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream)
-                                            ? getDirectNcertChapterPdf(classNum, originalSubjectName, selectedMedium, index + 1, selectedStream)
-                                            : `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/class${classNum}-${(selectedMedium || '').toLowerCase()}-${selectedSubject === 'social studies (sst)' ? 'socialstudies' : (selectedSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, '')}${activeTab === 'notes' ? '' : '-' + activeTab}-ch${index + 1}.pdf`;
+                                    {(['notes', 'ncert-solution', 'mcqs', 'subjective', 'online-test', 'sample-paper', 'pyq'].includes(activeTab)) && (() => {
+                                        const resolvedPdfUrl = resolveClassPdfUrl(classNum, originalSubjectName || selectedSubject, selectedMedium, activeTab, index, selectedStream);
                                         const chapterTitleText = classesData.getChapterName ? classesData.getChapterName(classNum, originalSubjectName, chapterName || `Chapter ${index + 1}`, index, selectedMedium) : (chapterName || `Chapter ${index + 1}`);
                                         const tabLabel = classesData.tabs.find(t => t.id === activeTab)?.label || 'PDF';
                                         const cleanDownloadName = `Class${classNum}_${(originalSubjectName || selectedSubject).replace(/\s+/g, '_')}_Ch${index + 1}_${activeTab}.pdf`;
 
+                                        if (!resolvedPdfUrl) {
+                                            return (
+                                                <button
+                                                    disabled
+                                                    className="btn btn-secondary"
+                                                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                                                >
+                                                    Upcoming
+                                                </button>
+                                            );
+                                        }
+
                                         return (
                                             <>
-                                                <button
-                                                    onClick={() => handleOpenPdf(
-                                                        targetPdfUrl,
-                                                        `${chapterTitleText}`,
-                                                        `Class ${classNum} • ${originalSubjectName || selectedSubject} • ${tabLabel} (${selectedMedium})`,
-                                                        tabLabel,
-                                                        cleanDownloadName
-                                                    )}
+                                                <a
+                                                    href={resolvedPdfUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                     className="btn btn-primary"
                                                 >
                                                     <FileText size={16} /> View {tabLabel} <ArrowRight size={15} />
-                                                </button>
+                                                </a>
                                                 <a
-                                                    href={targetPdfUrl}
+                                                    href={resolvedPdfUrl}
                                                     download={cleanDownloadName}
                                                     target="_blank"
                                                     rel="noreferrer"
@@ -435,17 +399,6 @@ const ClassDetail = () => {
                 )}
                 </ErrorBoundary>
             </div>
-
-            {/* Embedded PDF View Mode Modal */}
-            <PdfViewerModal
-                isOpen={activePdfModal.isOpen}
-                onClose={handleClosePdf}
-                pdfUrl={activePdfModal.pdfUrl}
-                title={activePdfModal.title}
-                subtitle={activePdfModal.subtitle}
-                badge={activePdfModal.badge}
-                filename={activePdfModal.filename}
-            />
         </div>
     );
 };

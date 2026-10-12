@@ -15,13 +15,22 @@ export const AuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(() => localStorage.getItem('techkarma_token') || null);
     const [socket, setSocket] = useState(null);
-    // 100% Real Presence State - No Fake Numbers
-    const [presence, setPresence] = useState({
-        totalLiveCount: 1, // Real current active visitor session
-        liveStudentsCount: user ? 1 : 0,
-        onlineStudentNames: user ? [user.name] : [],
-        totalRegistered: 0,
-        totalVisits: 1
+    // Base boost configurations for counter cards (Active Live: 30 base, Total Visits: 600 base)
+    const BASE_LIVE_BOOST = 30;      // Base 30 + active live visitors
+    const BASE_VISITS_BOOST = 600;   // Base 600 + subsequent visits
+
+    const [presence, setPresence] = useState(() => {
+        let initialVisits = 0;
+        try {
+            initialVisits = parseInt(localStorage.getItem('techkarma_new_visits') || '0', 10);
+        } catch (e) {}
+        return {
+            totalLiveCount: BASE_LIVE_BOOST + 1, // Base 30 + 1 current live session = 31 Live
+            liveStudentsCount: user ? 1 : 0,
+            onlineStudentNames: user ? [user.name] : [],
+            totalRegistered: 0,
+            totalVisits: BASE_VISITS_BOOST + initialVisits
+        };
     });
 
     // Real Cross-Tab and Visit Tracker
@@ -30,12 +39,12 @@ export const AuthProvider = ({ children }) => {
         const myTabId = Math.random().toString(36).substring(2, 9);
         const activeTabs = new Set([myTabId]);
 
-        // Track real visits in localStorage
+        // Track visits in localStorage starting from base 600
         try {
-            const currentVisits = parseInt(localStorage.getItem('techkarma_total_visits') || '0', 10) + 1;
-            localStorage.setItem('techkarma_total_visits', currentVisits.toString());
+            const currentVisits = parseInt(localStorage.getItem('techkarma_new_visits') || '0', 10) + 1;
+            localStorage.setItem('techkarma_new_visits', currentVisits.toString());
             if (isMounted) {
-                setPresence(prev => ({ ...prev, totalVisits: currentVisits }));
+                setPresence(prev => ({ ...prev, totalVisits: BASE_VISITS_BOOST + currentVisits }));
             }
         } catch (e) {}
 
@@ -58,23 +67,24 @@ export const AuthProvider = ({ children }) => {
                 if (isMounted) {
                     setPresence(prev => ({
                         ...prev,
-                        totalLiveCount: Math.max(1, activeTabs.size)
+                        totalLiveCount: BASE_LIVE_BOOST + Math.max(1, activeTabs.size)
                     }));
                 }
             };
         } catch (e) {}
 
-        // Fetch real stats from server if database is connected
+        // Fetch stats from server if database is connected
         const fetchServerStats = async () => {
             try {
                 const res = await fetch('/api/stats');
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.success && isMounted) {
+                        const visits = data.totalVisits || parseInt(localStorage.getItem('techkarma_new_visits') || '0', 10);
                         setPresence(prev => ({
                             ...prev,
                             totalRegistered: data.totalUsers || 0,
-                            totalVisits: data.totalVisits || prev.totalVisits
+                            totalVisits: BASE_VISITS_BOOST + visits
                         }));
                     }
                 }
@@ -129,7 +139,7 @@ export const AuthProvider = ({ children }) => {
                 if (data && (data.totalLiveCount > 0 || data.totalRegistered > 0)) {
                     setPresence(prev => ({
                         ...prev,
-                        totalLiveCount: data.totalLiveCount || prev.totalLiveCount,
+                        totalLiveCount: BASE_LIVE_BOOST + (data.totalLiveCount || 1),
                         liveStudentsCount: data.liveStudentsCount || prev.liveStudentsCount,
                         onlineStudentNames: Array.isArray(data.onlineStudentNames) && data.onlineStudentNames.length > 0
                             ? data.onlineStudentNames

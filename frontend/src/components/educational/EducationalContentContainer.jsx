@@ -8,7 +8,7 @@ import SamplePaperViewer from './SamplePaperViewer.jsx';
 import PyqViewer from './PyqViewer.jsx';
 import VideoLecturesViewer from './VideoLecturesViewer.jsx';
 import { Layers } from 'lucide-react';
-import PdfViewerModal from '../common/PdfViewerModal.jsx';
+import { resolveClassPdfUrl } from '../../data/ncertBooksData.js';
 
 const EducationalContentContainer = ({
     activeClass,
@@ -20,31 +20,6 @@ const EducationalContentContainer = ({
     initialChapterIndex = 0
 }) => {
     const [selectedChapterIdx, setSelectedChapterIdx] = useState(initialChapterIndex || 0);
-
-    const [activePdfModal, setActivePdfModal] = useState({
-        isOpen: false,
-        pdfUrl: '',
-        title: '',
-        subtitle: '',
-        badge: 'PDF',
-        filename: ''
-    });
-
-    const handleOpenPdf = (url, title, subtitle, badge, filename) => {
-        if (!url) return;
-        setActivePdfModal({
-            isOpen: true,
-            pdfUrl: url,
-            title: title || currentChapterName,
-            subtitle: subtitle || `Class ${activeClass} • ${activeSubject} • ${activeMedium}`,
-            badge: badge || 'PDF',
-            filename: filename || ''
-        });
-    };
-
-    const handleClosePdf = () => {
-        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
-    };
 
     const currentChapterName = chapters[selectedChapterIdx] || `Chapter ${selectedChapterIdx + 1}`;
 
@@ -58,12 +33,14 @@ const EducationalContentContainer = ({
         contentType: activeContent
     });
 
-    const subjectSlug = (activeSubject === 'Social Studies (SST)' ? 'socialstudies' : (activeSubject || '').toLowerCase().replace(/[^a-z0-9]/gi, ''));
-    const fileName = `class${activeClass}-${(activeMedium || 'English').toLowerCase()}-${subjectSlug}-${activeContent}-ch${selectedChapterIdx + 1}.pdf`;
-    const pdfUrl = `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${fileName}`;
-    
-    const sampleFileName = `cbse-class-${activeClass}-${subjectSlug}-2026.pdf`;
-    const officialSamplePdf = `https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs/${sampleFileName}`;
+    const pdfUrl = resolveClassPdfUrl(activeClass, activeSubject, activeMedium, activeContent, selectedChapterIdx, activeStream)
+        || resolveClassPdfUrl(activeClass, activeSubject, activeMedium, 'notes', selectedChapterIdx, activeStream);
+
+    const officialSamplePdf = activeClass === 10
+        ? 'https://cbseacademic.nic.in/SQP_CLASSX_2025-26.html'
+        : activeClass === 12
+            ? 'https://cbseacademic.nic.in/sqp_classxii_2025-26.html'
+            : 'https://cbseacademic.nic.in/';
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -108,7 +85,6 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
-                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -126,7 +102,6 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
-                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -136,7 +111,6 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
-                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -147,7 +121,6 @@ const EducationalContentContainer = ({
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
                     officialSamplePdf={officialSamplePdf}
-                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -157,7 +130,6 @@ const EducationalContentContainer = ({
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
-                    onOpenPdf={handleOpenPdf}
                 />
             )}
 
@@ -169,16 +141,6 @@ const EducationalContentContainer = ({
                 />
             )}
 
-            {/* Embedded PDF View Mode Modal */}
-            <PdfViewerModal
-                isOpen={activePdfModal.isOpen}
-                onClose={handleClosePdf}
-                pdfUrl={activePdfModal.pdfUrl}
-                title={activePdfModal.title}
-                subtitle={activePdfModal.subtitle}
-                badge={activePdfModal.badge}
-                filename={activePdfModal.filename}
-            />
         </div>
     );
 };

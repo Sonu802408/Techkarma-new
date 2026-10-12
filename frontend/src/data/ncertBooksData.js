@@ -3,7 +3,7 @@
 // Base Portal URL: https://ncert.nic.in/textbook.php?{bookCode}={chapterIndex}-{totalChapters}
 
 import { classesData, getSubjectName, getChapterName } from './classesData.js';
-import pdfManifest from './pdfManifest.json';
+import pdfManifest from './pdfManifest.json' with { type: 'json' };
 
 // Map subjects and parts to official 5-letter NCERT codes
 export const ncertSubjectCodes = {
@@ -367,16 +367,16 @@ export const ncertSubjectCodes = {
     },
     7: {
         'Math': {
-            en: [{ code: 'gemh1', chapters: 13, title: 'Mathematics' }],
-            hi: [{ code: 'ghmh1', chapters: 13, title: 'गणित' }]
+            en: [{ code: 'gegp2', chapters: 7, title: 'Ganita Prakash - II' }],
+            hi: [{ code: 'ghgp2', chapters: 7, title: 'गणित प्रकाश - II' }]
         },
         'Mathematics': {
-            en: [{ code: 'gemh1', chapters: 13, title: 'Mathematics' }],
-            hi: [{ code: 'ghmh1', chapters: 13, title: 'गणित' }]
+            en: [{ code: 'gegp2', chapters: 7, title: 'Ganita Prakash - II' }],
+            hi: [{ code: 'ghgp2', chapters: 7, title: 'गणित प्रकाश - II' }]
         },
         'Science': {
-            en: [{ code: 'gesc1', chapters: 13, title: 'Science' }],
-            hi: [{ code: 'ghsc1', chapters: 13, title: 'विज्ञान' }]
+            en: [{ code: 'gecu1', chapters: 12, title: 'Curiosity (Science)' }],
+            hi: [{ code: 'ghcu1', chapters: 12, title: 'जिज्ञासा (विज्ञान)' }]
         },
         'Social Studies (SST)': {
             en: [
@@ -402,20 +402,20 @@ export const ncertSubjectCodes = {
     },
     6: {
         'Math': {
-            en: [{ code: 'femh1', chapters: 10, title: 'Ganita Prakash' }],
-            hi: [{ code: 'fhmh1', chapters: 10, title: 'गणित प्रकाश' }]
+            en: [{ code: 'fegp1', chapters: 10, title: 'Ganita Prakash' }],
+            hi: [{ code: 'fhgp1', chapters: 10, title: 'गणित प्रकाश' }]
         },
         'Mathematics': {
-            en: [{ code: 'femh1', chapters: 10, title: 'Ganita Prakash' }],
-            hi: [{ code: 'fhmh1', chapters: 10, title: 'गणित प्रकाश' }]
+            en: [{ code: 'fegp1', chapters: 10, title: 'Ganita Prakash' }],
+            hi: [{ code: 'fhgp1', chapters: 10, title: 'गणित प्रकाश' }]
         },
         'Science': {
-            en: [{ code: 'fesc1', chapters: 12, title: 'Curiosity (Science)' }],
-            hi: [{ code: 'fhsc1', chapters: 12, title: 'जिज्ञासा (विज्ञान)' }]
+            en: [{ code: 'fecu1', chapters: 12, title: 'Curiosity (Science)' }],
+            hi: [{ code: 'fhcu1', chapters: 12, title: 'जिज्ञासा (विज्ञान)' }]
         },
         'Social Studies (SST)': {
-            en: [{ code: 'fess1', chapters: 12, title: 'Exploring Society: India and Beyond' }],
-            hi: [{ code: 'fhss1', chapters: 12, title: 'समाज का अध्ययन' }]
+            en: [{ code: 'fees1', chapters: 14, title: 'Exploring Society: India and Beyond' }],
+            hi: [{ code: 'fhes1', chapters: 14, title: 'समाज का अध्ययन: भारत और उसके आगे' }]
         },
         'English': {
             en: [{ code: 'feen1', chapters: 5, title: 'Poorvi' }]
@@ -508,8 +508,10 @@ export const getNcertChapters = ({ classNum, subject, medium, stream }) => {
                 bookTitle: `NCERT ${getSubjectName(subject, medium)}`,
                 bookCode: 'NCERT',
                 partTitle: '',
-                pdfUrl: `https://ncert.nic.in/textbook.php`,
-                portalUrl: `https://ncert.nic.in/textbook.php`,
+                pdfUrl: null,
+                directPdfUrl: null,
+                ncertPdfUrl: null,
+                portalUrl: null,
                 status: 'unavailable'
             };
         });
@@ -525,8 +527,7 @@ export const getNcertChapters = ({ classNum, subject, medium, stream }) => {
             const syllabusTitle = rawSyllabusChapters[chNum - 1] || `${part.title} - Chapter ${chInPart}`;
             const translatedTitle = getChapterName(cls, subject, syllabusTitle, chNum - 1, medium);
 
-            const directPdfUrl = `https://ncert.nic.in/textbook/pdf/${part.code}${format2Digit(chInPart)}.pdf`;
-            const portalUrl = `https://ncert.nic.in/textbook.php?${part.code}=${chInPart}-${part.chapters}`;
+            const ncertDirectPdfUrl = `https://ncert.nic.in/textbook/pdf/${part.code}${format2Digit(chInPart)}.pdf`;
 
             result.push({
                 chapterNumber: chNum,
@@ -535,8 +536,10 @@ export const getNcertChapters = ({ classNum, subject, medium, stream }) => {
                 bookTitle: part.title || `NCERT ${getSubjectName(subject, medium)}`,
                 bookCode: part.code,
                 partTitle: parts.length > 1 ? part.title : '',
-                pdfUrl: directPdfUrl,
-                portalUrl: portalUrl,
+                pdfUrl: ncertDirectPdfUrl,
+                directPdfUrl: ncertDirectPdfUrl,
+                ncertPdfUrl: ncertDirectPdfUrl,
+                portalUrl: ncertDirectPdfUrl,
                 totalChaptersInPart: part.chapters,
                 status: 'active'
             });
@@ -566,7 +569,7 @@ export const getNcertBooks = ({ classNum, subject, medium, stream }) => {
         title: p.title,
         bookCode: p.code,
         totalChapters: p.chapters,
-        officialUrl: `https://ncert.nic.in/textbook.php?${p.code}=0-${p.chapters}`,
+        officialUrl: `https://ncert.nic.in/textbook/pdf/${p.code}01.pdf`,
         directPdfBase: `https://ncert.nic.in/textbook/pdf/${p.code}`,
         status: 'active',
         order: idx + 1,
@@ -574,10 +577,10 @@ export const getNcertBooks = ({ classNum, subject, medium, stream }) => {
     }));
 };
 
-// Chapter URL helper for official portal links
-export const getNcertChapterUrl = (bookCode, chapterIndex, totalChapters = 15) => {
+// Chapter URL helper for direct PDF links
+export const getNcertChapterUrl = (bookCode, chapterIndex) => {
     const chNum = chapterIndex + 1;
-    return `https://ncert.nic.in/textbook.php?${bookCode}=${chNum}-${totalChapters}`;
+    return `https://ncert.nic.in/textbook/pdf/${bookCode}${format2Digit(chNum)}.pdf`;
 };
 
 // Helper: Get direct NCERT PDF link for any chapter number or index
@@ -607,10 +610,11 @@ export const resolveClassPdfUrl = (classNum, subject, medium, contentType, chapt
     const subLower = (subject || '').toLowerCase();
 
     const manifestSet = new Set(pdfManifest || []);
+    const hfBase = 'https://huggingface.co/datasets/SonuTechKarma/techkarma-pdfs/resolve/main/pdfs';
 
     const subCandidates = [];
     if (subLower.includes('social') || subLower.includes('sst')) {
-        subCandidates.push('socialstudies', 'social-studies-sst', 'social');
+        subCandidates.push('socialstudies', 'social-studies-(sst)', 'social-studies-sst', 'social');
     } else if (subLower.includes('math')) {
         subCandidates.push('math', 'mathematics');
     } else if (subLower.includes('computer')) {
@@ -626,31 +630,52 @@ export const resolveClassPdfUrl = (classNum, subject, medium, contentType, chapt
     const typeCandidates = [];
     if (contentType === 'notes') {
         typeCandidates.push('', 'notes');
-    } else if (contentType === 'books' || contentType === 'ncert-books') {
-        typeCandidates.push('books', '', 'books-ch');
+    } else if (contentType === 'ncert-books') {
+        typeCandidates.push('books', 'ncert-books', '');
     } else {
         typeCandidates.push(contentType, `${contentType}-ch`, '');
     }
 
+    // 1. Try matching with requested medium in manifest
     for (const subCandidate of subCandidates) {
         for (const typeCandidate of typeCandidates) {
             const infix = typeCandidate ? `-${typeCandidate}` : '';
             const filename = `class${cls}-${med}-${subCandidate}${infix}-ch${chNum}.pdf`;
             if (manifestSet.has(filename)) {
-                return `/pdfs/${filename}`;
+                return `${hfBase}/${filename}`;
             }
         }
     }
 
+    // 2. Prefix matching with requested medium in manifest
     const prefix = `class${cls}-${med}-${subCandidates[0]}`;
     const chSuffix = `-ch${chNum}.pdf`;
     for (const file of pdfManifest || []) {
         if (file.startsWith(prefix) && file.endsWith(chSuffix)) {
-            return `/pdfs/${file}`;
+            return `${hfBase}/${file}`;
         }
     }
 
-    return getDirectNcertChapterPdf(classNum, subject, medium, chNum, stream);
+    // 3. Fallback: If Hindi notes not found, check English notes in manifest
+    if (med === 'hindi') {
+        for (const subCandidate of subCandidates) {
+            for (const typeCandidate of typeCandidates) {
+                const infix = typeCandidate ? `-${typeCandidate}` : '';
+                const filename = `class${cls}-english-${subCandidate}${infix}-ch${chNum}.pdf`;
+                if (manifestSet.has(filename)) {
+                    return `${hfBase}/${filename}`;
+                }
+            }
+        }
+    }
+
+    // 4. Fallback to Official NCERT Chapter PDF
+    const directNcertPdf = getDirectNcertChapterPdf(classNum, subject, medium, chNum, stream);
+    if (directNcertPdf) {
+        return directNcertPdf;
+    }
+
+    return null;
 };
 
 export const ncertBooksData = [];
@@ -670,7 +695,7 @@ Object.entries(ncertSubjectCodes).forEach(([clsStr, subMap]) => {
                         title: part.title,
                         bookCode: part.code,
                         totalChapters: part.chapters,
-                        officialUrl: `https://ncert.nic.in/textbook.php?${part.code}=0-${part.chapters}`,
+                        officialUrl: `https://ncert.nic.in/textbook/pdf/${part.code}01.pdf`,
                         status: 'active',
                         order: pIdx + 1
                     });

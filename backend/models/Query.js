@@ -7,7 +7,7 @@ const querySchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        default: ''
     },
     phone: {
         type: String,
@@ -15,7 +15,19 @@ const querySchema = new mongoose.Schema({
     },
     message: {
         type: String,
-        required: true
+        default: 'New Website Visitor'
+    },
+    className: {
+        type: String,
+        default: ''
+    },
+    photo: {
+        type: String,
+        default: ''
+    },
+    source: {
+        type: String,
+        default: 'Website Visitor'
     },
     status: {
         type: String,

@@ -23,6 +23,7 @@ const Tech = () => {
                 { name: 'Data Structures & Algorithms', desc: 'Master coding interviews.' },
                 { name: 'DBMS & SQL', desc: 'Database design and complex queries.' },
                 { name: 'Operating Systems', desc: 'Kernel, Memory, and Process management.' },
+                { name: 'Compiler Design', desc: 'Lexical analysis, parsing & code optimization.' },
                 { name: 'Software Engineering', desc: 'SDLC, Agile, and System Design.' }
             ]
         },
@@ -31,10 +32,12 @@ const Tech = () => {
             icon: Cpu,
             color: '#10b981',
             items: [
-                { name: 'Artificial Intelligence', desc: 'Neural Networks & Deep Learning.' },
-                { name: 'Machine Learning', desc: 'Data modeling and predictive algorithms.' },
+                { name: 'Artificial Intelligence (AI)', desc: 'Heuristic search, expert systems, and computer vision.' },
+                { name: 'Machine Learning (ML)', desc: 'Data modeling, regression, and predictive algorithms.' },
+                { name: 'AI & Machine Learning (AIML)', desc: 'Integrated autonomous agents and Generative AI.' },
                 { name: 'Cloud Computing', desc: 'AWS & Azure cloud architecture.' },
-                { name: 'Cyber Security', desc: 'Ethical hacking and network defense.' }
+                { name: 'Cyber Security', desc: 'Ethical hacking and network defense.' },
+                { name: 'Data Science', desc: 'Data analytics, statistical modeling, and big data.' }
             ]
         }
     };

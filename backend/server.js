@@ -42,6 +42,7 @@ import materialRoutes from './routes/materials.js';
 import queryRoutes from './routes/queries.js';
 import examRoutes from './routes/exams.js';
 import statsRoutes from './routes/stats.js';
+import ncertBooksRoutes from './routes/ncertBooks.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
@@ -50,6 +51,7 @@ app.use('/api/materials', materialRoutes);
 app.use('/api/queries', queryRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/ncert-books', ncertBooksRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Server, GitBranch, Shield, Globe, Layers, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { Database, Server, GitBranch, Shield, Globe, Layers, Download, ChevronDown, ChevronUp, Binary } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CoreComputer = () => {
@@ -8,7 +8,8 @@ const CoreComputer = () => {
         { name: 'Database Management (DBMS)', icon: Database, color: '#f59e0b', desc: 'Master SQL, normalization, ER diagrams, transaction management, and NoSQL databases.', pdfUrl: '/pdfs/DBMS-pre-notes-cse-gyan.pdf' },
         { name: 'Operating Systems (OS)', icon: Server, color: '#10b981', desc: 'Process management, memory management, deadlocks, and internal workings of Linux/Windows.', pdfUrl: '/pdfs/OS-pre-notes-cse-gyan.pdf' },
         { name: 'Object Oriented Programming', icon: Layers, color: '#3b82f6', desc: 'Classes, Objects, Inheritance, Polymorphism, Abstraction, and Encapsulation.', pdfUrl: '/pdfs/Java_Programming_Complete_Handwritten_Notes.pdf' },
-        { name: 'Computer Networks', icon: Globe, color: '#8b5cf6', desc: 'OSI Model, TCP/IP, Routing algorithms, and network security fundamentals.', pdfUrl: '/pdfs/Computer-Networks-pre-notes-cse-gyan.pdf' },
+        { name: 'Computer Networks', icon: Globe, color: '#8b5cf6', desc: 'OSI Model, TCP/IP, Routing algorithms, and network security fundamentals.', pdfUrl: '/pdfs/CN_Tech_Karma_Complete_Notes.pdf' },
+        { name: 'Compiler Design', icon: Binary, color: '#06b6d4', desc: 'Lexical analysis, CFG, LL/LR parsing, syntax-directed translation, intermediate code generation, and optimization.', pdfUrl: '/pdfs/Compiler_Design_Notes.pdf' },
         { name: 'Software Engineering', icon: Shield, color: '#6366f1', desc: 'SDLC, Agile methodologies, software testing, and project management.' }
     ];
 

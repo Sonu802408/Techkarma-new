@@ -17,6 +17,7 @@ import Notes from './pages/Notes';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import VisitorLeadModal from './components/common/VisitorLeadModal';
 
 function App() {
     const [theme, setTheme] = useState("dark");
@@ -100,6 +101,7 @@ function App() {
                 </Routes>
             </main>
 
+            <VisitorLeadModal />
             <Footer />
             <Analytics />
         </div>

@@ -1,34 +1,7 @@
 import React, { useState } from 'react';
 import { Terminal, Laptop, Rocket, BookOpen, Globe, Palette, Zap, ArrowRight, Download, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import PdfViewerModal from '../components/common/PdfViewerModal.jsx';
-
 const Programming = () => {
-    // PDF View Mode Modal State
-    const [activePdfModal, setActivePdfModal] = useState({
-        isOpen: false,
-        pdfUrl: '',
-        title: '',
-        subtitle: '',
-        badge: 'PDF',
-        filename: ''
-    });
-
-    const handleOpenPdf = (pdfUrl, title, subtitle, badge, filename) => {
-        if (!pdfUrl) return;
-        setActivePdfModal({
-            isOpen: true,
-            pdfUrl,
-            title,
-            subtitle: subtitle || 'Tech Karma Programming Notes',
-            badge: badge || 'Notes PDF',
-            filename
-        });
-    };
-
-    const handleClosePdf = () => {
-        setActivePdfModal(prev => ({ ...prev, isOpen: false }));
-    };
     const languages = [
         {
             name: 'Python',
@@ -322,14 +295,10 @@ const Programming = () => {
                                     <ArrowRight size={16} />
                                 </Link>
                                 {lang.pdfUrl && (
-                                    <button
-                                        onClick={() => handleOpenPdf(
-                                            lang.pdfUrl,
-                                            `${lang.name} Complete Notes`,
-                                            `${lang.tag} • Tech Karma Guide`,
-                                            'Programming Notes',
-                                            `${lang.name.replace(/\s+/g, '_')}_Complete_Notes.pdf`
-                                        )}
+                                    <a
+                                        href={lang.pdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         style={{
                                             flex: 1,
                                             display: 'inline-flex',
@@ -343,31 +312,20 @@ const Programming = () => {
                                             color: lang.color,
                                             fontWeight: 700,
                                             fontSize: '0.92rem',
-                                            cursor: 'pointer',
+                                            textDecoration: 'none',
                                             whiteSpace: 'nowrap',
                                             transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
                                         }}
                                     >
                                         <FileText size={16} />
                                         <span>View Notes</span>
-                                    </button>
+                                    </a>
                                 )}
                             </div>
                         </div>
                     );
                 })}
             </div>
-
-            {/* Embedded PDF View Mode Modal */}
-            <PdfViewerModal
-                isOpen={activePdfModal.isOpen}
-                onClose={handleClosePdf}
-                pdfUrl={activePdfModal.pdfUrl}
-                title={activePdfModal.title}
-                subtitle={activePdfModal.subtitle}
-                badge={activePdfModal.badge}
-                filename={activePdfModal.filename}
-            />
         </div>
     );
 };
