@@ -163,10 +163,10 @@ const VisitorLeadModal = () => {
                             <CheckCircle size={38} />
                         </div>
                         <h3 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 0.5rem', color: '#10b981' }}>
-                            स्वागत है, {name || 'Student'}! 🎉
+                            Welcome, {name || 'Student'}! 🎉
                         </h3>
                         <p style={{ color: '#94a3b8', fontSize: '0.95rem', margin: 0, lineHeight: 1.5 }}>
-                            आपका रजिस्ट्रेशन सफल रहा! अब आप सभी Free Notes व Books एक्सेस कर सकते हैं।
+                            Your registration was successful! You now have full access to all Free Notes, Books, and Study Material.
                         </p>
                     </div>
                 ) : (
@@ -189,10 +189,10 @@ const VisitorLeadModal = () => {
                                 <Sparkles size={14} /> Tech Karma Classes
                             </div>
                             <h3 style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.4rem', color: '#ffffff' }}>
-                                फ्री नोट्स व बुक्स अनलॉक करें 📚
+                                Unlock Free Notes & Books 📚
                             </h3>
                             <p style={{ color: '#94a3b8', fontSize: '0.88rem', margin: 0, lineHeight: 1.4 }}>
-                                सभी क्लासेज के फ्री NCERT सॉल्यूशंस व नोट्स पाने के लिए अपना विवरण दर्ज करें।
+                                Enter your details below to instantly access free NCERT solutions, chapter notes, and mock tests.
                             </p>
                         </div>
 
@@ -219,7 +219,7 @@ const VisitorLeadModal = () => {
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#e2e8f0', cursor: 'pointer' }}>
-                                        {photo ? 'फोटो बदलें (Optional)' : 'अपनी फोटो अपलोड करें (Optional)'}
+                                        {photo ? 'Change Photo (Optional)' : 'Upload Your Photo (Optional)'}
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -234,14 +234,14 @@ const VisitorLeadModal = () => {
                             {/* Name Input */}
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: '#cbd5e1' }}>
-                                    आपका नाम (Full Name) *
+                                    Full Name *
                                 </label>
                                 <div style={{ position: 'relative' }}>
                                     <User size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
                                     <input
                                         type="text"
                                         required
-                                        placeholder="जैसे: राहुल शर्मा"
+                                        placeholder="e.g. Rahul Sharma"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         style={{
@@ -262,14 +262,14 @@ const VisitorLeadModal = () => {
                             {/* WhatsApp / Phone Input */}
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: '#cbd5e1' }}>
-                                    WhatsApp / मोबाइल नंबर *
+                                    WhatsApp / Mobile Number *
                                 </label>
                                 <div style={{ position: 'relative' }}>
                                     <Phone size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#25D366' }} />
                                     <input
                                         type="tel"
                                         required
-                                        placeholder="10 अंकों का मोबाइल नंबर"
+                                        placeholder="10-digit mobile number"
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}
                                         pattern="[0-9]{10}"
@@ -292,7 +292,7 @@ const VisitorLeadModal = () => {
                             {/* Class Selection */}
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: '#cbd5e1' }}>
-                                    अपनी क्लास / कोर्स चुनें
+                                    Select Your Class / Target Course
                                 </label>
                                 <div style={{ position: 'relative' }}>
                                     <BookOpen size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
@@ -346,11 +346,11 @@ const VisitorLeadModal = () => {
                                     transition: 'all 0.2s'
                                 }}
                             >
-                                {isSubmitting ? 'सबमिट हो रहा है...' : '🚀 फ्री एक्सेस पाएं (Unlock Now)'}
+                                {isSubmitting ? 'Submitting...' : '🚀 Unlock Free Access Now'}
                             </button>
 
                             <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b', margin: '0.2rem 0 0' }}>
-                                🔒 आपकी जानकारी 100% सुरक्षित है। कोई स्पैम नहीं।
+                                🔒 Your information is 100% confidential. No spam guaranteed.
                             </p>
                         </form>
                     </>
