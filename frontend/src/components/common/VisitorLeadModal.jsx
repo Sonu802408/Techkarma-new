@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, User, Phone, BookOpen, Camera, CheckCircle, Sparkles } from 'lucide-react';
+import { X, User, Phone, BookOpen, Camera, CheckCircle, Sparkles, MessageSquare } from 'lucide-react';
 
 const VisitorLeadModal = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +9,7 @@ const VisitorLeadModal = () => {
     const [photo, setPhoto] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [waLink, setWaLink] = useState('');
 
     useEffect(() => {
         // Check if user already submitted or dismissed recently
@@ -55,8 +56,26 @@ const VisitorLeadModal = () => {
         }
 
         setIsSubmitting(true);
+
+        const waText = 
+`🔔 *Tech Karma Classes - Free Notes & Books Registration*
+━━━━━━━━━━━━━━━━━━━━━━
+👤 *Student Name:* ${name.trim()}
+📱 *WhatsApp Number:* ${phone.trim()}
+🎓 *Target Class / Course:* ${className}
+⏰ *Time:* ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+━━━━━━━━━━━━━━━━━━━━━━
+Hello Sir, I registered on your website and want to access Free Notes & Books for ${className}. Please share details!`;
+
+        const waUrl = `https://api.whatsapp.com/send?phone=918130550381&text=${encodeURIComponent(waText)}`;
+        setWaLink(waUrl);
+
         try {
-            const res = await fetch('/api/queries', {
+            // Save in localStorage so modal doesn't keep annoying visitor
+            localStorage.setItem('techkarma_lead_submitted', 'true');
+
+            // Send to backend if available (non-blocking)
+            fetch('/api/queries', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -67,29 +86,19 @@ const VisitorLeadModal = () => {
                     message: `Website Visitor Lead: ${name} (${phone}) - ${className}`,
                     source: 'Instant Website Visitor'
                 })
-            });
+            }).catch(() => {});
 
-            if (res.ok) {
-                setIsSuccess(true);
-                localStorage.setItem('techkarma_lead_submitted', 'true');
-                setTimeout(() => {
-                    setIsOpen(false);
-                }, 2200);
-            } else {
-                // Still close gracefully if server responds
-                setIsSuccess(true);
-                localStorage.setItem('techkarma_lead_submitted', 'true');
-                setTimeout(() => {
-                    setIsOpen(false);
-                }, 2200);
+            // Automatically open WhatsApp with prefilled lead details to Admin
+            try {
+                window.open(waUrl, '_blank');
+            } catch (openErr) {
+                console.log('Direct popup blocked, fallback button available', openErr);
             }
+
+            setIsSuccess(true);
         } catch (err) {
             console.error('Error submitting visitor lead:', err);
             setIsSuccess(true);
-            localStorage.setItem('techkarma_lead_submitted', 'true');
-            setTimeout(() => {
-                setIsOpen(false);
-            }, 2200);
         } finally {
             setIsSubmitting(false);
         }
@@ -148,7 +157,7 @@ const VisitorLeadModal = () => {
                 </button>
 
                 {isSuccess ? (
-                    <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                    <div style={{ textAlign: 'center', padding: '1rem 0' }}>
                         <div style={{
                             width: '64px',
                             height: '64px',
@@ -165,9 +174,50 @@ const VisitorLeadModal = () => {
                         <h3 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 0.5rem', color: '#10b981' }}>
                             Welcome, {name || 'Student'}! 🎉
                         </h3>
-                        <p style={{ color: '#94a3b8', fontSize: '0.95rem', margin: 0, lineHeight: 1.5 }}>
-                            Your registration was successful! You now have full access to all Free Notes, Books, and Study Material.
+                        <p style={{ color: '#94a3b8', fontSize: '0.92rem', margin: '0 0 1.25rem', lineHeight: 1.5 }}>
+                            Registration successful! Niche diye gaye WhatsApp button par tap karein aur apne WhatsApp se direct <strong style={{ color: '#25D366' }}>Tech Karma Classes (8130550381)</strong> par details send karein taki aapko free notes/books mil sake:
                         </p>
+
+                        <a
+                            href={waLink || `https://api.whatsapp.com/send?phone=918130550381&text=${encodeURIComponent(`Hello Sir, I registered on website. Student Name: ${name}, Class: ${className}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.6rem',
+                                width: '100%',
+                                padding: '0.9rem 1.25rem',
+                                borderRadius: '12px',
+                                background: '#25D366',
+                                color: '#ffffff',
+                                fontWeight: 700,
+                                fontSize: '1rem',
+                                textDecoration: 'none',
+                                boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
+                                marginBottom: '1.25rem',
+                                boxSizing: 'border-box'
+                            }}
+                        >
+                            <MessageSquare size={20} /> Send on WhatsApp (8130550381)
+                        </a>
+
+                        <div>
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: '#94a3b8',
+                                    fontSize: '0.88rem',
+                                    cursor: 'pointer',
+                                    textDecoration: 'underline'
+                                }}
+                            >
+                                Continue browsing website →
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <>
@@ -241,7 +291,7 @@ const VisitorLeadModal = () => {
                                     <input
                                         type="text"
                                         required
-                                        placeholder="e.g. Rahul Sharma"
+                                        placeholder="e.g. Tony"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         style={{

@@ -2,12 +2,24 @@ import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Download, MessageSquare } from 'lucide-react';
 
 const Contact = () => {
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [message, setMessage] = useState('');
     const [status, setStatus] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setStatus('Message sent successfully! We will contact you soon.');
-        e.target.reset();
+        const waText = 
+`📬 *New Website Message - Tech Karma Classes*
+━━━━━━━━━━━━━━━━━━━━━━
+👤 *Name:* ${name.trim()}
+📱 *Phone:* ${phone.trim()}
+💬 *Message:* ${message.trim()}
+⏰ *Time:* ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+━━━━━━━━━━━━━━━━━━━━━━`;
+        const waUrl = `https://api.whatsapp.com/send?phone=918130550381&text=${encodeURIComponent(waText)}`;
+        window.open(waUrl, '_blank');
+        setStatus('Message received! Redirecting to WhatsApp (8130550381)...');
     };
 
     return (
@@ -58,18 +70,24 @@ const Contact = () => {
                             type="text"
                             placeholder="Your Name"
                             required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             style={{ padding: '1rem', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)', background: 'var(--bg-primary)', color: 'var(--text-primary)', outline: 'none' }}
                         />
                         <input
                             type="tel"
                             placeholder="Your Phone Number"
                             required
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             style={{ padding: '1rem', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)', background: 'var(--bg-primary)', color: 'var(--text-primary)', outline: 'none' }}
                         />
                         <textarea
                             placeholder="Your Message"
                             rows="5"
                             required
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                             style={{ padding: '1rem', borderRadius: 'var(--border-radius)', border: '1px solid var(--border-color)', background: 'var(--bg-primary)', color: 'var(--text-primary)', outline: 'none', resize: 'vertical' }}
                         ></textarea>
 

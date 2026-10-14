@@ -506,7 +506,7 @@ const AdminDashboard = () => {
                         <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem' }}>Contact Queries</h2>
                         <div style={{ padding: '1.5rem', background: 'var(--bg-primary)', borderRadius: 'var(--border-radius)', borderLeft: '4px solid #f59e0b', marginBottom: '1rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                <h4 style={{ fontWeight: 700 }}>Rahul Sharma</h4>
+                                <h4 style={{ fontWeight: 700 }}>Tony</h4>
                                 <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>2 hours ago</span>
                             </div>
                             <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>I want to enroll my son in the 10th standard Science classes. Please provide details.</p>

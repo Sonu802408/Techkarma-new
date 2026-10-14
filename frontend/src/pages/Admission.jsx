@@ -15,12 +15,22 @@ const Admission = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Admission Data Submitted:", formData);
+        const waText = 
+`🎓 *New Admission Application - Tech Karma Classes*
+━━━━━━━━━━━━━━━━━━━━━━
+👤 *Student Name:* ${formData.studentName.trim()}
+👨‍👩‍👧 *Parent Name:* ${formData.parentName.trim()}
+📱 *Mobile Number:* ${formData.phone.trim()}
+📧 *Email:* ${formData.email.trim()}
+📚 *Course:* ${formData.courseType}
+🏫 *Class/Grade:* ${formData.grade.trim()}
+⏰ *Time:* ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+━━━━━━━━━━━━━━━━━━━━━━
+Hello Sir, I have submitted an admission application on your website. Please check!`;
+
+        const waUrl = `https://api.whatsapp.com/send?phone=918130550381&text=${encodeURIComponent(waText)}`;
+        window.open(waUrl, '_blank');
         setSubmitted(true);
-        setTimeout(() => {
-            setSubmitted(false);
-            setFormData({ studentName: '', parentName: '', phone: '', email: '', grade: '', courseType: 'academic' });
-        }, 5000);
     };
 
     const handleChange = (e) => {
@@ -81,7 +91,16 @@ const Admission = () => {
                         <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--success-color)', padding: '2rem', borderRadius: 'var(--border-radius)', textAlign: 'center', color: 'var(--success-color)' }}>
                             <CheckCircle size={48} style={{ margin: '0 auto 1rem' }} />
                             <h3 style={{ marginBottom: '0.5rem' }}>Application Submitted!</h3>
-                            <p style={{ color: 'var(--text-primary)' }}>Our counselor will reach out to you within 24 hours.</p>
+                            <p style={{ color: 'var(--text-primary)', marginBottom: '1.25rem' }}>Aapki admission request receive ho gayi hai! Instant admission details pane ke liye WhatsApp par connect karein:</p>
+                            <a
+                                href={`https://api.whatsapp.com/send?phone=918130550381&text=${encodeURIComponent(`Hello Sir, I submitted admission application on website for ${formData.studentName} (${formData.phone}). Please share admission process.`)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-secondary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#25D366', borderColor: '#25D366', padding: '0.8rem 1.5rem', fontWeight: 600 }}
+                            >
+                                Send on WhatsApp (8130550381)
+                            </a>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
