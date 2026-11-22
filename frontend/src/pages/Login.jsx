@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { User, Lock, Mail, Phone, ArrowRight, ShieldCheck, AlertCircle, KeyRound, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
 const Login = () => {
-    const [isLogin, setIsLogin] = useState(true);
+    const location = useLocation();
+    const [isLogin, setIsLogin] = useState(() => location.state?.initialMode === 'signup' ? false : true);
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [role, setRole] = useState('student');
+
+    useEffect(() => {
+        if (location.state?.initialMode === 'signup') {
+            setIsLogin(false);
+        }
+    }, [location.state]);
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -265,7 +272,7 @@ const Login = () => {
                 )}
 
                 {/* Role Selection Tracker */}
-                <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '0.25rem', borderRadius: 'var(--border-radius)', gap: '0.25rem', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', background: 'var(--bg-primary)', padding: '0.25rem', borderRadius: 'var(--border-radius)', gap: '0.25rem', marginBottom: '1.25rem' }}>
                     <button
                         type="button"
                         onClick={() => { setRole('student'); setError(''); }}
@@ -275,12 +282,44 @@ const Login = () => {
                     </button>
                     <button
                         type="button"
-                        onClick={() => { setRole('admin'); setError(''); }}
+                        onClick={() => { setRole('admin'); setIsLogin(true); setError(''); }}
                         style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--border-radius)', background: role === 'admin' ? 'var(--bg-secondary)' : 'transparent', boxShadow: role === 'admin' ? 'var(--card-shadow)' : 'none', color: 'var(--text-primary)', fontWeight: 600, transition: 'var(--transition-fast)', border: 'none', cursor: 'pointer' }}
                     >
                         Admin Account
                     </button>
                 </div>
+
+                {/* Login vs Sign Up Toggle for Students */}
+                {!isForgotPassword && role === 'student' && (
+                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', padding: '0.25rem', borderRadius: 'var(--border-radius)', gap: '0.25rem', marginBottom: '1.25rem' }}>
+                        <button
+                            type="button"
+                            onClick={() => { setIsLogin(true); setError(''); setSuccessMessage(''); }}
+                            style={{
+                                flex: 1, padding: '0.6rem 0.5rem', borderRadius: 'var(--border-radius)',
+                                background: isLogin ? 'var(--brand-light)' : 'transparent',
+                                color: isLogin ? '#4f46e5' : 'var(--text-secondary)',
+                                fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.88rem',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            🔑 Log In (Existing Student)
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setIsLogin(false); setError(''); setSuccessMessage(''); }}
+                            style={{
+                                flex: 1, padding: '0.6rem 0.5rem', borderRadius: 'var(--border-radius)',
+                                background: !isLogin ? 'var(--brand-light)' : 'transparent',
+                                color: !isLogin ? '#4f46e5' : 'var(--text-secondary)',
+                                fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.88rem',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            📝 Sign Up (New Registration)
+                        </button>
+                    </div>
+                )}
 
                 {/* FORGOT / RESET PASSWORD FORM */}
                 {isForgotPassword ? (

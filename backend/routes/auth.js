@@ -42,6 +42,7 @@ router.post('/register', async (req, res) => {
             email: email.toLowerCase().trim(),
             password: hashedPassword,
             role: role || 'student',
+            className: req.body.className || 'Class 10',
             showInOnlineList: showInOnlineList !== undefined ? showInOnlineList : true,
             lastActive: new Date()
         });
@@ -312,6 +313,7 @@ router.post('/admin/students', protect, adminOnly, async (req, res) => {
             password: hashedPassword,
             className: className || 'Class 10',
             role: role || 'student',
+            className: req.body.className || 'Class 10',
             showInOnlineList: true,
             lastActive: new Date()
         });

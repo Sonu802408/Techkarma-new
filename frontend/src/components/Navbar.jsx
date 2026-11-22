@@ -393,25 +393,44 @@ const Navbar = ({ theme, setTheme }) => {
                             </button>
                         </div>
                     ) : (
-                        <Link
-                            to="/login"
-                            className="btn-secondary desktop-nav-menu"
-                            style={{
-                                padding: '0.45rem 1.15rem',
-                                fontSize: '0.88rem',
-                                fontWeight: 600,
-                                borderRadius: '20px',
-                                textDecoration: 'none',
-                                whiteSpace: 'nowrap',
-                                flexShrink: 0,
-                                display: 'none',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                lineHeight: 1.2
-                            }}
-                        >
-                            Sign In
-                        </Link>
+                        <div style={{ display: 'none', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }} className="desktop-nav-menu">
+                            <Link
+                                to="/login"
+                                className="btn-secondary"
+                                style={{
+                                    padding: '0.42rem 1rem',
+                                    fontSize: '0.85rem',
+                                    fontWeight: 600,
+                                    borderRadius: '20px',
+                                    textDecoration: 'none',
+                                    whiteSpace: 'nowrap',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                Log In
+                            </Link>
+                            <Link
+                                to="/login"
+                                state={{ initialMode: 'signup' }}
+                                className="btn-primary"
+                                style={{
+                                    padding: '0.42rem 1.1rem',
+                                    fontSize: '0.85rem',
+                                    fontWeight: 700,
+                                    borderRadius: '20px',
+                                    textDecoration: 'none',
+                                    whiteSpace: 'nowrap',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: 'linear-gradient(135deg, #2563eb, #3b82f6)'
+                                }}
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
                     )}
 
                     <button className="mobile-menu-btn" onClick={toggleMenu} style={{ background: 'transparent', color: 'var(--text-primary)', display: 'block', flexShrink: 0 }}>
@@ -575,9 +594,14 @@ const Navbar = ({ theme, setTheme }) => {
                             </button>
                         </div>
                     ) : (
-                        <Link to="/login" onClick={closeMenu} className="btn btn-secondary" style={{ width: '100%', padding: '0.8rem', textAlign: 'center', marginTop: '0.5rem' }}>
-                            Student Sign In / Register
-                        </Link>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem', width: '100%' }}>
+                            <Link to="/login" onClick={closeMenu} className="btn btn-secondary" style={{ width: '100%', padding: '0.75rem', textAlign: 'center' }}>
+                                Log In (Existing Account)
+                            </Link>
+                            <Link to="/login" state={{ initialMode: 'signup' }} onClick={closeMenu} className="btn btn-primary" style={{ width: '100%', padding: '0.75rem', textAlign: 'center', background: 'linear-gradient(135deg, #2563eb, #3b82f6)' }}>
+                                Sign Up (New Student)
+                            </Link>
+                        </div>
                     )}
 
                     <Link to="/contact" className="btn btn-primary" onClick={closeMenu} style={{ marginTop: '1rem', width: '100%', padding: '1rem' }}>
