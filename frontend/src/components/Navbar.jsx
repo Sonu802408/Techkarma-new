@@ -80,26 +80,22 @@ const Navbar = ({ theme, setTheme }) => {
         };
     }, []);
 
-    const topItems = [
-        { name: 'Admission', path: '/admission' },
-        { name: 'Core Computer', path: '/core-computer' }
-    ];
-
     const moreItems = [
-        { name: 'Advanced Tech', path: '/advanced-tech' },
-        { name: 'Exam', path: '/exam' },
-        { name: 'Courses', path: '/courses' },
-        { name: 'Contact', path: '/contact' }
+        { name: 'Admission', path: '/admission', desc: 'New batch enrollments & eligibility' },
+        { name: 'Core Computer', path: '/core-computer', desc: 'OS, DBMS, CN & Compiler Design' },
+        { name: 'Advanced Tech', path: '/advanced-tech', desc: 'AI, ML, Cloud & Cyber Security' },
+        { name: 'Online Exam', path: '/exam', desc: 'Practice mock tests & quizzes' },
+        { name: 'Courses', path: '/courses', desc: 'Complete batch curriculum & fees' },
+        { name: 'Contact Us', path: '/contact', desc: 'Reach our faculty & center' }
     ];
 
     const programmingLanguages = [
-        { name: 'Python', path: '/programming' },
-        { name: 'C', path: '/programming' },
-        { name: 'C++', path: '/programming' },
-        { name: 'Java', path: '/programming' },
-        { name: 'HTML', path: '/programming' },
-        { name: 'CSS', path: '/programming' },
-        { name: 'JavaScript', path: '/programming' }
+        { name: 'Python', path: '/programming', tag: 'AI & Data' },
+        { name: 'C Language', path: '/programming', tag: 'Foundation' },
+        { name: 'C++', path: '/programming', tag: 'DSA' },
+        { name: 'Java', path: '/programming', tag: 'Enterprise' },
+        { name: 'HTML & CSS', path: '/programming', tag: 'Web Basics' },
+        { name: 'JavaScript', path: '/programming', tag: 'Full Stack' }
     ];
 
     // Helper functions to handle mutually exclusive dropdowns
@@ -125,19 +121,35 @@ const Navbar = ({ theme, setTheme }) => {
     };
 
     return (
-        <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, padding: '15px 0', display: 'flex', alignItems: 'center' }}>
-            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <nav
+            className={`navbar ${scrolled ? 'scrolled' : ''}`}
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000,
+                padding: scrolled ? '10px 0' : '14px 0',
+                background: scrolled ? 'rgba(5, 10, 24, 0.88)' : 'rgba(5, 10, 24, 0.65)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                borderBottom: '1px solid rgba(56, 189, 248, 0.12)',
+                boxShadow: scrolled ? '0 10px 30px -10px rgba(0, 0, 0, 0.7)' : 'none',
+                transition: 'all 0.3s ease'
+            }}
+        >
+            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', maxWidth: '1440px', margin: '0 auto', padding: '0 1.25rem' }}>
 
                 {/* Logo */}
-                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '15px', zIndex: 1001, paddingLeft: '20px', textDecoration: 'none' }} onClick={closeMenu}>
+                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', zIndex: 1001, textDecoration: 'none', flexShrink: 0 }} onClick={closeMenu}>
                     <div
                         className="logo-3d-stage"
                         onMouseMove={handleLogoMouseMove}
                         onMouseEnter={() => setLogoTilt(prev => ({ ...prev, isHovered: true }))}
                         onMouseLeave={handleLogoMouseLeave}
                         style={{
-                            height: 'var(--logo-height, 110px)',
-                            width: 'var(--logo-height, 110px)',
+                            height: '52px',
+                            width: '52px',
                             perspective: '1000px',
                             display: 'flex',
                             alignItems: 'center',
@@ -175,9 +187,10 @@ const Navbar = ({ theme, setTheme }) => {
                         </div>
                     </div>
                     <span className="navbar-brand-name" style={{
-                        fontSize: 'clamp(1.2rem, 2vw, 1.8rem)',
+                        fontSize: 'clamp(1.1rem, 1.6vw, 1.5rem)',
                         fontWeight: '800',
-                        background: 'linear-gradient(90deg, #3b82f6, #a855f7)',
+                        letterSpacing: '-0.3px',
+                        background: 'linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                         whiteSpace: 'nowrap'
@@ -186,155 +199,292 @@ const Navbar = ({ theme, setTheme }) => {
                     </span>
                 </Link>
 
-
-
-
-
-
-                {/* Desktop Links */}
-                <div style={{ display: 'none', gap: '1.5rem', flexWrap: 'nowrap', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '0 1.5rem' }} className="desktop-nav-menu">
-                    <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} style={{ fontSize: '1rem' }}>
+                {/* Desktop Clean Main Links */}
+                <div
+                    style={{
+                        display: 'none',
+                        gap: '0.65rem',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flex: 1,
+                        padding: '0 1rem',
+                        margin: '0 1rem'
+                    }}
+                    className="desktop-nav-menu"
+                >
+                    {/* 1. Home */}
+                    <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
                         Home
                     </Link>
 
-                    {/* Clickable Class Dropdown */}
+                    {/* 2. Classes Dropdown */}
                     <div style={{ position: 'relative' }} ref={classDropdownRef}>
                         <button
                             className={`nav-link ${location.pathname.includes('/classes') ? 'active' : ''}`}
                             onClick={toggleClassDropdown}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.9rem', background: 'transparent', padding: '0.5rem 0', outline: 'none' }}
+                            style={{ border: 'none', background: 'transparent', outline: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
                         >
-                            Select Your Class
-                            <ChevronDown size={16} style={{ transform: isClassDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
+                            Classes
+                            <ChevronDown size={15} style={{ transform: isClassDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease' }} />
                         </button>
 
-                        <div className={`glass-card`} style={{
-                            position: 'absolute', top: '100%', left: '50%', transform: isClassDropdownOpen ? 'translate(-50%, 10px)' : 'translate(-50%, 0)',
-                            minWidth: '200px', display: 'flex', flexDirection: 'column', padding: '0.5rem',
-                            opacity: isClassDropdownOpen ? 1 : 0, visibility: isClassDropdownOpen ? 'visible' : 'hidden',
-                            transition: 'all 0.3s ease-in-out', zIndex: 100, borderRadius: 'var(--border-radius-sm)',
-                            boxShadow: 'var(--card-shadow)'
+                        <div style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 10px)',
+                            left: '50%',
+                            transform: isClassDropdownOpen ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(-10px)',
+                            minWidth: '220px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            padding: '0.6rem',
+                            background: 'rgba(10, 17, 40, 0.96)',
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)',
+                            border: '1px solid rgba(56, 189, 248, 0.25)',
+                            borderRadius: '16px',
+                            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.15)',
+                            opacity: isClassDropdownOpen ? 1 : 0,
+                            visibility: isClassDropdownOpen ? 'visible' : 'hidden',
+                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                            zIndex: 1000
                         }}>
-                            {[6, 7, 8, 9, 10, 11, 12].map(num => (
-                                <Link
-                                    key={num}
-                                    to="/classes"
-                                    onClick={() => setIsClassDropdownOpen(false)}
-                                    className="dropdown-item"
-                                    style={{ padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: 'var(--border-radius-sm)', transition: 'all var(--transition-fast)', fontWeight: 500, color: 'var(--text-primary)' }}
-                                >
-                                    Class {num}
-                                </Link>
-                            ))}
+                            <div style={{ padding: '0.4rem 0.6rem 0.6rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '0.4rem' }}>
+                                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    CBSE & Board Classes
+                                </span>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.3rem' }}>
+                                {[6, 7, 8, 9, 10, 11, 12].map(num => (
+                                    <Link
+                                        key={num}
+                                        to={`/classes/${num}`}
+                                        onClick={() => setIsClassDropdownOpen(false)}
+                                        className="dropdown-item"
+                                        style={{
+                                            padding: '0.55rem 0.75rem',
+                                            fontSize: '0.88rem',
+                                            borderRadius: '10px',
+                                            fontWeight: 600,
+                                            color: 'var(--text-primary)',
+                                            textDecoration: 'none',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            transition: 'all 0.2s ease',
+                                            background: 'rgba(255, 255, 255, 0.03)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.background = 'rgba(56, 189, 248, 0.12)';
+                                            e.currentTarget.style.color = '#38bdf8';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                                            e.currentTarget.style.color = 'var(--text-primary)';
+                                        }}
+                                    >
+                                        <span>Class {num}</span>
+                                        {num >= 10 && (
+                                            <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.35rem', borderRadius: '6px', background: 'rgba(234, 179, 8, 0.2)', color: '#facc15' }}>Board</span>
+                                        )}
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
-                    {/* Programming Dropdown */}
+                    {/* 3. Notes (Prominent Free Study Material link) */}
+                    <Link
+                        to="/notes"
+                        className={`nav-link ${location.pathname === '/notes' ? 'active' : ''}`}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+                    >
+                        <span>Notes</span>
+                        <span style={{
+                            fontSize: '0.68rem',
+                            padding: '0.15rem 0.45rem',
+                            borderRadius: '12px',
+                            background: 'linear-gradient(135deg, #10b981, #059669)',
+                            color: '#ffffff',
+                            fontWeight: 800,
+                            letterSpacing: '0.4px',
+                            boxShadow: '0 0 10px rgba(16, 185, 129, 0.4)'
+                        }}>
+                            FREE
+                        </span>
+                    </Link>
+
+                    {/* 4. Programming Dropdown */}
                     <div style={{ position: 'relative' }} ref={programmingDropdownRef}>
                         <button
                             className={`nav-link ${location.pathname.includes('/programming') ? 'active' : ''}`}
                             onClick={toggleProgrammingDropdown}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.9rem', background: 'transparent', padding: '0.5rem 0', outline: 'none' }}
+                            style={{ border: 'none', background: 'transparent', outline: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
                         >
                             Programming
-                            <ChevronDown size={16} style={{ transform: isProgrammingDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
+                            <ChevronDown size={15} style={{ transform: isProgrammingDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease' }} />
                         </button>
 
-                        <div className={`glass-card`} style={{
-                            position: 'absolute', top: '100%', left: '50%', transform: isProgrammingDropdownOpen ? 'translate(-50%, 10px)' : 'translate(-50%, 0)',
-                            minWidth: '200px', display: 'flex', flexDirection: 'column', padding: '0.5rem',
-                            opacity: isProgrammingDropdownOpen ? 1 : 0, visibility: isProgrammingDropdownOpen ? 'visible' : 'hidden',
-                            transition: 'all 0.3s ease-in-out', zIndex: 100, borderRadius: 'var(--border-radius-sm)',
-                            boxShadow: 'var(--card-shadow)'
+                        <div style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 10px)',
+                            left: '50%',
+                            transform: isProgrammingDropdownOpen ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(-10px)',
+                            minWidth: '240px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.25rem',
+                            padding: '0.6rem',
+                            background: 'rgba(10, 17, 40, 0.96)',
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)',
+                            border: '1px solid rgba(56, 189, 248, 0.25)',
+                            borderRadius: '16px',
+                            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.15)',
+                            opacity: isProgrammingDropdownOpen ? 1 : 0,
+                            visibility: isProgrammingDropdownOpen ? 'visible' : 'hidden',
+                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                            zIndex: 1000
                         }}>
+                            <div style={{ padding: '0.4rem 0.6rem 0.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '0.2rem' }}>
+                                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#a855f7', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    Coding Bootcamps
+                                </span>
+                            </div>
                             {programmingLanguages.map(item => (
                                 <Link
                                     key={item.name}
                                     to={item.path}
                                     onClick={() => setIsProgrammingDropdownOpen(false)}
-                                    className="dropdown-item"
-                                    style={{ padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: 'var(--border-radius-sm)', transition: 'all var(--transition-fast)', fontWeight: 500, color: 'var(--text-primary)' }}
+                                    style={{
+                                        padding: '0.55rem 0.75rem',
+                                        fontSize: '0.88rem',
+                                        borderRadius: '10px',
+                                        fontWeight: 600,
+                                        color: 'var(--text-primary)',
+                                        textDecoration: 'none',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        transition: 'all 0.2s ease',
+                                        background: 'rgba(255, 255, 255, 0.02)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(168, 85, 247, 0.12)';
+                                        e.currentTarget.style.color = '#c084fc';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                                        e.currentTarget.style.color = 'var(--text-primary)';
+                                    }}
                                 >
-                                    {item.name}
+                                    <span>{item.name}</span>
+                                    <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{item.tag}</span>
                                 </Link>
                             ))}
                         </div>
                     </div>
 
-                    {/* Standard Nav Items */}
-                    {topItems.map((item) => (
-                        <Link
-                            key={item.name}
-                            to={item.path}
-                            className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
-                            style={{ fontSize: '0.9rem' }}
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
-
-                    {/* More Clickable Dropdown */}
+                    {/* 5. More / Explore Dropdown */}
                     <div style={{ position: 'relative' }} ref={moreDropdownRef}>
                         <button
                             className="nav-link"
                             onClick={toggleMoreDropdown}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.9rem', background: 'transparent', padding: '0.5rem 0', outline: 'none' }}
+                            style={{ border: 'none', background: 'transparent', outline: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
                         >
-                            More
-                            <ChevronDown size={16} style={{ transform: isMoreDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
+                            Explore
+                            <ChevronDown size={15} style={{ transform: isMoreDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s ease' }} />
                         </button>
-                        <div className="glass-card" style={{
-                            position: 'absolute', top: '100%', right: 0, transform: isMoreDropdownOpen ? 'translateY(10px)' : 'translateY(0)',
-                            minWidth: '200px', display: 'flex', flexDirection: 'column', padding: '0.5rem',
-                            opacity: isMoreDropdownOpen ? 1 : 0, visibility: isMoreDropdownOpen ? 'visible' : 'hidden',
-                            transition: 'all 0.3s ease-in-out', borderRadius: 'var(--border-radius-sm)', boxShadow: 'var(--card-shadow)'
+
+                        <div style={{
+                            position: 'absolute',
+                            top: 'calc(100% + 10px)',
+                            right: 0,
+                            transform: isMoreDropdownOpen ? 'translateY(0)' : 'translateY(-10px)',
+                            minWidth: '260px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '0.3rem',
+                            padding: '0.65rem',
+                            background: 'rgba(10, 17, 40, 0.96)',
+                            backdropFilter: 'blur(20px)',
+                            WebkitBackdropFilter: 'blur(20px)',
+                            border: '1px solid rgba(56, 189, 248, 0.25)',
+                            borderRadius: '16px',
+                            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.15)',
+                            opacity: isMoreDropdownOpen ? 1 : 0,
+                            visibility: isMoreDropdownOpen ? 'visible' : 'hidden',
+                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                            zIndex: 1000
                         }}>
+                            <div style={{ padding: '0.4rem 0.6rem 0.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '0.2rem' }}>
+                                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    Institute & Programs
+                                </span>
+                            </div>
                             {moreItems.map((item) => (
                                 <Link
                                     key={item.name}
                                     to={item.path}
                                     onClick={() => setIsMoreDropdownOpen(false)}
-                                    className="dropdown-item"
-                                    style={{ padding: '0.8rem 1rem', fontSize: '0.95rem', borderRadius: 'var(--border-radius-sm)', transition: 'all var(--transition-fast)', fontWeight: 500, color: 'var(--text-primary)' }}
+                                    style={{
+                                        padding: '0.6rem 0.75rem',
+                                        borderRadius: '10px',
+                                        textDecoration: 'none',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '0.15rem',
+                                        transition: 'all 0.2s ease',
+                                        background: 'rgba(255, 255, 255, 0.02)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                                    }}
                                 >
-                                    {item.name}
+                                    <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                                        {item.name}
+                                    </span>
+                                    <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+                                        {item.desc}
+                                    </span>
                                 </Link>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                {/* Actions (Desktop) */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', zIndex: 1001, flexShrink: 0, paddingRight: '20px' }}>
+                {/* Right Side Actions */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', zIndex: 1001, flexShrink: 0 }}>
+                    
                     {/* Live Presence Pill */}
                     <div
                         className="live-presence-pill"
-                        title={`${presence?.totalLiveCount || 1} Active Visitor(s) Online Right Now • ${presence?.totalVisits || 1} Total Website Visits`}
+                        title={`${presence?.totalLiveCount || 1} Active Visitor(s) Online Right Now`}
                         style={{
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '0.45rem',
-                            padding: '0.38rem 0.75rem',
+                            gap: '0.4rem',
+                            padding: '0.32rem 0.65rem',
                             borderRadius: '20px',
-                            background: 'rgba(34, 197, 94, 0.12)',
-                            border: '1px solid rgba(34, 197, 94, 0.35)',
+                            background: 'rgba(34, 197, 94, 0.1)',
+                            border: '1px solid rgba(34, 197, 94, 0.3)',
                             color: '#22c55e',
-                            fontSize: '0.82rem',
+                            fontSize: '0.78rem',
                             fontWeight: 700,
-                            letterSpacing: '0.3px',
                             userSelect: 'none',
-                            cursor: 'default',
-                            boxShadow: '0 0 12px rgba(34, 197, 94, 0.15)',
-                            transition: 'all 0.25s ease'
+                            whiteSpace: 'nowrap'
                         }}
                     >
-                        <span style={{ position: 'relative', display: 'inline-flex', width: '8px', height: '8px', alignItems: 'center', justifyContent: 'center' }}>
-                            <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.75 }}></span>
-                            <span style={{ position: 'relative', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a' }}></span>
+                        <span style={{ position: 'relative', display: 'inline-flex', width: '7px', height: '7px', alignItems: 'center', justifyContent: 'center' }}>
+                            <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.8 }}></span>
+                            <span style={{ position: 'relative', width: '5px', height: '5px', borderRadius: '50%', background: '#16a34a' }}></span>
                         </span>
                         <span>{presence?.totalLiveCount || 1} Live</span>
                     </div>
 
+                    {/* Sleek Minimal Theme Selector */}
                     <select
                         className="dropdown-toggle"
                         value={theme}
@@ -342,71 +492,103 @@ const Navbar = ({ theme, setTheme }) => {
                         style={{
                             flexShrink: 0,
                             whiteSpace: 'nowrap',
-                            maxWidth: '125px',
-                            padding: '0.42rem 0.7rem',
-                            fontSize: '0.82rem',
+                            maxWidth: '115px',
+                            padding: '0.35rem 0.65rem',
+                            fontSize: '0.78rem',
                             fontWeight: 600,
                             borderRadius: '20px',
+                            border: '1px solid rgba(148, 163, 184, 0.25)',
+                            background: 'rgba(15, 23, 42, 0.7)',
+                            color: 'var(--text-primary)',
+                            outline: 'none',
                             cursor: 'pointer'
                         }}
                     >
-                        <option value="light" className="dropdown-menu">Light Mode</option>
                         <option value="dark" className="dropdown-menu">Dark Cyber</option>
+                        <option value="light" className="dropdown-menu">Light Mode</option>
                         <option value="midnight" className="dropdown-menu">Midnight Blue</option>
+                        <option value="cyberpunk" className="dropdown-menu">Cyberpunk Neon</option>
                         <option value="charcoal" className="dropdown-menu">Charcoal Black</option>
                         <option value="sunset" className="dropdown-menu">Soft Sunset</option>
-                        <option value="cyberpunk" className="dropdown-menu">Cyberpunk Neon 3D</option>
-                        <option value="forest" className="dropdown-menu">Emerald Forest 3D</option>
-                        <option value="amber" className="dropdown-menu">Retro Amber 3D</option>
-                        <option value="purple" className="dropdown-menu">Royal Purple 3D</option>
-                        <option value="solarized" className="dropdown-menu">Solarized Light 3D</option>
-                        <option value="crimson" className="dropdown-menu">Crimson Matrix 3D</option>
-                        <option value="aurora" className="dropdown-menu">Arctic Aurora 3D</option>
-                        <option value="luxury-gold" className="dropdown-menu">Luxury Gold 3D</option>
-                        <option value="dracula" className="dropdown-menu">Dracula Vampire 3D</option>
-                        <option value="holographic" className="dropdown-menu">Holographic Frost 3D</option>
+                        <option value="forest" className="dropdown-menu">Emerald Forest</option>
+                        <option value="aurora" className="dropdown-menu">Arctic Aurora</option>
+                        <option value="luxury-gold" className="dropdown-menu">Luxury Gold</option>
                     </select>
 
+                    {/* Auth Status & Quick Actions */}
                     {isLoggedIn ? (
                         <div style={{ display: 'none', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }} className="desktop-nav-menu">
                             {isAdmin && (
                                 <Link
                                     to="/admin"
-                                    className="btn-secondary"
-                                    style={{ padding: '0.45rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem', borderRadius: '20px', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
+                                    style={{
+                                        padding: '0.38rem 0.8rem',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 700,
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.35rem',
+                                        borderRadius: '20px',
+                                        textDecoration: 'none',
+                                        whiteSpace: 'nowrap',
+                                        background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(99, 102, 241, 0.3))',
+                                        border: '1px solid rgba(56, 189, 248, 0.5)',
+                                        color: '#38bdf8',
+                                        boxShadow: '0 0 14px rgba(56, 189, 248, 0.25)'
+                                    }}
                                 >
-                                    <Shield size={14} /> Admin
+                                    <Shield size={13} /> Admin
                                 </Link>
                             )}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.8rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '20px', border: '1px solid rgba(99, 102, 241, 0.2)', flexShrink: 0 }}>
-                                <UserIcon size={15} color="var(--primary-color)" />
-                                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', maxWidth: '110px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+
+                            <div style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.35rem',
+                                padding: '0.35rem 0.75rem',
+                                background: 'rgba(99, 102, 241, 0.1)',
+                                borderRadius: '20px',
+                                border: '1px solid rgba(99, 102, 241, 0.25)',
+                                flexShrink: 0
+                            }}>
+                                <UserIcon size={14} color="#818cf8" />
+                                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)', maxWidth: '95px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {user?.name?.split(' ')[0] || 'User'}
                                 </span>
                             </div>
+
                             <button
                                 onClick={logout}
                                 title="Sign Out"
-                                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.4rem', display: 'flex', alignItems: 'center', flexShrink: 0 }}
+                                style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: 'var(--text-secondary)',
+                                    cursor: 'pointer',
+                                    padding: '0.35rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    outline: 'none'
+                                }}
                             >
-                                <LogOut size={18} />
+                                <LogOut size={16} />
                             </button>
                         </div>
                     ) : (
-                        <div style={{ display: 'none', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }} className="desktop-nav-menu">
+                        <div style={{ display: 'none', alignItems: 'center', gap: '0.45rem', flexShrink: 0 }} className="desktop-nav-menu">
                             <Link
                                 to="/login"
-                                className="btn-secondary"
                                 style={{
-                                    padding: '0.42rem 1rem',
-                                    fontSize: '0.85rem',
+                                    padding: '0.38rem 0.85rem',
+                                    fontSize: '0.82rem',
                                     fontWeight: 600,
                                     borderRadius: '20px',
                                     textDecoration: 'none',
                                     whiteSpace: 'nowrap',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
+                                    color: 'var(--text-primary)',
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                                    transition: 'all 0.2s ease'
                                 }}
                             >
                                 Log In
@@ -414,18 +596,17 @@ const Navbar = ({ theme, setTheme }) => {
                             <Link
                                 to="/login"
                                 state={{ initialMode: 'signup' }}
-                                className="btn-primary"
                                 style={{
-                                    padding: '0.42rem 1.1rem',
-                                    fontSize: '0.85rem',
+                                    padding: '0.38rem 0.95rem',
+                                    fontSize: '0.82rem',
                                     fontWeight: 700,
                                     borderRadius: '20px',
                                     textDecoration: 'none',
                                     whiteSpace: 'nowrap',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    background: 'linear-gradient(135deg, #2563eb, #3b82f6)'
+                                    background: 'linear-gradient(135deg, #0284c7, #2563eb)',
+                                    color: '#ffffff',
+                                    boxShadow: '0 0 15px rgba(37, 99, 235, 0.35)',
+                                    transition: 'all 0.2s ease'
                                 }}
                             >
                                 Sign Up
@@ -475,18 +656,24 @@ const Navbar = ({ theme, setTheme }) => {
                         </span>
                     </div>
 
-                    <Link to="/" onClick={closeMenu} style={{ fontSize: '1.4rem', fontWeight: 600, color: location.pathname === '/' ? 'var(--primary-color)' : 'var(--text-primary)' }}>
+                    <Link to="/" onClick={closeMenu} style={{ fontSize: '1.25rem', fontWeight: 600, color: location.pathname === '/' ? '#38bdf8' : 'var(--text-primary)' }}>
                         Home
+                    </Link>
+
+                    {/* Mobile Notes Link */}
+                    <Link to="/notes" onClick={closeMenu} style={{ fontSize: '1.25rem', fontWeight: 600, color: location.pathname === '/notes' ? '#38bdf8' : 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span>Study Material & Notes</span>
+                        <span style={{ fontSize: '0.68rem', padding: '0.15rem 0.45rem', borderRadius: '10px', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontWeight: 800 }}>FREE</span>
                     </Link>
 
                     {/* Mobile Class Dropdown */}
                     <div style={{ width: '100%' }}>
                         <button
                             onClick={() => setIsClassDropdownOpen(!isClassDropdownOpen)}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', fontSize: '1.4rem', fontWeight: 600, color: location.pathname.includes('/classes') ? 'var(--primary-color)' : 'var(--text-primary)', background: 'transparent', padding: '0.5rem 0' }}
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', fontSize: '1.25rem', fontWeight: 600, color: location.pathname.includes('/classes') ? '#38bdf8' : 'var(--text-primary)', background: 'transparent', border: 'none', padding: '0.5rem 0', outline: 'none' }}
                         >
-                            Select Your Class
-                            <ChevronDown size={24} style={{ transform: isClassDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
+                            <span>Classes</span>
+                            <ChevronDown size={22} style={{ transform: isClassDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
                         </button>
                         <div style={{
                             maxHeight: isClassDropdownOpen ? '600px' : '0',
@@ -498,9 +685,9 @@ const Navbar = ({ theme, setTheme }) => {
                             {[6, 7, 8, 9, 10, 11, 12].map(num => (
                                 <Link
                                     key={num}
-                                    to="/classes"
+                                    to={`/classes/${num}`}
                                     onClick={closeMenu}
-                                    style={{ padding: '0.5rem 0', fontSize: '1.1rem', color: 'var(--text-secondary)' }}
+                                    style={{ padding: '0.4rem 0', fontSize: '1.05rem', color: 'var(--text-secondary)', textDecoration: 'none' }}
                                 >
                                     Class {num}
                                 </Link>
@@ -512,10 +699,10 @@ const Navbar = ({ theme, setTheme }) => {
                     <div style={{ width: '100%' }}>
                         <button
                             onClick={() => setIsProgrammingDropdownOpen(!isProgrammingDropdownOpen)}
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', fontSize: '1.4rem', fontWeight: 600, color: location.pathname.includes('/programming') ? 'var(--primary-color)' : 'var(--text-primary)', background: 'transparent', padding: '0.5rem 0' }}
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', fontSize: '1.25rem', fontWeight: 600, color: location.pathname.includes('/programming') ? '#38bdf8' : 'var(--text-primary)', background: 'transparent', border: 'none', padding: '0.5rem 0', outline: 'none' }}
                         >
-                            Programming
-                            <ChevronDown size={24} style={{ transform: isProgrammingDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
+                            <span>Programming</span>
+                            <ChevronDown size={22} style={{ transform: isProgrammingDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
                         </button>
                         <div style={{
                             maxHeight: isProgrammingDropdownOpen ? '400px' : '0',
@@ -529,7 +716,7 @@ const Navbar = ({ theme, setTheme }) => {
                                     key={item.name}
                                     to={item.path}
                                     onClick={closeMenu}
-                                    style={{ padding: '0.5rem 0', fontSize: '1.1rem', color: 'var(--text-secondary)' }}
+                                    style={{ padding: '0.4rem 0', fontSize: '1.05rem', color: 'var(--text-secondary)', textDecoration: 'none' }}
                                 >
                                     {item.name}
                                 </Link>
@@ -537,12 +724,12 @@ const Navbar = ({ theme, setTheme }) => {
                         </div>
                     </div>
 
-                    {[...topItems, ...moreItems].map((item) => (
+                    {moreItems.map((item) => (
                         <Link
                             key={item.name}
                             to={item.path}
                             onClick={closeMenu}
-                            style={{ fontSize: '1.4rem', fontWeight: 600, color: location.pathname === item.path ? 'var(--primary-color)' : 'var(--text-primary)', padding: '0.5rem 0' }}
+                            style={{ fontSize: '1.25rem', fontWeight: 600, color: location.pathname === item.path ? '#38bdf8' : 'var(--text-primary)', padding: '0.4rem 0', textDecoration: 'none' }}
                         >
                             {item.name}
                         </Link>
