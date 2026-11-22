@@ -19,11 +19,23 @@
       "dest": "backend/server.js"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "frontend/dist/assets/$1"
+    },
+    {
+      "src": "/pdfs/(.*)",
+      "dest": "frontend/dist/pdfs/$1"
+    },
+    {
+      "src": "/(favicon.*|logo.png|robots.txt|sitemap.xml|site.webmanifest|apple-touch-icon.png|google.*.html)",
+      "dest": "frontend/dist/$1"
+    },
+    {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "frontend/dist/index.html"
     }
   ]
 }
