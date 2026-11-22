@@ -32,41 +32,80 @@ const upload = multer({
     }
 });
 
-// GET materials by subject ID or type
+// GET materials with flexible filters (classNumber, subjectName, chapterName, type)
 router.get('/', async (req, res) => {
     try {
         const filters = {};
-        if (req.query.subjectId) filters.subjectId = req.query.subjectId;
+        if (req.query.classNumber) filters.classNumber = req.query.classNumber;
+        if (req.query.subjectName) filters.subjectName = new RegExp(`^${req.query.subjectName}$`, 'i');
+        if (req.query.chapterName) filters.chapterName = req.query.chapterName;
         if (req.query.type) filters.type = req.query.type;
+        if (req.query.subjectId) filters.subjectId = req.query.subjectId;
 
-        const materials = await Material.find(filters).populate('subjectId', 'name');
-        res.json(materials);
+        const materials = await Material.find(filters).sort({ createdAt: -1 });
+        res.json({
+            success: true,
+            count: materials.length,
+            materials
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// POST new material with file upload (Admin only)
+// POST new material (Admin only, supports file upload or direct URL)
 router.post('/', protect, adminOnly, upload.single('file'), async (req, res) => {
     try {
-        const { subjectId, type, title, content } = req.body;
-        let fileUrl = '';
-
-        if (req.file) {
-            fileUrl = `/${req.file.path.replace(/\\/g, '/')}`; // Ensure correct path separator on Windows
-        }
-
-        const material = new Material({
-            subjectId,
+        const {
+            classNumber,
+            subjectName,
+            chapterName,
             type,
             title,
             content,
-            fileUrl
+            fileUrl: directFileUrl,
+            videoUrl,
+            duration,
+            faculty,
+            mcqData
+        } = req.body;
+
+        let fileUrl = directFileUrl || '';
+        if (req.file) {
+            fileUrl = `/${req.file.path.replace(/\\/g, '/')}`;
+        }
+
+        let parsedMcqData = null;
+        if (mcqData) {
+            try {
+                parsedMcqData = typeof mcqData === 'string' ? JSON.parse(mcqData) : mcqData;
+            } catch (e) {
+                parsedMcqData = mcqData;
+            }
+        }
+
+        const material = new Material({
+            classNumber: classNumber || '10',
+            subjectName: subjectName || 'General',
+            chapterName: chapterName || 'All Chapters',
+            type: type || 'Notes',
+            title: title || 'Untitled Material',
+            content: content || '',
+            fileUrl,
+            videoUrl: videoUrl || '',
+            duration: duration || '',
+            faculty: faculty || 'Tech Karma Classes',
+            mcqData: parsedMcqData
         });
 
         const createdMaterial = await material.save();
-        res.status(201).json(createdMaterial);
+        res.status(201).json({
+            success: true,
+            message: 'Material added successfully',
+            material: createdMaterial
+        });
     } catch (error) {
+        console.error('Create material error:', error);
         res.status(400).json({ message: error.message });
     }
 });
@@ -75,8 +114,25 @@ router.post('/', protect, adminOnly, upload.single('file'), async (req, res) => 
 router.delete('/:id', protect, adminOnly, async (req, res) => {
     try {
         const material = await Material.findByIdAndDelete(req.params.id);
-        if (material) res.json({ message: 'Material removed' });
-        else res.status(404).json({ message: 'Material not found' });
+        if (material) {
+            res.json({ success: true, message: `Material '${material.title}' removed successfully` });
+        } else {
+            res.status(404).json({ message: 'Material not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// PUT update material (Admin only)
+router.put('/:id', protect, adminOnly, async (req, res) => {
+    try {
+        const updated = await Material.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (updated) {
+            res.json({ success: true, message: 'Material updated', material: updated });
+        } else {
+            res.status(404).json({ message: 'Material not found' });
+        }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

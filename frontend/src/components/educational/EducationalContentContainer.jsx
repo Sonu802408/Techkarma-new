@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getEducationalContent } from '../../data/educationalContent/index.js';
 import McqViewer from './McqViewer.jsx';
 import OnlineTestRunner from './OnlineTestRunner.jsx';
@@ -9,6 +9,7 @@ import PyqViewer from './PyqViewer.jsx';
 import VideoLecturesViewer from './VideoLecturesViewer.jsx';
 import { Layers } from 'lucide-react';
 import { resolveClassPdfUrl } from '../../data/ncertBooksData.js';
+import { getLocalMaterials } from '../../services/materialsService.js';
 
 const EducationalContentContainer = ({
     activeClass,
@@ -20,6 +21,13 @@ const EducationalContentContainer = ({
     initialChapterIndex = 0
 }) => {
     const [selectedChapterIdx, setSelectedChapterIdx] = useState(initialChapterIndex || 0);
+    const [customMaterials, setCustomMaterials] = useState(() => getLocalMaterials());
+
+    useEffect(() => {
+        const handleUpdate = () => setCustomMaterials(getLocalMaterials());
+        window.addEventListener('techkarma_materials_updated', handleUpdate);
+        return () => window.removeEventListener('techkarma_materials_updated', handleUpdate);
+    }, []);
 
     const currentChapterName = chapters[selectedChapterIdx] || `Chapter ${selectedChapterIdx + 1}`;
 
@@ -32,6 +40,58 @@ const EducationalContentContainer = ({
         stream: activeStream,
         contentType: activeContent
     });
+
+    // Custom MCQs for this class and subject
+    const customMcqs = customMaterials.filter(m => 
+        m.type === 'MCQ' && 
+        m.classNumber === activeClass?.toString() &&
+        (!activeSubject || m.subjectName?.toLowerCase().includes(activeSubject.toLowerCase()) || activeSubject.toLowerCase().includes(m.subjectName?.toLowerCase()))
+    );
+
+    let mergedMcqs = contentData?.mcqs || contentData;
+    if (customMcqs.length > 0 && mergedMcqs?.questions) {
+        const mappedCustom = customMcqs.map((cm, idx) => ({
+            id: cm._id || cm.id || `custom-mcq-${idx}`,
+            question: cm.mcqData?.question || cm.title,
+            options: cm.mcqData?.options || ['Option A', 'Option B', 'Option C', 'Option D'],
+            correctAnswer: cm.mcqData?.correctAnswer === 'A' ? 0 : cm.mcqData?.correctAnswer === 'B' ? 1 : cm.mcqData?.correctAnswer === 'C' ? 2 : 3,
+            explanation: cm.mcqData?.explanation || 'Added by Tech Karma Classes Admin.'
+        }));
+        mergedMcqs = {
+            ...mergedMcqs,
+            questions: [...mappedCustom, ...mergedMcqs.questions]
+        };
+    }
+
+    // Custom Videos for this class and subject
+    const customVideos = customMaterials.filter(m => 
+        m.type === 'Video' && 
+        m.classNumber === activeClass?.toString() &&
+        (!activeSubject || m.subjectName?.toLowerCase().includes(activeSubject.toLowerCase()) || activeSubject.toLowerCase().includes(m.subjectName?.toLowerCase()))
+    );
+
+    let mergedVideos = contentData?.videoLectures || contentData;
+    if (customVideos.length > 0 && mergedVideos?.lectures) {
+        const mappedVideos = customVideos.map((cv, idx) => {
+            let ytEmbed = cv.videoUrl || '';
+            if (ytEmbed.includes('watch?v=')) {
+                ytEmbed = ytEmbed.replace('watch?v=', 'embed/');
+            }
+            return {
+                id: cv._id || cv.id || `custom-video-${idx}`,
+                title: cv.title,
+                instructor: cv.faculty || 'Tech Karma Classes',
+                duration: cv.duration || '35 mins',
+                embedUrl: ytEmbed,
+                topicsCovered: [cv.chapterName || 'All Chapters', cv.title],
+                facultyNotes: `Tech Karma Classes Faculty Video for Class ${activeClass} ${activeSubject}`
+            };
+        });
+        mergedVideos = {
+            ...mergedVideos,
+            lectures: [...mappedVideos, ...mergedVideos.lectures]
+        };
+    }
 
     const pdfUrl = resolveClassPdfUrl(activeClass, activeSubject, activeMedium, activeContent, selectedChapterIdx, activeStream)
         || resolveClassPdfUrl(activeClass, activeSubject, activeMedium, 'notes', selectedChapterIdx, activeStream);
@@ -81,7 +141,7 @@ const EducationalContentContainer = ({
 
             {activeContent === 'mcqs' && (
                 <McqViewer
-                    mcqs={contentData?.mcqs || contentData}
+                    mcqs={mergedMcqs}
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                     pdfUrl={pdfUrl}
@@ -135,7 +195,7 @@ const EducationalContentContainer = ({
 
             {activeContent === 'video-lecture' && (
                 <VideoLecturesViewer
-                    videoData={contentData?.videoLectures || contentData}
+                    videoData={mergedVideos}
                     chapterTitle={`Chapter ${selectedChapterIdx + 1}: ${currentChapterName}`}
                     activeMedium={activeMedium}
                 />

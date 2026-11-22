@@ -4,11 +4,23 @@ const materialSchema = new mongoose.Schema({
     subjectId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
-        required: true
+        required: false
+    },
+    classNumber: {
+        type: String,
+        default: '10'
+    },
+    subjectName: {
+        type: String,
+        default: 'General'
+    },
+    chapterName: {
+        type: String,
+        default: 'All Chapters'
     },
     type: {
         type: String,
-        enum: ['Notes', 'MCQ', 'Book', 'NCERT Solutions', 'Sample Papers', 'Previous Year Papers', 'Subjective Questions', 'Online Test'],
+        enum: ['Notes', 'PDF', 'Video', 'MCQ', 'Book', 'NCERT Solutions', 'Sample Papers', 'Previous Year Papers', 'Subjective Questions', 'Online Test'],
         required: true
     },
     title: {
@@ -17,11 +29,29 @@ const materialSchema = new mongoose.Schema({
     },
     fileUrl: {
         type: String,
-        // Will store path to uploaded PDF or content
+        default: ''
+    },
+    videoUrl: {
+        type: String,
+        default: ''
+    },
+    duration: {
+        type: String,
+        default: ''
+    },
+    faculty: {
+        type: String,
+        default: 'Tech Karma Classes'
+    },
+    mcqData: {
+        question: String,
+        options: [String],
+        correctAnswer: String,
+        explanation: String
     },
     content: {
         type: String,
-        // For rich text or external links if not a direct file
+        default: ''
     }
 }, { timestamps: true });
 

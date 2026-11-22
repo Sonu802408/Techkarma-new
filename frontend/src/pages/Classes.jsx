@@ -7,6 +7,7 @@ import { getNcertBooks, getNcertChapters, getNcertChapterUrl, getDirectNcertChap
 import EducationalContentContainer from '../components/educational/EducationalContentContainer.jsx';
 import ClassCard from '../components/ClassCard.jsx';
 import ErrorBoundary from '../components/common/ErrorBoundary.jsx';
+import { getLocalMaterials } from '../services/materialsService';
 
 const getIcon = (iconName) => {
     switch(iconName) {
@@ -32,6 +33,13 @@ const Classes = () => {
     const [activeStream, setActiveStream] = useState(null);
     const [activeSubject, setActiveSubject] = useState(null);
     const [activeContent, setActiveContent] = useState(null);
+    const [customMaterials, setCustomMaterials] = useState(() => getLocalMaterials());
+
+    useEffect(() => {
+        const handleUpdate = () => setCustomMaterials(getLocalMaterials());
+        window.addEventListener('techkarma_materials_updated', handleUpdate);
+        return () => window.removeEventListener('techkarma_materials_updated', handleUpdate);
+    }, []);
 
     // Sync activeClass with URL param with intelligent initial defaults
     useEffect(() => {
@@ -459,6 +467,74 @@ const Classes = () => {
                     ) : (
                         /* DEFAULT CHAPTER-WISE VIEW FOR NOTES AND OTHER TABS (3 PER ROW HORIZONTAL GRID) */
                         <div className="resource-cards-grid">
+                            {/* Admin Added Custom Notes & PDFs */}
+                            {customMaterials
+                                .filter(m => (m.type === 'Notes' || m.type === 'PDF' || m.type === 'NCERT Solutions') && 
+                                    m.classNumber === activeClass?.toString() &&
+                                    (!activeSubject || m.subjectName?.toLowerCase().includes(activeSubject.toLowerCase()) || activeSubject.toLowerCase().includes(m.subjectName?.toLowerCase()))
+                                )
+                                .map((mat) => (
+                                    <div
+                                        key={mat._id || mat.id}
+                                        className="resource-card animate-fade-in-up"
+                                        style={{ border: '2px solid rgba(59, 130, 246, 0.45)', background: 'linear-gradient(145deg, rgba(59, 130, 246, 0.08), transparent)' }}
+                                    >
+                                        <div>
+                                            <div className="resource-card-header">
+                                                <div className="resource-card-icon">
+                                                    <FileText size={18} color="#38bdf8" />
+                                                </div>
+                                                <span style={{
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: 700,
+                                                    textTransform: 'uppercase',
+                                                    color: '#38bdf8',
+                                                    background: 'rgba(59, 130, 246, 0.15)',
+                                                    padding: '0.2rem 0.6rem',
+                                                    borderRadius: '12px'
+                                                }}>
+                                                    ⭐ Admin Special Note
+                                                </span>
+                                            </div>
+                                            <h4 className="resource-card-title">
+                                                {mat.title}
+                                            </h4>
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem' }}>
+                                                {mat.chapterName || 'All Chapters'} • Class {mat.classNumber} {mat.subjectName}
+                                            </p>
+                                        </div>
+
+                                        <div className="resource-card-actions">
+                                            {mat.fileUrl ? (
+                                                <>
+                                                    <a
+                                                        href={mat.fileUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="btn btn-primary"
+                                                    >
+                                                        <FileText size={16} /> Open PDF <ArrowRight size={15} />
+                                                    </a>
+                                                    <a
+                                                        href={mat.fileUrl}
+                                                        download
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="btn btn-secondary"
+                                                        title="Download PDF directly"
+                                                        style={{ padding: '0.45rem 0.75rem', fontSize: '0.82rem' }}
+                                                    >
+                                                        <Download size={14} /> Download
+                                                    </a>
+                                                </>
+                                            ) : (
+                                                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Note available</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            }
+
                             {(chapters && chapters.length > 0) ? chapters.map((chapterName, index) => {
                                 const translatedChapter = getChapterName(activeClass, activeSubject, chapterName || `Chapter ${index+1}`, index, activeMedium);
                                 const resolvedPdfUrl = resolveClassPdfUrl(activeClass, activeSubject, activeMedium, activeContent, index, activeStream);
