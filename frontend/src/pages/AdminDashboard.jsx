@@ -385,7 +385,7 @@ const AdminDashboard = () => {
         if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
             return;
         }
-        await removeMaterial(id, token);
+        await removeMaterial(id, token, title);
         await loadMaterials();
         alert(`Material "${title}" has been deleted.`);
     };
@@ -1401,14 +1401,36 @@ const AdminDashboard = () => {
                             {/* Conditional: PDF / Notes URL */}
                             {(materialForm.type === 'Notes' || materialForm.type === 'PDF' || materialForm.type === 'NCERT Solutions' || materialForm.type === 'Sample Papers') && (
                                 <div>
-                                    <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: 600, marginBottom: '0.3rem' }}>PDF URL or Link *</label>
+                                    <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: 600, marginBottom: '0.3rem' }}>PDF URL or File Link *</label>
                                     <input
-                                        type="url"
-                                        placeholder="https://... (Direct PDF link, Google Drive, or CDN URL)"
+                                        type="text"
+                                        placeholder="https://... (Direct PDF link, Google Drive link, or /pdfs/...)"
                                         value={materialForm.fileUrl}
                                         onChange={(e) => setMaterialForm({ ...materialForm, fileUrl: e.target.value })}
                                         style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-primary)', color: 'var(--text-primary)', outline: 'none', boxSizing: 'border-box' }}
                                     />
+                                    <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                        <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Or select PDF file directly:</span>
+                                        <input
+                                            type="file"
+                                            accept="application/pdf"
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = () => {
+                                                        setMaterialForm(prev => ({
+                                                            ...prev,
+                                                            fileUrl: reader.result,
+                                                            title: prev.title || file.name.replace(/\.pdf$/i, '')
+                                                        }));
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
+                                            style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}
+                                        />
+                                    </div>
                                 </div>
                             )}
 
