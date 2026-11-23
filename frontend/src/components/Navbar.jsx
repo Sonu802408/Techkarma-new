@@ -481,12 +481,12 @@ const Navbar = ({ theme, setTheme }) => {
                             <span className="live-dot-pulse" style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', background: '#22c55e', opacity: 0.8 }}></span>
                             <span style={{ position: 'relative', width: '5px', height: '5px', borderRadius: '50%', background: '#16a34a' }}></span>
                         </span>
-                        <span>{presence?.totalLiveCount || 1} Live</span>
+                        <span>{presence?.totalLiveCount || 1} <span className="live-pill-text">Live</span></span>
                     </div>
 
                     {/* Sleek Minimal Theme Selector */}
                     <select
-                        className="dropdown-toggle"
+                        className="dropdown-toggle desktop-theme-select"
                         value={theme}
                         onChange={(e) => setTheme(e.target.value)}
                         style={{
@@ -739,7 +739,7 @@ const Navbar = ({ theme, setTheme }) => {
                     <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0' }}>
                         <span style={{ fontSize: '1.4rem', fontWeight: 600, color: 'var(--text-primary)' }}>Theme</span>
                         <select
-                            className="dropdown-toggle"
+                            className="dropdown-toggle desktop-theme-select"
                             value={theme}
                             onChange={(e) => { setTheme(e.target.value); closeMenu(); }}
                         >
@@ -799,6 +799,15 @@ const Navbar = ({ theme, setTheme }) => {
 
             <style dangerouslySetInnerHTML={{
                 __html: `
+                @media (max-width: 860px) {
+          .desktop-theme-select { display: none !important; }
+        }
+        @media (max-width: 480px) {
+          .live-pill-text { display: none !important; }
+          .live-presence-pill { padding: 0.28rem 0.5rem !important; font-size: 0.72rem !important; }
+          .logo-3d-stage { height: 38px !important; width: 38px !important; }
+          .navbar-brand-name { font-size: 1.05rem !important; }
+        }
         @media (min-width: 1024px) {
           .mobile-menu-btn { display: none !important; }
           .desktop-nav-menu { display: flex !important; }

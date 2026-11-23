@@ -87,7 +87,7 @@ const TypingHero = ({ fullText }) => {
     }, [typedText, isDeleting, typingSpeed, fullText]);
 
     return (
-        <span className="hero-subtitle soft-blue-gradient" style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+        <span className="hero-subtitle soft-blue-gradient" style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)', fontWeight: 600 }}>
             {typedText}
             <span className="typing-cursor">|</span>
         </span>
@@ -397,9 +397,9 @@ const Home = () => {
                 </div>
 
                 <div className="container" style={{ position: 'relative', zIndex: 10, width: '100%' }}>
-                    <div className="hero-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 0.8fr)', gap: '4rem', alignItems: 'center' }}>
+                    <div className="hero-layout">
                         {/* Left Column: Text Content */}
-                        <div className="hero-content animate-fade-in" style={{ textAlign: 'left' }}>
+                        <div className="hero-content animate-fade-in">
                             <div className="hero-badge animate-fade-in-up" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 1.2rem', borderRadius: '50px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', marginBottom: '1.5rem', backdropFilter: 'blur(10px)' }}>
                                 <Rocket size={18} className="hero-badge-icon" style={{ color: 'var(--electric-blue)' }} />
                                 <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--electric-blue)', letterSpacing: '0.5px' }}>
@@ -407,7 +407,7 @@ const Home = () => {
                                 </span>
                             </div>
 
-                            <h1 className="hero-title" style={{ fontSize: '4.5rem', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-1.5px' }}>
+                            <h1 className="hero-title">
                                 Code Your Future. <br />
                                 <span className="gradient-text">Master Your Classes.</span>
                             </h1>
@@ -416,11 +416,11 @@ const Home = () => {
                                 <TypingHero fullText="From CBSE Board To Advanced Software Engineering" />
                             </div>
 
-                            <p className="hero-desc" style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', maxWidth: '600px', lineHeight: 1.7, marginBottom: '3rem' }}>
+                            <p className="hero-desc">
                                 High-performance learning tailored for the modern student. Interactive CBSE curriculum from Class 6 to 12 paired with hands-on Computer Science training.
                             </p>
 
-                            <div className="hero-cta-group" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                            <div className="hero-cta-group">
                                 <Link to="#class-selection" className="btn btn-primary" onClick={(e) => {
                                     e.preventDefault();
                                     document.getElementById('class-selection').scrollIntoView({ behavior: 'smooth' });
@@ -540,7 +540,7 @@ const Home = () => {
                 <div className="container" style={{ textAlign: 'center' }}>
                     <div className="section-title">
                         <SectionIcon icon={GraduationCap} colorHex="#60a5fa" align="center" />
-                        <h2 style={{ fontSize: '3.5rem' }}>
+                        <h2 className="responsive-h2">
                             {activeClass ? `${typeof activeClass === 'number' ? (activeMedium === 'Hindi' ? 'कक्षा ' : 'Class ') : ''}${activeClass} ${activeMedium === 'Hindi' ? 'चयनित' : 'Selected'}` : 'Select Your Class'}
                         </h2>
                     </div>
@@ -575,7 +575,7 @@ const Home = () => {
                     <div className="container" style={{ textAlign: 'center' }}>
                         <div className="section-title">
                             <SectionIcon icon={TrendingUp} colorHex="#10b981" align="center" />
-                            <h2 style={{ fontSize: '3.5rem' }}>Our Proven Track Record</h2>
+                            <h2 className="responsive-h2">Our Proven Track Record</h2>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '700px', margin: '-1rem auto 4rem', lineHeight: 1.7 }} className="animate-fade-in">
                             Delivering measurable academic excellence and empowering learners across India.
@@ -631,7 +631,7 @@ const Home = () => {
                                             data-target={stat.target}
                                             data-suffix={stat.suffix}
                                             style={{
-                                                fontSize: '3.2rem',
+                                                fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
                                                 fontWeight: 900,
                                                 letterSpacing: '-1px',
                                                 color: 'var(--text-primary)',
@@ -661,7 +661,7 @@ const Home = () => {
                     <div className="container" style={{ textAlign: 'center' }}>
                         <div className="section-title">
                             <SectionIcon icon={Zap} colorHex="#8b5cf6" align="center" />
-                            <h2 style={{ fontSize: '3.5rem' }}>Why Choose Tech Karma Classes?</h2>
+                            <h2 className="responsive-h2">Why Choose Tech Karma Classes?</h2>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '700px', margin: '-1rem auto 4rem', lineHeight: 1.7 }} className="animate-fade-in">
                             A next-generation learning platform designed to blend standard board curriculum with modern technical edge.
@@ -724,7 +724,7 @@ const Home = () => {
                     <div className="container" style={{ textAlign: 'center' }}>
                         <div className="section-title">
                             <SectionIcon icon={Sun} colorHex="#fbbf24" align="center" />
-                            <h2 style={{ fontSize: '3.5rem', position: 'relative', display: 'inline-block' }}>
+                            <h2 className="responsive-h2" style={{ position: 'relative', display: 'inline-block' }}>
                                 🔥 Summer Special Courses 2026
                                 <div className="gradient-underline"></div>
                             </h2>
@@ -1144,7 +1144,7 @@ const Home = () => {
                 <div className="container" style={{ textAlign: 'center' }}>
                     <div className="section-title">
                         <SectionIcon icon={Code} colorHex="#38bdf8" align="center" />
-                        <h2 style={{ fontSize: '3.5rem' }}>Computer Science & Programming Courses</h2>
+                        <h2 className="responsive-h2">Computer Science & Programming Courses</h2>
                     </div>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', maxWidth: '700px', margin: '-1rem auto 4rem', lineHeight: 1.7 }} className="animate-fade-in">
                         Build real-world skills with our expert-led curriculum
