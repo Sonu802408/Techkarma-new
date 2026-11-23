@@ -11,6 +11,27 @@ router.post('/', async (req, res) => {
         const query = new Query(req.body);
         const createdQuery = await query.save();
 
+        // Real-time instant Socket.io broadcast to Admin Panel!
+        try {
+            const io = req.app.get('io');
+            if (io) {
+                io.emit('query_received', createdQuery);
+                io.emit('student_registered', {
+                    _id: createdQuery._id,
+                    name: createdQuery.name,
+                    phone: createdQuery.phone,
+                    email: createdQuery.email,
+                    className: createdQuery.className || 'Class 10',
+                    role: 'student',
+                    source: createdQuery.source || 'Website Visitor Lead',
+                    createdAt: createdQuery.createdAt,
+                    lastActive: createdQuery.createdAt
+                });
+                const broadcastPresence = req.app.get('broadcastPresence');
+                if (broadcastPresence) broadcastPresence();
+            }
+        } catch (sErr) {}
+
         // Trigger WhatsApp Notification to Admin
         const waResult = await sendWhatsAppNotification({
             name: createdQuery.name,

@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
             totalLiveCount: BASE_LIVE_BOOST + 1, // Base 30 + 1 current live session = 31 Live
             liveStudentsCount: user ? 1 : 0,
             onlineStudentNames: user ? [user.name] : [],
+            onlineStudentIds: user ? [String(user._id)] : [],
             totalRegistered: 0,
             totalVisits: BASE_VISITS_BOOST + initialVisits
         };
@@ -108,14 +109,45 @@ export const AuthProvider = ({ children }) => {
         };
     }, []);
 
+    // Periodic HTTP fallback sync for presence (works even when WebSockets are blocked or on serverless)
+    useEffect(() => {
+        let isMounted = true;
+        const syncPresenceHttp = async () => {
+            try {
+                const res = await fetch('/api/stats/presence');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.success && isMounted) {
+                        setPresence(prev => ({
+                            ...prev,
+                            totalLiveCount: BASE_LIVE_BOOST + Math.max(1, data.totalLiveCount || 0),
+                            liveStudentsCount: data.liveStudentsCount !== undefined ? data.liveStudentsCount : prev.liveStudentsCount,
+                            onlineStudentNames: Array.isArray(data.onlineStudentNames) ? data.onlineStudentNames : prev.onlineStudentNames,
+                            onlineStudentIds: Array.isArray(data.onlineStudentIds) ? data.onlineStudentIds : prev.onlineStudentIds || [],
+                            totalRegistered: data.totalRegistered !== undefined ? data.totalRegistered : prev.totalRegistered
+                        }));
+                    }
+                }
+            } catch (e) {}
+        };
+
+        syncPresenceHttp();
+        const poll = setInterval(syncPresenceHttp, 10000);
+        return () => {
+            isMounted = false;
+            clearInterval(poll);
+        };
+    }, []);
+
     // Initialize Socket.io instance if server supports it
     useEffect(() => {
-        const socketServerUrl = window.location.hostname === 'localhost' ? 'http://localhost:5000' : '/';
+        const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const socketServerUrl = isLocalHost ? 'http://localhost:5000' : '/';
         let socketInstance = null;
         try {
             socketInstance = io(socketServerUrl, {
                 transports: ['websocket', 'polling'],
-                reconnectionAttempts: 3,
+                reconnectionAttempts: 5,
                 timeout: 5000
             });
 
@@ -136,14 +168,17 @@ export const AuthProvider = ({ children }) => {
             });
 
             socketInstance.on('livePresenceUpdate', (data) => {
-                if (data && (data.totalLiveCount > 0 || data.totalRegistered > 0)) {
+                if (data) {
                     setPresence(prev => ({
                         ...prev,
-                        totalLiveCount: BASE_LIVE_BOOST + (data.totalLiveCount || 1),
-                        liveStudentsCount: data.liveStudentsCount || prev.liveStudentsCount,
-                        onlineStudentNames: Array.isArray(data.onlineStudentNames) && data.onlineStudentNames.length > 0
+                        totalLiveCount: BASE_LIVE_BOOST + Math.max(1, data.totalLiveCount || 0),
+                        liveStudentsCount: data.liveStudentsCount !== undefined ? data.liveStudentsCount : prev.liveStudentsCount,
+                        onlineStudentNames: Array.isArray(data.onlineStudentNames)
                             ? data.onlineStudentNames
                             : prev.onlineStudentNames,
+                        onlineStudentIds: Array.isArray(data.onlineStudentIds)
+                            ? data.onlineStudentIds
+                            : prev.onlineStudentIds || [],
                         totalRegistered: data.totalRegistered !== undefined ? data.totalRegistered : prev.totalRegistered
                     }));
                 }
@@ -157,17 +192,24 @@ export const AuthProvider = ({ children }) => {
         };
     }, []);
 
-    // Keep socket presence in sync with user state
+    // Keep socket presence in sync with user state and send heartbeat
     useEffect(() => {
-        if (socket && socket.connected) {
-            if (user && user._id) {
+        if (!user || !user._id) return;
+
+        const broadcastUserOnline = () => {
+            if (socket && socket.connected) {
                 socket.emit('user_online', {
                     userId: user._id,
                     name: user.name,
                     showInOnlineList: user.showInOnlineList !== false
                 });
             }
-        }
+        };
+
+        broadcastUserOnline();
+        const interval = setInterval(broadcastUserOnline, 25000); // 25s keepalive
+
+        return () => clearInterval(interval);
     }, [user, socket]);
 
     const login = (userData, userToken) => {

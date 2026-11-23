@@ -11,7 +11,8 @@ import { fetchAllMaterials, addMaterial, removeMaterial } from '../services/mate
 import logo from '../assets/logo.png';
 
 const AdminDashboard = () => {
-    const { token, user, isAdmin, isLoggedIn, presence, login } = useAuth();
+    const { token, user, isAdmin, isLoggedIn, presence, login, socket } = useAuth();
+    const [realtimeAlert, setRealtimeAlert] = useState(null);
     const [activeTab, setActiveTab] = useState('students');
     
     // Quick Admin Login State for gate
@@ -28,7 +29,23 @@ const AdminDashboard = () => {
         const cleanEmail = gateEmail.toLowerCase().trim();
         const cleanPass = gatePass.trim();
 
-        // Direct master admin check
+                try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: cleanEmail, password: cleanPass })
+            });
+            const data = await res.json();
+            if (res.ok && data && (data.role === 'admin' || data.token)) {
+                login(data, data.token);
+                setGateLoading(false);
+                return;
+            }
+        } catch (err) {
+            console.warn('Backend login error, trying master admin fallback:', err);
+        }
+
+        // Direct master admin check fallback
         if ((cleanEmail === 'sonuk802408@gmail.com' || cleanEmail === '8130550381' || cleanEmail === 'sonuk802408@gmail,com') && (cleanPass === 'Sonu kumar81' || gatePass === 'Sonu kumar81 ')) {
             const sonuAdmin = {
                 _id: 'admin_sonu_kumar',
@@ -224,11 +241,58 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         if (isAdmin) {
-            if (activeTab === 'students') fetchUsers();
+            if (activeTab === 'students') {
+                fetchUsers();
+                const studentPollTimer = setInterval(fetchUsers, 4000);
+                return () => clearInterval(studentPollTimer);
+            }
             if (activeTab === 'materials') loadMaterials();
             if (activeTab === 'queries') fetchQueries();
         }
     }, [activeTab, isAdmin, token]);
+
+    // Instant Real-Time Socket.io Updates
+    useEffect(() => {
+        if (!socket) return;
+
+        const onStudentRegistered = (newStudent) => {
+            console.log('⚡ INSTANT REALTIME STUDENT REGISTERED:', newStudent);
+            setRealtimeAlert(`🎉 New Student Registered: ${newStudent.name} (${newStudent.phone || newStudent.email || ''})`);
+            setTimeout(() => setRealtimeAlert(null), 8000);
+
+            setUsersList(prev => {
+                const cleanId = String(newStudent._id);
+                const filtered = prev.filter(u => String(u._id) !== cleanId && (!newStudent.phone || u.phone !== newStudent.phone));
+                return [newStudent, ...filtered];
+            });
+            fetchUsers();
+        };
+
+        const onStudentLoggedIn = (student) => {
+            console.log('⚡ INSTANT REALTIME STUDENT LOGIN:', student);
+            setRealtimeAlert(`🟢 Student Active / Online: ${student.name}`);
+            setTimeout(() => setRealtimeAlert(null), 5000);
+            fetchUsers();
+        };
+
+        const onQueryReceived = (query) => {
+            console.log('⚡ INSTANT REALTIME QUERY RECEIVED:', query);
+            setRealtimeAlert(`📩 New Inquiry / Lead: ${query.name} (${query.phone})`);
+            setTimeout(() => setRealtimeAlert(null), 8000);
+            fetchQueries();
+            fetchUsers();
+        };
+
+        socket.on('student_registered', onStudentRegistered);
+        socket.on('student_logged_in', onStudentLoggedIn);
+        socket.on('query_received', onQueryReceived);
+
+        return () => {
+            socket.off('student_registered', onStudentRegistered);
+            socket.off('student_logged_in', onStudentLoggedIn);
+            socket.off('query_received', onQueryReceived);
+        };
+    }, [socket]);
 
     // Handle Admin Adding Student
     const handleAddStudentSubmit = async (e) => {
@@ -503,7 +567,29 @@ const AdminDashboard = () => {
     }
 
     return (
-        <div className="section container" style={{ display: 'flex', gap: '2rem', minHeight: '80vh', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <div className="section container" style={{ display: 'flex', gap: '2rem', minHeight: '80vh', alignItems: 'flex-start', flexWrap: 'wrap', position: 'relative' }}>
+            {realtimeAlert && (
+                <div style={{
+                    position: 'fixed',
+                    top: '24px',
+                    right: '24px',
+                    zIndex: 99999,
+                    background: 'linear-gradient(135deg, #059669, #10b981)',
+                    color: '#ffffff',
+                    padding: '0.9rem 1.4rem',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 30px rgba(16, 185, 129, 0.45)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.65rem',
+                    fontWeight: 700,
+                    fontSize: '0.95rem'
+                }}>
+                    <CheckCircle2 size={20} />
+                    <span>{realtimeAlert}</span>
+                    <button onClick={() => setRealtimeAlert(null)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', marginLeft: '0.6rem', fontSize: '1rem' }}>✕</button>
+                </div>
+            )}
 
             {/* Sidebar Navigation */}
             <div className="card" style={{ flex: '0 0 260px', display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '1.5rem 1rem' }}>
@@ -637,7 +723,7 @@ const AdminDashboard = () => {
                                     </thead>
                                     <tbody>
                                         {filteredUsers.map((u) => {
-                                            const isOnline = presence.onlineStudentNames?.includes(u.name);
+                                            const isOnline = Boolean(presence?.onlineStudentNames?.some(n => n && n.toLowerCase().trim() === (u.name || "").toLowerCase().trim()) || presence?.onlineStudentIds?.includes(String(u._id)) || (u.lastActive && (Date.now() - new Date(u.lastActive).getTime()) < 5 * 60 * 1000));
                                             return (
                                                 <tr key={u._id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.92rem' }}>
                                                     <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>

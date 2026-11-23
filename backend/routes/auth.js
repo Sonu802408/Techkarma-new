@@ -2,75 +2,97 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Query from '../models/Query.js';
 import { protect, adminOnly } from '../middlewares/authMiddleware.js';
 import { sendWhatsAppNotification } from '../services/whatsappService.js';
 
 const router = express.Router();
 
 const generateToken = (id, role) => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET || 'secret', {
+    return jwt.sign({ id, role }, process.env.JWT_SECRET || 'supersecretjwtkey_2026techkarma', {
         expiresIn: '30d',
     });
 };
 
 // @route POST /api/auth/register
 router.post('/register', async (req, res) => {
-    const { name, phone, email, password, role, showInOnlineList } = req.body;
+    let { name, phone, email, password, role, showInOnlineList, className } = req.body;
 
-    if (!name || !phone || !email || !password) {
-        return res.status(400).json({ message: 'Please provide all required fields: name, phone, email, password' });
+    if (!name || !phone) {
+        return res.status(400).json({ message: 'Please provide at least your name and phone number' });
     }
 
     try {
-        const userExists = await User.findOne({ email: email.toLowerCase().trim() });
+        const cleanName = name.trim();
+        const cleanPhone = phone.trim();
+        const cleanEmail = email && email.trim() ? email.toLowerCase().trim() : `${cleanPhone}@student.techkarma.com`;
+        const cleanPass = password || cleanPhone;
 
-        if (userExists) {
-            return res.status(400).json({ message: 'An account with this email already exists' });
-        }
-
-        const phoneExists = await User.findOne({ phone: phone.trim() });
-        if (phoneExists) {
-            return res.status(400).json({ message: 'An account with this phone number already exists' });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const user = await User.create({
-            name: name.trim(),
-            phone: phone.trim(),
-            email: email.toLowerCase().trim(),
-            password: hashedPassword,
-            role: role || 'student',
-            className: req.body.className || 'Class 10',
-            showInOnlineList: showInOnlineList !== undefined ? showInOnlineList : true,
-            lastActive: new Date()
+        let user = await User.findOne({
+            $or: [{ phone: cleanPhone }, { email: cleanEmail }]
         });
 
-        if (user) {
-            // Trigger WhatsApp Notification to Admin
-            sendWhatsAppNotification({
-                name: user.name,
-                phone: user.phone,
-                email: user.email,
-                source: 'New Student Registration'
-            }).catch(e => console.error('WhatsApp notify error:', e.message));
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(cleanPass, salt);
 
-            res.status(201).json({
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                role: user.role,
-                showInOnlineList: user.showInOnlineList,
-                token: generateToken(user._id, user.role),
-            });
+        if (user) {
+            // Update existing student account with new info so registrations are never blocked
+            if (user.role !== 'admin') {
+                user.name = cleanName;
+                user.className = className || req.body.className || user.className || 'Class 10';
+                user.password = hashedPassword;
+                user.lastActive = new Date();
+                user.showInOnlineList = showInOnlineList !== undefined ? showInOnlineList : true;
+                await user.save();
+            }
         } else {
-            res.status(400).json({ message: 'Invalid user data' });
+            user = await User.create({
+                name: cleanName,
+                phone: cleanPhone,
+                email: cleanEmail,
+                password: hashedPassword,
+                role: role || 'student',
+                className: className || req.body.className || 'Class 10',
+                showInOnlineList: showInOnlineList !== undefined ? showInOnlineList : true,
+                lastActive: new Date()
+            });
         }
+
+        // Trigger WhatsApp Notification to Admin
+        sendWhatsAppNotification({
+            name: user.name,
+            phone: user.phone,
+            email: user.email,
+            source: 'New Student Registration'
+        }).catch(e => console.error('WhatsApp notify error:', e.message));
+
+        const studentData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            className: user.className,
+            role: user.role,
+            showInOnlineList: user.showInOnlineList,
+            lastActive: user.lastActive,
+            createdAt: user.createdAt,
+            token: generateToken(user._id, user.role),
+        };
+
+        // Real-time instant Socket.io broadcast to Admin Panel!
+        try {
+            const io = req.app.get('io');
+            if (io) {
+                io.emit('student_registered', studentData);
+                const broadcastPresence = req.app.get('broadcastPresence');
+                if (broadcastPresence) broadcastPresence();
+            }
+        } catch (sErr) {}
+
+        return res.status(201).json(studentData);
     } catch (error) {
         console.error('Registration error:', error);
-        res.status(500).json({ message: 'Server error during registration', error: error.message });
+        return res.status(500).json({ message: 'Server error during registration', error: error.message });
     }
 });
 
@@ -167,7 +189,41 @@ router.get('/me', protect, async (req, res) => {
 // @route GET /api/auth/users (Admin only)
 router.get('/users', protect, adminOnly, async (req, res) => {
     try {
-        const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+        const users = await User.find({}).select('-password').sort({ createdAt: -1 }).lean();
+        
+        // Also merge queries / visitor leads so all registered students & leads are visible
+        try {
+            const queries = await Query.find({}).sort({ createdAt: -1 }).lean();
+            const existingPhones = new Set(users.map(u => (u.phone || '').replace(/\D/g, '')));
+            const existingEmails = new Set(users.map(u => (u.email || '').toLowerCase().trim()));
+
+            for (const q of queries) {
+                const cleanP = (q.phone || '').replace(/\D/g, '');
+                const cleanE = (q.email || '').toLowerCase().trim();
+                const phoneMatch = cleanP && existingPhones.has(cleanP);
+                const emailMatch = cleanE && cleanE !== 'n/a' && existingEmails.has(cleanE);
+
+                if (!phoneMatch && !emailMatch) {
+                    users.push({
+                        _id: q._id,
+                        name: q.name,
+                        phone: q.phone,
+                        email: q.email || 'N/A',
+                        className: q.className || 'Class 10',
+                        role: 'student',
+                        source: q.source || 'Visitor Lead',
+                        showInOnlineList: true,
+                        lastActive: q.updatedAt || q.createdAt,
+                        createdAt: q.createdAt
+                    });
+                    if (cleanP) existingPhones.add(cleanP);
+                    if (cleanE) existingEmails.add(cleanE);
+                }
+            }
+        } catch (qErr) {
+            console.warn('Could not merge queries into users:', qErr.message);
+        }
+
         res.json({
             success: true,
             count: users.length,
@@ -421,3 +477,4 @@ router.post('/seed-admin', async (req, res) => {
 });
 
 export default router;
+

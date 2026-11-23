@@ -27,6 +27,7 @@ const __dirname = path.dirname(__filename);
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.set('io', io);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Connection
@@ -66,35 +67,51 @@ const socketUserMap = new Map();
 // userId -> { name, showInOnlineList, socketIds: Set<string> }
 const activeUsersMap = new Map();
 
-const broadcastPresence = async () => {
+const getPresenceData = async () => {
+    let totalRegistered = 0;
     try {
-        let totalRegistered = 0;
-        try {
+        if (mongoose.connection.readyState === 1) {
             totalRegistered = await User.countDocuments({});
-        } catch (err) {
-            const all = await User.find({}, '_id').lean();
-            totalRegistered = all ? all.length : 0;
         }
+    } catch (err) {
+        console.warn('Error counting users:', err.message);
+    }
 
-        const totalLiveCount = io.engine.clientsCount || 0;
-        // Public list: only extract user names where consent is not false
-        const onlineStudentNames = Array.from(activeUsersMap.values())
-            .filter(u => u.showInOnlineList !== false && u.name)
-            .map(u => u.name);
+    const totalLiveCount = io.engine.clientsCount || 0;
+    const onlineUsers = Array.from(activeUsersMap.entries())
+        .filter(([id, u]) => u.showInOnlineList !== false && u.name)
+        .map(([id, u]) => ({ id, name: u.name }));
 
-        const presencePayload = {
-            totalLiveCount,
-            liveStudentsCount: activeUsersMap.size,
-            onlineStudentNames,
-            totalRegistered
-        };
+    return {
+        totalLiveCount,
+        liveStudentsCount: activeUsersMap.size,
+        onlineStudentNames: onlineUsers.map(u => u.name),
+        onlineStudentIds: onlineUsers.map(u => u.id),
+        totalRegistered
+    };
+};
 
+const broadcastPresence = async () => {
+    // attach to app
+    if (!app.get('broadcastPresence')) app.set('broadcastPresence', broadcastPresence);
+    try {
+        const presencePayload = await getPresenceData();
         io.emit('livePresenceUpdate', presencePayload);
-        io.emit('liveUsersCount', totalLiveCount);
+        io.emit('liveUsersCount', presencePayload.totalLiveCount);
     } catch (err) {
         console.error('Error broadcasting presence:', err);
     }
 };
+
+// HTTP endpoint fallback for presence & live students
+app.get('/api/stats/presence', async (req, res) => {
+    try {
+        const payload = await getPresenceData();
+        res.json({ success: true, ...payload });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
 io.on('connection', (socket) => {
     broadcastPresence();
@@ -104,21 +121,24 @@ io.on('connection', (socket) => {
         if (!data || !data.userId || !data.name) return;
 
         const { userId, name, showInOnlineList } = data;
-        socketUserMap.set(socket.id, { userId, name, showInOnlineList });
+        const stringUserId = String(userId);
+        socketUserMap.set(socket.id, { userId: stringUserId, name, showInOnlineList });
 
-        if (!activeUsersMap.has(userId)) {
-            activeUsersMap.set(userId, {
+        if (!activeUsersMap.has(stringUserId)) {
+            activeUsersMap.set(stringUserId, {
                 name,
                 showInOnlineList: showInOnlineList !== false,
                 socketIds: new Set([socket.id])
             });
             try {
-                await User.findByIdAndUpdate(userId, { lastActive: new Date() });
+                if (mongoose.isValidObjectId(stringUserId)) {
+                    await User.findByIdAndUpdate(stringUserId, { lastActive: new Date() });
+                }
             } catch (e) {
-                console.error('Error updating user lastActive:', e);
+                console.error('Error updating user lastActive:', e.message);
             }
         } else {
-            activeUsersMap.get(userId).socketIds.add(socket.id);
+            activeUsersMap.get(stringUserId).socketIds.add(socket.id);
         }
 
         broadcastPresence();
@@ -126,10 +146,12 @@ io.on('connection', (socket) => {
 
     // Student logs out explicitly
     socket.on('user_offline', async (data) => {
-        const userId = data?.userId || socketUserMap.get(socket.id)?.userId;
+        const userId = data?.userId ? String(data.userId) : socketUserMap.get(socket.id)?.userId;
         if (userId && activeUsersMap.has(userId)) {
             try {
-                await User.findByIdAndUpdate(userId, { lastActive: new Date() });
+                if (mongoose.isValidObjectId(userId)) {
+                    await User.findByIdAndUpdate(userId, { lastActive: new Date() });
+                }
             } catch (e) {}
             activeUsersMap.delete(userId);
         }
@@ -145,7 +167,9 @@ io.on('connection', (socket) => {
                 userEntry.socketIds.delete(socket.id);
                 if (userEntry.socketIds.size === 0) {
                     try {
-                        await User.findByIdAndUpdate(userData.userId, { lastActive: new Date() });
+                        if (mongoose.isValidObjectId(userData.userId)) {
+                            await User.findByIdAndUpdate(userData.userId, { lastActive: new Date() });
+                        }
                     } catch (e) {}
                     activeUsersMap.delete(userData.userId);
                 }

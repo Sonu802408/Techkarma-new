@@ -62,8 +62,25 @@ const Login = () => {
             const cleanEmail = formData.email.toLowerCase().trim();
             const cleanPass = formData.password.trim();
 
-            // Sonu Kumar Master Admin Direct Authentication
+            // Sonu Kumar Master Admin Authentication
             if ((cleanEmail === 'sonuk802408@gmail.com' || cleanEmail === '8130550381' || cleanEmail === 'sonuk802408@gmail,com') && (cleanPass === 'Sonu kumar81' || formData.password === 'Sonu kumar81 ')) {
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: cleanEmail, password: cleanPass })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data && (data.role === 'admin' || data.token)) {
+                        login(data, data.token);
+                        setSuccessMessage('Welcome Admin Sonu Kumar! Redirecting to Admin Panel...');
+                        setTimeout(() => navigate('/admin'), 600);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Backend login fallback to offline master token:', e);
+                }
+
                 const sonuAdmin = {
                     _id: 'admin_sonu_kumar',
                     name: 'Sonu Kumar (Admin)',
