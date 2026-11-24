@@ -247,7 +247,11 @@ const AdminDashboard = () => {
                 return () => clearInterval(studentPollTimer);
             }
             if (activeTab === 'materials') loadMaterials();
-            if (activeTab === 'queries') fetchQueries();
+            if (activeTab === 'queries') {
+                fetchQueries();
+                const queryPollTimer = setInterval(fetchQueries, 3000);
+                return () => clearInterval(queryPollTimer);
+            }
         }
     }, [activeTab, isAdmin, token]);
 
