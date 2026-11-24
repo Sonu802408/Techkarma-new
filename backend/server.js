@@ -30,10 +30,24 @@ app.use(express.json());
 app.set('io', io);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Database Connection
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('MongoDB connected successfully'))
-    .catch(err => console.error('MongoDB connection error:', err));
+// Database Connection with Cloud Atlas Failover
+const ATLAS_URI = 'mongodb+srv://sonu:sonu%40123@cluster0.ibzynyr.mongodb.net/techkarmaclasses?retryWrites=true&w=majority';
+const connectDatabase = async () => {
+    const primaryUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/techkarmaclasses';
+    try {
+        await mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 5000 });
+        console.log('MongoDB connected successfully to primary database');
+    } catch (err) {
+        console.warn('Primary MongoDB connection error, connecting to MongoDB Atlas Cloud failover...', err.message);
+        try {
+            await mongoose.connect(ATLAS_URI, { serverSelectionTimeoutMS: 10000 });
+            console.log('MongoDB Atlas Cloud connected successfully!');
+        } catch (atlasErr) {
+            console.error('All MongoDB connection attempts failed:', atlasErr.message);
+        }
+    }
+};
+connectDatabase();
 
 // Initialize Routes
 import authRoutes from './routes/auth.js';

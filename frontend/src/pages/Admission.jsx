@@ -13,23 +13,61 @@ const Admission = () => {
 
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const sName = formData.studentName.trim();
+        const sPhone = formData.phone.trim();
+        const sEmail = formData.email.trim().toLowerCase();
+        const sGrade = formData.grade.trim() || 'Class 10';
+
+        // 1. Permanently register student in database
+        try {
+            fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: sName,
+                    phone: sPhone,
+                    email: sEmail || `${sPhone}@student.techkarma.com`,
+                    className: sGrade,
+                    role: 'student'
+                })
+            }).catch(() => {});
+
+            // Also record in queries / admission leads
+            fetch('/api/queries', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: sName,
+                    phone: sPhone,
+                    email: sEmail,
+                    className: sGrade,
+                    message: `Admission Application: Parent ${formData.parentName.trim()} | Course ${formData.courseType} | Grade ${sGrade}`,
+                    source: 'Admission Page'
+                })
+            }).catch(() => {});
+        } catch (dbErr) {
+            console.warn('Database save error:', dbErr);
+        }
+
         const waText = 
 `🎓 *New Admission Application - Tech Karma Classes*
 ━━━━━━━━━━━━━━━━━━━━━━
-👤 *Student Name:* ${formData.studentName.trim()}
+👤 *Student Name:* ${sName}
 👨‍👩‍👧 *Parent Name:* ${formData.parentName.trim()}
-📱 *Mobile Number:* ${formData.phone.trim()}
-📧 *Email:* ${formData.email.trim()}
+📱 *Mobile Number:* ${sPhone}
+📧 *Email:* ${sEmail}
 📚 *Course:* ${formData.courseType}
-🏫 *Class/Grade:* ${formData.grade.trim()}
+🏫 *Class/Grade:* ${sGrade}
 ⏰ *Time:* ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
 ━━━━━━━━━━━━━━━━━━━━━━
 Hello Sir, I have submitted an admission application on your website. Please check!`;
 
         const waUrl = `https://api.whatsapp.com/send?phone=918130550381&text=${encodeURIComponent(waText)}`;
-        window.open(waUrl, '_blank');
+        try {
+            window.open(waUrl, '_blank');
+        } catch (e) {}
         setSubmitted(true);
     };
 

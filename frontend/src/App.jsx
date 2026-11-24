@@ -37,6 +37,17 @@ function App() {
         if (savedTheme) {
             setTheme(savedTheme);
         }
+        
+        // Force browser to update tab favicon
+        try {
+            const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+            link.type = 'image/png';
+            link.rel = 'shortcut icon';
+            link.href = '/favicon-32x32.png?v=20261124_v2';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        } catch (e) {
+            console.warn('Favicon refresh error:', e);
+        }
     }, []);
 
     useEffect(() => {

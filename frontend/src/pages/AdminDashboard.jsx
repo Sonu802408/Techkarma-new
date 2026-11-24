@@ -496,18 +496,14 @@ const AdminDashboard = () => {
             <div className="section container" style={{ minHeight: '75vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
                 <div className="card animate-fade-in-up" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem 2rem', textAlign: 'center' }}>
                     <div style={{
-                        width: '64px',
-                        height: '64px',
-                        borderRadius: '16px',
-                        background: 'rgba(59, 130, 246, 0.12)',
-                        border: '1px solid rgba(59, 130, 246, 0.3)',
+                        width: '72px',
+                        height: '72px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        margin: '0 auto 1.25rem',
-                        color: '#38bdf8'
+                        margin: '0 auto 1.25rem'
                     }}>
-                        <Shield size={36} />
+                        <img src={logo} alt="Tech Karma" style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56, 189, 248, 0.6))' }} />
                     </div>
 
                     <h2 style={{ fontSize: '1.7rem', fontWeight: 800, marginBottom: '0.4rem', color: '#ffffff' }}>Admin Portal Login</h2>

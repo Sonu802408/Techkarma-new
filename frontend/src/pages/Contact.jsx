@@ -7,18 +7,37 @@ const Contact = () => {
     const [message, setMessage] = useState('');
     const [status, setStatus] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const cName = name.trim();
+        const cPhone = phone.trim();
+        const cMsg = message.trim();
+
+        try {
+            fetch('/api/queries', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: cName,
+                    phone: cPhone,
+                    message: cMsg,
+                    source: 'Contact Page Inquiry'
+                })
+            }).catch(() => {});
+        } catch (e) {}
+
         const waText = 
 `📬 *New Website Message - Tech Karma Classes*
 ━━━━━━━━━━━━━━━━━━━━━━
-👤 *Name:* ${name.trim()}
-📱 *Phone:* ${phone.trim()}
-💬 *Message:* ${message.trim()}
+👤 *Name:* ${cName}
+📱 *Phone:* ${cPhone}
+💬 *Message:* ${cMsg}
 ⏰ *Time:* ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
 ━━━━━━━━━━━━━━━━━━━━━━`;
         const waUrl = `https://api.whatsapp.com/send?phone=918130550381&text=${encodeURIComponent(waText)}`;
-        window.open(waUrl, '_blank');
+        try {
+            window.open(waUrl, '_blank');
+        } catch (err) {}
         setStatus('Message received! Redirecting to WhatsApp (8130550381)...');
     };
 
